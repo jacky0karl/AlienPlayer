@@ -1,9 +1,12 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
 import com.viewpagerindicator.TabPageIndicator;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -17,8 +20,26 @@ public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_ALBUMS = 1;
     private static final int FRAGMENT_SONGS = 2;
     private static final int FRAGMENT_PLAYLIST = 3;
-    
+
     private PlaybarHelper mPlaybarHelper;
+    private Handler mHandler = new Handler();
+
+    private PlayingProgressBarListener mListener = new PlayingProgressBarListener() {
+        @Override
+        public void onProgressStart(int duration) {
+            mPlaybarHelper.setMaxProgress(duration);
+            startProgressUpdate();
+        }
+    };
+
+    Runnable mUpdateTask = new Runnable() {
+        @Override
+        public void run() {
+            int progress = PlayingHelper.getInstance().getCurrentPosition();
+            mPlaybarHelper.setProgress(progress);
+            mHandler.postDelayed(mUpdateTask, 500);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +53,7 @@ public class MainActivity extends FragmentActivity {
         TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
 
-        mPlaybarHelper = new PlaybarHelper(this);
+        mPlaybarHelper = new PlaybarHelper(this, mListener);
     }
 
     @Override
@@ -40,6 +61,10 @@ public class MainActivity extends FragmentActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    public void startProgressUpdate() {
+        mHandler.post(mUpdateTask);
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

@@ -10,7 +10,11 @@ public class PlayingHelper {
 
     private static PlayingHelper sSelf = null;
     private MediaPlayer mMediaPlayer;
-    private SongInfo mCurrentSong = null;
+    private SongInfo mCurrentSong = null;   
+
+    public interface PlayingProgressBarListener {
+        void onProgressStart(int duration);
+    }
 
     public static synchronized PlayingHelper getInstance() {
         if (sSelf == null) {
@@ -32,14 +36,14 @@ public class PlayingHelper {
         PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG, currentSong.id);
     }
 
-    public boolean playOrPause() {
+    public boolean playOrPause(PlayingProgressBarListener listener) {
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
         } else {
             try {
                 mMediaPlayer.start();
                 if (!mMediaPlayer.isPlaying()) {
-                    play();
+                    play(listener);
                 }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
@@ -48,7 +52,7 @@ public class PlayingHelper {
         return mMediaPlayer.isPlaying();
     }
 
-    public boolean play() {
+    public boolean play(PlayingProgressBarListener listener) {
         if (mCurrentSong == null) {
             return false;
         }
@@ -61,12 +65,23 @@ public class PlayingHelper {
         try {
             mMediaPlayer.setDataSource(mCurrentSong.path);
             mMediaPlayer.prepare();
+            if (listener != null) {
+                listener.onProgressStart(getDuration());
+            }
             mMediaPlayer.start();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public int getDuration() {
+        return mMediaPlayer.getDuration();
+    }
+
+    public int getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
     }
 
     public void release() {

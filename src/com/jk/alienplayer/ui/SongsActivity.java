@@ -4,9 +4,11 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -22,6 +24,24 @@ public class SongsActivity extends Activity {
     private ListView mListView;
     private SongsAdapter mAdapter;
     private PlaybarHelper mPlaybarHelper;
+    private Handler mHandler = new Handler();
+
+    private PlayingProgressBarListener mListener = new PlayingProgressBarListener() {
+        @Override
+        public void onProgressStart(int duration) {
+            mPlaybarHelper.setMaxProgress(duration);
+            startProgressUpdate();
+        }
+    };
+
+    Runnable mUpdateTask = new Runnable() {
+        @Override
+        public void run() {
+            int progress = PlayingHelper.getInstance().getCurrentPosition();
+            mPlaybarHelper.setProgress(progress);
+            mHandler.postDelayed(mUpdateTask, 500);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +51,7 @@ public class SongsActivity extends Activity {
     }
 
     private void init() {
-        mPlaybarHelper = new PlaybarHelper(this);
+        mPlaybarHelper = new PlaybarHelper(this, mListener);
         mKeyType = getIntent().getIntExtra(KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
         mKey = getIntent().getStringExtra(KEY);
 
@@ -49,9 +69,13 @@ public class SongsActivity extends Activity {
 
     private void onSongClick(SongInfo song) {
         PlayingHelper.getInstance().setCurrentSong(this, song);
-        if (PlayingHelper.getInstance().play()) {
+        if (PlayingHelper.getInstance().play(mListener)) {
             mPlaybarHelper.setPlayBtnImage(R.drawable.pause);
         }
         mPlaybarHelper.setArtwork(song);
+    }
+
+    public void startProgressUpdate() {
+        mHandler.post(mUpdateTask);
     }
 }
