@@ -17,6 +17,8 @@ public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_ALBUMS = 1;
     private static final int FRAGMENT_SONGS = 2;
     private static final int FRAGMENT_PLAYLIST = 3;
+    
+    private PlaybarHelper mPlaybarHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +26,13 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         FragmentPagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
         TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
 
-        // test();
+        mPlaybarHelper = new PlaybarHelper(this);
     }
 
     @Override

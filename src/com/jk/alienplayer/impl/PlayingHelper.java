@@ -1,7 +1,9 @@
 package com.jk.alienplayer.impl;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.jk.alienplayer.data.PreferencesHelper;
 import com.jk.alienplayer.data.SongInfo;
 
 public class PlayingHelper {
@@ -25,8 +27,9 @@ public class PlayingHelper {
         return mCurrentSong;
     }
 
-    public void setCurrentSong(SongInfo currentSong) {
+    public void setCurrentSong(Context context, SongInfo currentSong) {
         mCurrentSong = currentSong;
+        PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG, currentSong.id);
     }
 
     public boolean playOrPause() {
@@ -35,11 +38,13 @@ public class PlayingHelper {
         } else {
             try {
                 mMediaPlayer.start();
+                if (!mMediaPlayer.isPlaying()) {
+                    play();
+                }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
         }
-
         return mMediaPlayer.isPlaying();
     }
 
