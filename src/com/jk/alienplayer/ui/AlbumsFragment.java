@@ -13,10 +13,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class ArtistsFragment extends Fragment {
+public class AlbumsFragment extends Fragment {
 
     private ListView mListView;
-    private ArtistsAdapter mAdapter;
+    private AlbumsAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,9 +32,9 @@ public class ArtistsFragment extends Fragment {
 
     private void init(View root) {
         mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new ArtistsAdapter(getActivity());
+        mAdapter = new AlbumsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-        mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
+        mAdapter.setAlbums(DatabaseHelper.getAlbums(getActivity()));
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -47,7 +47,7 @@ public class ArtistsFragment extends Fragment {
 
     private void startSongsPage(String key) {
         Intent intent = new Intent(getActivity(), SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
+        intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ALBUM);
         intent.putExtra(SongsActivity.KEY, key);
         startActivity(intent);
     }

@@ -12,9 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 public class MainActivity extends FragmentActivity {
-
-    private static final String[] CONTENT = new String[] { "Recent", "Artists", "Albums", "Songs",
-            "Playlists" };
+    private static final int FRAGMENT_RECENTS = 0;
+    private static final int FRAGMENT_ARTISTS = 0;
+    private static final int FRAGMENT_ALBUMS = 1;
+    private static final int FRAGMENT_SONGS = 2;
+    private static final int FRAGMENT_PLAYLIST = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +49,30 @@ public class MainActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-            case 1:
+            case FRAGMENT_ARTISTS:
                 return new ArtistsFragment();
+            case FRAGMENT_ALBUMS:
+                return new AlbumsFragment();
             default:
-                return new Fragment();
+                return new ArtistsFragment();
             }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return CONTENT[position % CONTENT.length];
+            switch (position) {
+            case FRAGMENT_ARTISTS:
+                return "Artists";
+            case FRAGMENT_ALBUMS:
+                return "Albums";
+            default:
+                return "Artists";
+            }
         }
 
         @Override
         public int getCount() {
-            return CONTENT.length;
+            return 2;
         }
     }
 }

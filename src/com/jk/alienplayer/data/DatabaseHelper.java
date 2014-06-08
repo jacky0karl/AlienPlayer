@@ -25,22 +25,52 @@ public class DatabaseHelper {
 
     public static List<ArtistInfo> getArtists(Context context) {
         List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
-        String[] projection = new String[] { DISTINCT + MediaStore.Audio.Media.ARTIST };
+        String[] projection = new String[] { DISTINCT + MediaStore.Audio.Media.ARTIST_ID,
+                MediaStore.Audio.Media.ARTIST };
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
 
         Cursor cursor = context.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null,
-                MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null,
+                MediaStore.Audio.Media.ARTIST);
         if (cursor != null) {
+            Log.e("#########", "Artists count = " + cursor.getCount());
             cursor.moveToFirst();
             do {
+                long artistId = cursor.getLong(cursor
+                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID));
                 String artist = cursor.getString(cursor
                         .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-                ArtistInfo info = new ArtistInfo(artist);
+                ArtistInfo info = new ArtistInfo(artistId, artist);
                 artists.add(info);
             } while (cursor.moveToNext());
             cursor.close();
         }
         return artists;
+    }
+
+    public static List<AlbumInfo> getAlbums(Context context) {
+        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
+        String[] projection = new String[] { DISTINCT + MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ALBUM };
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
+
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null,
+                MediaStore.Audio.Media.ALBUM);
+        if (cursor != null) {
+            Log.e("#########", "Albums count = " + cursor.getCount());
+            cursor.moveToFirst();
+            do {
+                long albumId = cursor.getLong(cursor
+                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+                String album = cursor.getString(cursor
+                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
+                AlbumInfo info = new AlbumInfo(albumId, album);
+                albums.add(info);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return albums;
     }
 
     public static List<SongInfo> getSongs(Context context, int keyType, String key) {
@@ -52,13 +82,13 @@ public class DatabaseHelper {
         String[] projection = new String[] { MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
-        String selection;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1 and ";
         switch (keyType) {
         case TYPE_ARTIST:
-            selection = MediaStore.Audio.Media.ARTIST + "=?";
+            selection += MediaStore.Audio.Media.ARTIST_ID + "=?";
             break;
         case TYPE_ALBUM:
-            selection = MediaStore.Audio.Media.ALBUM + "=?";
+            selection += MediaStore.Audio.Media.ALBUM_ID + "=?";
             break;
         default:
             return songs;
@@ -69,6 +99,7 @@ public class DatabaseHelper {
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs,
                 MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         if (cursor != null) {
+            Log.e("#########", "Songs count = " + cursor.getCount());
             cursor.moveToFirst();
             do {
                 long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.ArtistInfo;
+import com.jk.alienplayer.data.AlbumInfo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,32 +13,32 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class ArtistsAdapter extends BaseAdapter {
+public class AlbumsAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private List<ArtistInfo> mArtists;
+    private List<AlbumInfo> mAlbums;
 
-    public void setArtists(List<ArtistInfo> artists) {
-        if (artists != null) {
-            mArtists = artists;
+    public void setAlbums(List<AlbumInfo> albums) {
+        if (albums != null) {
+            mAlbums = albums;
             notifyDataSetChanged();
         }
     }
 
-    public ArtistsAdapter(Context context) {
+    public AlbumsAdapter(Context context) {
         super();
         mInflater = LayoutInflater.from(context);
-        mArtists = new ArrayList<ArtistInfo>();
+        mAlbums = new ArrayList<AlbumInfo>();
     }
 
     @Override
     public int getCount() {
-        return mArtists.size();
+        return mAlbums.size();
     }
 
     @Override
-    public ArtistInfo getItem(int position) {
-        return mArtists.get(position);
+    public AlbumInfo getItem(int position) {
+        return mAlbums.get(position);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ArtistsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        ArtistInfo info = mArtists.get(position);
+        AlbumInfo info = mAlbums.get(position);
         viewHolder.name.setText(info.name);
         return view;
     }
