@@ -34,15 +34,16 @@ public class DatabaseHelper {
                 MediaStore.Audio.Media.ARTIST);
         if (cursor != null) {
             Log.e("#########", "Artists count = " + cursor.getCount());
-            cursor.moveToFirst();
-            do {
-                long artistId = cursor.getLong(cursor
-                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID));
-                String artist = cursor.getString(cursor
-                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-                ArtistInfo info = new ArtistInfo(artistId, artist);
-                artists.add(info);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    long artistId = cursor.getLong(cursor
+                            .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID));
+                    String artist = cursor.getString(cursor
+                            .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+                    ArtistInfo info = new ArtistInfo(artistId, artist);
+                    artists.add(info);
+                } while (cursor.moveToNext());
+            }
             cursor.close();
         }
         return artists;
@@ -59,15 +60,16 @@ public class DatabaseHelper {
                 MediaStore.Audio.Media.ALBUM);
         if (cursor != null) {
             Log.e("#########", "Albums count = " + cursor.getCount());
-            cursor.moveToFirst();
-            do {
-                long albumId = cursor.getLong(cursor
-                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-                String album = cursor.getString(cursor
-                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
-                AlbumInfo info = new AlbumInfo(albumId, album);
-                albums.add(info);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    long albumId = cursor.getLong(cursor
+                            .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+                    String album = cursor.getString(cursor
+                            .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
+                    AlbumInfo info = new AlbumInfo(albumId, album);
+                    albums.add(info);
+                } while (cursor.moveToNext());
+            }
             cursor.close();
         }
         return albums;
@@ -100,10 +102,11 @@ public class DatabaseHelper {
                 MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         if (cursor != null) {
             Log.e("#########", "Songs count = " + cursor.getCount());
-            cursor.moveToFirst();
-            do {
-                songs.add(bulidSongInfo(cursor));
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    songs.add(bulidSongInfo(cursor));
+                } while (cursor.moveToNext());
+            }
             cursor.close();
         }
         return songs;
