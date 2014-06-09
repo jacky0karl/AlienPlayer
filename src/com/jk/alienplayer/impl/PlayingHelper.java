@@ -2,6 +2,7 @@ package com.jk.alienplayer.impl;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 
 import com.jk.alienplayer.data.PreferencesHelper;
 import com.jk.alienplayer.data.SongInfo;
@@ -10,7 +11,7 @@ public class PlayingHelper {
 
     private static PlayingHelper sSelf = null;
     private MediaPlayer mMediaPlayer;
-    private SongInfo mCurrentSong = null;   
+    private SongInfo mCurrentSong = null;
 
     public interface PlayingProgressBarListener {
         void onProgressStart(int duration);
@@ -25,6 +26,10 @@ public class PlayingHelper {
 
     private PlayingHelper() {
         mMediaPlayer = new MediaPlayer();
+    }
+
+    public void setOnCompletionListener(OnCompletionListener listener) {
+        mMediaPlayer.setOnCompletionListener(listener);
     }
 
     public SongInfo getCurrentSong() {
@@ -74,6 +79,10 @@ public class PlayingHelper {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean isPlaying() {
+        return mMediaPlayer.isPlaying();
     }
 
     public int getDuration() {

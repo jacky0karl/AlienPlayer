@@ -10,6 +10,8 @@ import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,12 +28,36 @@ public class PlaybarHelper {
     private ImageButton mPrevBtn;
     private ImageView mArtwork;
     private ProgressBar mProgressBar;
-    private PlayingProgressBarListener mListener = null;
-    
+    private Handler mHandler = new Handler();
 
-    public PlaybarHelper(Activity activity, PlayingProgressBarListener listener) {
+    private PlayingProgressBarListener mListener = new PlayingProgressBarListener() {
+        @Override
+        public void onProgressStart(int duration) {
+            mProgressBar.setMax(duration);
+            startProgressUpdate();
+        }
+    };
+
+    Runnable mUpdateTask = new Runnable() {
+        @Override
+        public void run() {
+            int progress = PlayingHelper.getInstance().getCurrentPosition();
+            mProgressBar.setProgress(progress);
+            mHandler.postDelayed(mUpdateTask, 500);
+        }
+    };
+
+    private OnCompletionListener mCompletionListener = new OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            mPlayBtn.setImageResource(R.drawable.play);
+            mHandler.removeCallbacks(mUpdateTask);
+            mProgressBar.setProgress(mProgressBar.getMax());
+        }
+    };
+
+    public PlaybarHelper(Activity activity) {
         mActivity = activity;
-        mListener = listener;
         init();
     }
 
@@ -55,7 +81,10 @@ public class PlaybarHelper {
         mNextBtn = (ImageButton) mActivity.findViewById(R.id.next);
         mPrevBtn = (ImageButton) mActivity.findViewById(R.id.prev);
         mArtwork = (ImageView) mActivity.findViewById(R.id.artwork);
+    }
 
+    public void syncView() {
+        PlayingHelper.getInstance().setOnCompletionListener(mCompletionListener);
         SharedPreferences sp = PreferencesHelper.getSharedPreferences(mActivity);
         long songId = sp.getLong(PreferencesHelper.CURRENT_SONG, -1);
         if (songId != -1) {
@@ -64,6 +93,15 @@ public class PlaybarHelper {
                 PlayingHelper.getInstance().setCurrentSong(mActivity, info);
                 setArtwork(info);
             }
+        }
+
+        if (PlayingHelper.getInstance().isPlaying()) {
+            mPlayBtn.setImageResource(R.drawable.pause);
+            mProgressBar.setMax(PlayingHelper.getInstance().getDuration());
+            mHandler.removeCallbacks(mUpdateTask);
+            startProgressUpdate();
+        } else {
+            mPlayBtn.setImageResource(R.drawable.play);
         }
     }
 
@@ -79,13 +117,12 @@ public class PlaybarHelper {
         mPlayBtn.setImageResource(resId);
     }
 
-    public void setProgress(int progress) {
-        mProgressBar.setProgress(progress);
+    public PlayingProgressBarListener getListener() {
+        return mListener;
     }
 
-    public void setMaxProgress(int max) {
-        mProgressBar.setMax(max);
+    public void startProgressUpdate() {
+        mHandler.post(mUpdateTask);
     }
 
-    
 }
