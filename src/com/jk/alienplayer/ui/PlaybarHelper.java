@@ -109,6 +109,8 @@ public class PlaybarHelper {
         Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         if (artwork != null) {
             mArtwork.setImageBitmap(artwork);
+        } else {
+            mArtwork.setImageResource(R.drawable.ic_launcher);
         }
     }
 
