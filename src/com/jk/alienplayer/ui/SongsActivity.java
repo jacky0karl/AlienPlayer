@@ -17,6 +17,7 @@ public class SongsActivity extends Activity {
 
     public static final String KEY_TYPE = "key_type";
     public static final String KEY = "key";
+    public static final String LABEL = "label";
 
     private int mKeyType;
     private String mKey;
@@ -41,6 +42,7 @@ public class SongsActivity extends Activity {
         mPlaybarHelper = new PlaybarHelper(this);
         mKeyType = getIntent().getIntExtra(KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
         mKey = getIntent().getStringExtra(KEY);
+        setTitle(getIntent().getStringExtra(LABEL));
 
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new SongsAdapter(this);

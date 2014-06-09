@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.AlbumInfo;
 import com.jk.alienplayer.data.DatabaseHelper;
 
 import android.content.Intent;
@@ -39,16 +40,17 @@ public class AlbumsFragment extends Fragment {
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                long key = mAdapter.getItem(position).id;
-                startSongsPage(String.valueOf(key));
+                AlbumInfo info = mAdapter.getItem(position);
+                startSongsPage(String.valueOf(info.id), info.name);
             }
         });
     }
 
-    private void startSongsPage(String key) {
+    private void startSongsPage(String key, String label) {
         Intent intent = new Intent(getActivity(), SongsActivity.class);
         intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ALBUM);
         intent.putExtra(SongsActivity.KEY, key);
+        intent.putExtra(SongsActivity.LABEL, label);
         startActivity(intent);
     }
 
