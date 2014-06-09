@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PreferencesHelper;
 import com.jk.alienplayer.data.SongInfo;
@@ -62,8 +63,7 @@ public class PlaybarHelper {
     }
 
     private void init() {
-        sPlaybarArtworkSize = mActivity.getResources().getDimensionPixelOffset(
-                R.dimen.playbar_artwork_size);
+
         mProgressBar = (ProgressBar) mActivity.findViewById(R.id.progressBar);
 
         mPlayBtn = (ImageButton) mActivity.findViewById(R.id.play);
@@ -90,7 +90,7 @@ public class PlaybarHelper {
         if (songId != -1) {
             SongInfo info = DatabaseHelper.getSong(mActivity, songId);
             if (info != null) {
-                PlayingHelper.getInstance().setCurrentSong(mActivity, info);
+                PlayingInfoHolder.getInstance().setCurrentSong(mActivity, info);
                 setArtwork(info);
             }
         }
@@ -106,8 +106,7 @@ public class PlaybarHelper {
     }
 
     public void setArtwork(SongInfo song) {
-        Bitmap artwork = DatabaseHelper.getArtwork(mActivity, song.id, song.albumId,
-                sPlaybarArtworkSize);
+        Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         if (artwork != null) {
             mArtwork.setImageBitmap(artwork);
         }
