@@ -3,6 +3,7 @@
 
     <string name="app_name">AlienPlayer</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Artists, albums, and tracks</string>
 
 </resources>

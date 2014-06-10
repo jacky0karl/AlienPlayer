@@ -3,13 +3,16 @@ package com.jk.alienplayer.ui;
 import com.jk.alienplayer.R;
 import com.viewpagerindicator.TabPageIndicator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
@@ -43,9 +46,17 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
