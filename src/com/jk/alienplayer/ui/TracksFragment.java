@@ -3,7 +3,7 @@ package com.jk.alienplayer.ui;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.TrackInfo;
+import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
 
 import android.os.Bundle;
@@ -41,13 +41,13 @@ public class TracksFragment extends Fragment {
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TrackInfo info = mAdapter.getItem(position);
+                SongInfo info = mAdapter.getItem(position);
                 onSongClick(info);
             }
         });
     }
 
-    private void onSongClick(TrackInfo song) {
+    private void onSongClick(SongInfo song) {
         PlayingInfoHolder.getInstance().setCurrentSong(getActivity(), song);
         PlaybarHelper helper = ((MainActivity) getActivity()).getPlaybarHelper();
         if (PlayingHelper.getInstance().play(helper.getListener())) {

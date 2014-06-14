@@ -35,7 +35,11 @@ public class PlayingHelper {
         } else {
             try {
                 mMediaPlayer.start();
-                if (!mMediaPlayer.isPlaying()) {
+                if (mMediaPlayer.isPlaying()) {
+                    if (listener != null) {
+                        listener.onProgressStart(getDuration());
+                    }
+                } else {
                     play(listener);
                 }
             } catch (IllegalArgumentException e) {

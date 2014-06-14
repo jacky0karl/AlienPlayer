@@ -3,7 +3,7 @@ package com.jk.alienplayer.ui;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.data.TrackInfo;
+import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
 
 import android.app.Activity;
@@ -56,7 +56,7 @@ public class SongsActivity extends Activity {
         });
     }
 
-    private void onSongClick(TrackInfo song) {
+    private void onSongClick(SongInfo song) {
         PlayingInfoHolder.getInstance().setCurrentSong(this, song);
         if (PlayingHelper.getInstance().play(mPlaybarHelper.getListener())) {
             mPlaybarHelper.setPlayBtnImage(R.drawable.pause);

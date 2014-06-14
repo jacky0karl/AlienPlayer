@@ -4,7 +4,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PreferencesHelper;
-import com.jk.alienplayer.data.TrackInfo;
+import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
 
@@ -88,7 +88,7 @@ public class PlaybarHelper {
         SharedPreferences sp = PreferencesHelper.getSharedPreferences(mActivity);
         long songId = sp.getLong(PreferencesHelper.CURRENT_SONG, -1);
         if (songId != -1) {
-            TrackInfo info = DatabaseHelper.getSong(mActivity, songId);
+            SongInfo info = DatabaseHelper.getSong(mActivity, songId);
             if (info != null) {
                 PlayingInfoHolder.getInstance().setCurrentSong(mActivity, info);
                 setArtwork(info);
@@ -105,7 +105,7 @@ public class PlaybarHelper {
         }
     }
 
-    public void setArtwork(TrackInfo song) {
+    public void setArtwork(SongInfo song) {
         Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         if (artwork != null) {
             mArtwork.setImageBitmap(artwork);

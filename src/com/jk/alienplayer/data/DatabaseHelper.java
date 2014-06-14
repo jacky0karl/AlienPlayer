@@ -75,8 +75,8 @@ public class DatabaseHelper {
         return albums;
     }
 
-    public static List<TrackInfo> getTracks(Context context, int keyType, String key) {
-        List<TrackInfo> songs = new ArrayList<TrackInfo>();
+    public static List<SongInfo> getTracks(Context context, int keyType, String key) {
+        List<SongInfo> songs = new ArrayList<SongInfo>();
         if (TextUtils.isEmpty(key) && keyType != TYPE_ALL) {
             return songs;
         }
@@ -116,8 +116,8 @@ public class DatabaseHelper {
         return songs;
     }
 
-    public static TrackInfo getSong(Context context, long id) {
-        TrackInfo info = null;
+    public static SongInfo getSong(Context context, long id) {
+        SongInfo info = null;
         String[] projection = new String[] { MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
@@ -137,7 +137,7 @@ public class DatabaseHelper {
         return info;
     }
 
-    private static TrackInfo bulidSongInfo(Cursor cursor) {
+    private static SongInfo bulidSongInfo(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
         String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
         long duration = cursor.getLong(cursor
@@ -146,7 +146,7 @@ public class DatabaseHelper {
         long albumId = cursor
                 .getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
 
-        TrackInfo info = new TrackInfo(id, title, duration, path);
+        SongInfo info = new SongInfo(id, title, duration, path);
         info.albumId = albumId;
         return info;
     }

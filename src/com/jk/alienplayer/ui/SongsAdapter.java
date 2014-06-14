@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.TrackInfo;
+import com.jk.alienplayer.data.SongInfo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,9 +16,9 @@ import android.widget.TextView;
 public class SongsAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private List<TrackInfo> mSongs;
+    private List<SongInfo> mSongs;
 
-    public void setSongs(List<TrackInfo> songs) {
+    public void setSongs(List<SongInfo> songs) {
         if (songs != null) {
             mSongs = songs;
             notifyDataSetChanged();
@@ -28,7 +28,7 @@ public class SongsAdapter extends BaseAdapter {
     public SongsAdapter(Context context) {
         super();
         mInflater = LayoutInflater.from(context);
-        mSongs = new ArrayList<TrackInfo>();
+        mSongs = new ArrayList<SongInfo>();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class SongsAdapter extends BaseAdapter {
     }
 
     @Override
-    public TrackInfo getItem(int position) {
+    public SongInfo getItem(int position) {
         return mSongs.get(position);
     }
 
@@ -58,7 +58,7 @@ public class SongsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        TrackInfo info = mSongs.get(position);
+        SongInfo info = mSongs.get(position);
         viewHolder.name.setText(info.title);
         return view;
     }

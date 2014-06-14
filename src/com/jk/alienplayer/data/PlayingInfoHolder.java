@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 public class PlayingInfoHolder {
     private static PlayingInfoHolder sSelf = null;
 
-    private TrackInfo mCurrentSong = null;
+    private SongInfo mCurrentSong = null;
     private Bitmap mPlaybarArtwork = null;
 
     public static synchronized PlayingInfoHolder getInstance() {
@@ -21,7 +21,7 @@ public class PlayingInfoHolder {
     private PlayingInfoHolder() {
     }
 
-    public TrackInfo getCurrentSong() {
+    public SongInfo getCurrentSong() {
         return mCurrentSong;
     }
 
@@ -29,7 +29,7 @@ public class PlayingInfoHolder {
         return mPlaybarArtwork;
     }
 
-    public void setCurrentSong(Context context, TrackInfo currentSong) {
+    public void setCurrentSong(Context context, SongInfo currentSong) {
         if (currentSong != null) {
             mCurrentSong = currentSong;
             PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG, currentSong.id);
