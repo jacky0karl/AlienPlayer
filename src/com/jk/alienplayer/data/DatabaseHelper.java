@@ -62,12 +62,7 @@ public class DatabaseHelper {
             Log.e("#########", "Albums count = " + cursor.getCount());
             if (cursor.moveToFirst()) {
                 do {
-                    long albumId = cursor.getLong(cursor
-                            .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-                    String album = cursor.getString(cursor
-                            .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
-                    AlbumInfo info = new AlbumInfo(albumId, album);
-                    albums.add(info);
+                    albums.add(bulidAlbumInfo(cursor));
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -137,20 +132,6 @@ public class DatabaseHelper {
         return info;
     }
 
-    private static SongInfo bulidSongInfo(Cursor cursor) {
-        long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-        String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-        long duration = cursor.getLong(cursor
-                .getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
-        String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
-        long albumId = cursor
-                .getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-
-        SongInfo info = new SongInfo(id, title, duration, path);
-        info.albumId = albumId;
-        return info;
-    }
-
     private static final Uri AlbumArtUri = Uri.parse("content://media/external/audio/albumart");
 
     public static Bitmap getArtwork(Context context, long songId, long albumId, int targetSize) {
@@ -193,5 +174,126 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
         return bmp;
+    }
+
+    public static List<SearchResult> search(Context context, String key) {
+        List<SearchResult> results = new ArrayList<SearchResult>();
+        if (TextUtils.isEmpty(key)) {
+            return results;
+        }
+
+        results.addAll(searchArtists(context, key));
+        results.addAll(searchAlbums(context, key));
+        results.addAll(searchTracks(context, key));
+        return results;
+    }
+
+    private static List<SearchResult> searchArtists(Context context, String key) {
+        List<SearchResult> results = new ArrayList<SearchResult>();
+
+        String[] projection = new String[] { DISTINCT + MediaStore.Audio.Media.ARTIST_ID,
+                MediaStore.Audio.Media.ARTIST };
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
+        selection += " and " + MediaStore.Audio.Media.ARTIST + " like ?";
+        String[] selectionArgs = new String[] { "%" + key + "%" };
+
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs,
+                MediaStore.Audio.Media.ARTIST);
+        if (cursor != null) {
+            Log.e("#########", "Artists search count = " + cursor.getCount());
+            if (cursor.moveToFirst()) {
+                do {
+                    SearchResult result = new SearchResult(SearchResult.TYPE_ARTISTS,
+                            bulidArtistInfo(cursor));
+                    results.add(result);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return results;
+    }
+
+    private static List<SearchResult> searchAlbums(Context context, String key) {
+        List<SearchResult> results = new ArrayList<SearchResult>();
+
+        String[] projection = new String[] { DISTINCT + MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ALBUM };
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
+        selection += " and " + MediaStore.Audio.Media.ALBUM + " like ?";
+        String[] selectionArgs = new String[] { "%" + key + "%" };
+
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs,
+                MediaStore.Audio.Media.ALBUM);
+        if (cursor != null) {
+            Log.e("#########", "Albums search count = " + cursor.getCount());
+            if (cursor.moveToFirst()) {
+                do {
+                    SearchResult result = new SearchResult(SearchResult.TYPE_ALBUMS,
+                            bulidAlbumInfo(cursor));
+                    results.add(result);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return results;
+    }
+
+    private static List<SearchResult> searchTracks(Context context, String key) {
+        List<SearchResult> results = new ArrayList<SearchResult>();
+        String[] projection = new String[] { MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
+        selection += " and " + MediaStore.Audio.Media.TITLE + " like ?";
+        String[] selectionArgs = new String[] { "%" + key + "%" };
+
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs,
+                MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        if (cursor != null) {
+            Log.e("#########", "Songs search count = " + cursor.getCount());
+            if (cursor.moveToFirst()) {
+                do {
+                    SearchResult result = new SearchResult(SearchResult.TYPE_TRACKS,
+                            bulidSongInfo(cursor));
+                    results.add(result);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return results;
+    }
+
+    private static ArtistInfo bulidArtistInfo(Cursor cursor) {
+        long artistId = cursor.getLong(cursor
+                .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID));
+        String artist = cursor.getString(cursor
+                .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+        ArtistInfo info = new ArtistInfo(artistId, artist);
+        return info;
+    }
+
+    private static AlbumInfo bulidAlbumInfo(Cursor cursor) {
+        long albumId = cursor
+                .getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+        String album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
+        AlbumInfo info = new AlbumInfo(albumId, album);
+        return info;
+    }
+
+    private static SongInfo bulidSongInfo(Cursor cursor) {
+        long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+        long duration = cursor.getLong(cursor
+                .getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+        String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+        long albumId = cursor
+                .getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+
+        SongInfo info = new SongInfo(id, title, duration, path);
+        info.albumId = albumId;
+        return info;
     }
 }

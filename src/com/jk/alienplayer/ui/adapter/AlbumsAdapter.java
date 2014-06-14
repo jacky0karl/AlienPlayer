@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.adapter;
 
 import java.util.ArrayList;
 import java.util.List;

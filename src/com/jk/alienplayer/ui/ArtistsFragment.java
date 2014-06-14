@@ -3,6 +3,7 @@ package com.jk.alienplayer.ui;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.ArtistInfo;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
 
 import android.content.Intent;
 import android.os.Bundle;

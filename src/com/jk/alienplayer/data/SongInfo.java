@@ -1,8 +1,10 @@
 package com.jk.alienplayer.data;
 
+import com.jk.alienplayer.data.SearchResult.SearchResultData;
+
 import android.text.TextUtils;
 
-public class SongInfo {
+public class SongInfo implements SearchResultData {
     public long id;
     public String title;
     public long duration;
@@ -19,6 +21,11 @@ public class SongInfo {
         this.id = id;
         this.duration = duration;
         this.path = path;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return title;
     }
 
 }

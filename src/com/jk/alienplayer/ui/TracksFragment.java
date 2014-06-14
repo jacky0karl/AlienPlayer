@@ -5,6 +5,7 @@ import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.ui.adapter.TracksAdapter;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

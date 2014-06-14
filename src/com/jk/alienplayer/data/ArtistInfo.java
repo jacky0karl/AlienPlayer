@@ -1,8 +1,10 @@
 package com.jk.alienplayer.data;
 
+import com.jk.alienplayer.data.SearchResult.SearchResultData;
+
 import android.text.TextUtils;
 
-public class ArtistInfo {
+public class ArtistInfo implements SearchResultData {
     public long id;
     public String name;
 
@@ -13,6 +15,11 @@ public class ArtistInfo {
         } else {
             this.name = name;
         }
+    }
+
+    @Override
+    public String getDisplayName() {
+        return name;
     }
 
 }

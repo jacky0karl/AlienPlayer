@@ -86,11 +86,11 @@ public class MainActivity extends FragmentActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
             case FRAGMENT_ARTISTS:
-                return "Artists";
+                return getString(R.string.artists);
             case FRAGMENT_ALBUMS:
-                return "Albums";
+                return getString(R.string.albums);
             case FRAGMENT_TRACKS:
-                return "Tracks";
+                return getString(R.string.tracks);
             default:
                 return "unknown";
             }

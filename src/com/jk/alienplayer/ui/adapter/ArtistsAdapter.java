@@ -1,10 +1,10 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.data.ArtistInfo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,32 +13,32 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class TracksAdapter extends BaseAdapter {
+public class ArtistsAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private List<SongInfo> mTracks;
+    private List<ArtistInfo> mArtists;
 
-    public void setTracks(List<SongInfo> albums) {
-        if (albums != null) {
-            mTracks = albums;
+    public void setArtists(List<ArtistInfo> artists) {
+        if (artists != null) {
+            mArtists = artists;
             notifyDataSetChanged();
         }
     }
 
-    public TracksAdapter(Context context) {
+    public ArtistsAdapter(Context context) {
         super();
         mInflater = LayoutInflater.from(context);
-        mTracks = new ArrayList<SongInfo>();
+        mArtists = new ArrayList<ArtistInfo>();
     }
 
     @Override
     public int getCount() {
-        return mTracks.size();
+        return mArtists.size();
     }
 
     @Override
-    public SongInfo getItem(int position) {
-        return mTracks.get(position);
+    public ArtistInfo getItem(int position) {
+        return mArtists.get(position);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class TracksAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        SongInfo info = mTracks.get(position);
-        viewHolder.name.setText(info.title);
+        ArtistInfo info = mArtists.get(position);
+        viewHolder.name.setText(info.name);
         return view;
     }
 
