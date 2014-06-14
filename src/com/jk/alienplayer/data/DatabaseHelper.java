@@ -17,7 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class DatabaseHelper {
-
+    public static final int TYPE_ALL = 0;
     public static final int TYPE_ARTIST = 1;
     public static final int TYPE_ALBUM = 2;
 
@@ -75,27 +75,31 @@ public class DatabaseHelper {
         return albums;
     }
 
-    public static List<SongInfo> getSongs(Context context, int keyType, String key) {
-        List<SongInfo> songs = new ArrayList<SongInfo>();
-        if (TextUtils.isEmpty(key)) {
+    public static List<TrackInfo> getTracks(Context context, int keyType, String key) {
+        List<TrackInfo> songs = new ArrayList<TrackInfo>();
+        if (TextUtils.isEmpty(key) && keyType != TYPE_ALL) {
             return songs;
         }
 
         String[] projection = new String[] { MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
-        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1 and ";
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
         switch (keyType) {
         case TYPE_ARTIST:
-            selection += MediaStore.Audio.Media.ARTIST_ID + "=?";
+            selection += " and " + MediaStore.Audio.Media.ARTIST_ID + "=?";
             break;
         case TYPE_ALBUM:
-            selection += MediaStore.Audio.Media.ALBUM_ID + "=?";
+            selection += " and " + MediaStore.Audio.Media.ALBUM_ID + "=?";
             break;
         default:
-            return songs;
+            break;
         }
-        String[] selectionArgs = new String[] { key };
+
+        String[] selectionArgs = null;
+        if (keyType != TYPE_ALL) {
+            selectionArgs = new String[] { key };
+        }
 
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs,
@@ -112,8 +116,8 @@ public class DatabaseHelper {
         return songs;
     }
 
-    public static SongInfo getSong(Context context, long id) {
-        SongInfo info = null;
+    public static TrackInfo getSong(Context context, long id) {
+        TrackInfo info = null;
         String[] projection = new String[] { MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
@@ -133,7 +137,7 @@ public class DatabaseHelper {
         return info;
     }
 
-    private static SongInfo bulidSongInfo(Cursor cursor) {
+    private static TrackInfo bulidSongInfo(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
         String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
         long duration = cursor.getLong(cursor
@@ -142,7 +146,7 @@ public class DatabaseHelper {
         long albumId = cursor
                 .getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
 
-        SongInfo info = new SongInfo(id, title, duration, path);
+        TrackInfo info = new TrackInfo(id, title, duration, path);
         info.albumId = albumId;
         return info;
     }

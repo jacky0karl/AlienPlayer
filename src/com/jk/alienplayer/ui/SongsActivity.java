@@ -3,7 +3,7 @@ package com.jk.alienplayer.ui;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.data.TrackInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
 
 import android.app.Activity;
@@ -47,7 +47,7 @@ public class SongsActivity extends Activity {
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new SongsAdapter(this);
         mListView.setAdapter(mAdapter);
-        mAdapter.setSongs(DatabaseHelper.getSongs(this, mKeyType, mKey));
+        mAdapter.setSongs(DatabaseHelper.getTracks(this, mKeyType, mKey));
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -56,7 +56,7 @@ public class SongsActivity extends Activity {
         });
     }
 
-    private void onSongClick(SongInfo song) {
+    private void onSongClick(TrackInfo song) {
         PlayingInfoHolder.getInstance().setCurrentSong(this, song);
         if (PlayingHelper.getInstance().play(mPlaybarHelper.getListener())) {
             mPlaybarHelper.setPlayBtnImage(R.drawable.pause);

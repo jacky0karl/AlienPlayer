@@ -18,7 +18,7 @@ public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
     private static final int FRAGMENT_ARTISTS = 0;
     private static final int FRAGMENT_ALBUMS = 1;
-    private static final int FRAGMENT_SONGS = 2;
+    private static final int FRAGMENT_TRACKS = 2;
     private static final int FRAGMENT_PLAYLIST = 3;
 
     private PlaybarHelper mPlaybarHelper;
@@ -59,6 +59,10 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public PlaybarHelper getPlaybarHelper() {
+        return mPlaybarHelper;
+    }
+
     class PagerAdapter extends FragmentPagerAdapter {
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -71,6 +75,8 @@ public class MainActivity extends FragmentActivity {
                 return new ArtistsFragment();
             case FRAGMENT_ALBUMS:
                 return new AlbumsFragment();
+            case FRAGMENT_TRACKS:
+                return new TracksFragment();
             default:
                 return new ArtistsFragment();
             }
@@ -83,14 +89,16 @@ public class MainActivity extends FragmentActivity {
                 return "Artists";
             case FRAGMENT_ALBUMS:
                 return "Albums";
+            case FRAGMENT_TRACKS:
+                return "Tracks";
             default:
-                return "Artists";
+                return "unknown";
             }
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

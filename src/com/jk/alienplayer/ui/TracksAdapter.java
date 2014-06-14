@@ -13,32 +13,32 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class SongsAdapter extends BaseAdapter {
+public class TracksAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private List<TrackInfo> mSongs;
+    private List<TrackInfo> mTracks;
 
-    public void setSongs(List<TrackInfo> songs) {
-        if (songs != null) {
-            mSongs = songs;
+    public void setTracks(List<TrackInfo> albums) {
+        if (albums != null) {
+            mTracks = albums;
             notifyDataSetChanged();
         }
     }
 
-    public SongsAdapter(Context context) {
+    public TracksAdapter(Context context) {
         super();
         mInflater = LayoutInflater.from(context);
-        mSongs = new ArrayList<TrackInfo>();
+        mTracks = new ArrayList<TrackInfo>();
     }
 
     @Override
     public int getCount() {
-        return mSongs.size();
+        return mTracks.size();
     }
 
     @Override
     public TrackInfo getItem(int position) {
-        return mSongs.get(position);
+        return mTracks.get(position);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SongsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        TrackInfo info = mSongs.get(position);
+        TrackInfo info = mTracks.get(position);
         viewHolder.name.setText(info.title);
         return view;
     }
