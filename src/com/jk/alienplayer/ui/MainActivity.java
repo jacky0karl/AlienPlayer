@@ -1,15 +1,11 @@
 package com.jk.alienplayer.ui;
 
-import java.util.List;
-
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.viewpagerindicator.TabPageIndicator;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 

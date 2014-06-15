@@ -12,6 +12,7 @@ public class PlayingHelper {
 
     private static PlayingHelper sSelf = null;
     private MediaPlayer mMediaPlayer;
+    private boolean mIsProcessing = false;
 
     public interface PlayingProgressBarListener {
         void onProgressStart(int duration);
@@ -51,6 +52,11 @@ public class PlayingHelper {
     }
 
     public boolean playOrPause(PlayingProgressBarListener listener) {
+        if (mIsProcessing) {
+            return mMediaPlayer.isPlaying();
+        }
+        mIsProcessing = true;
+
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
         } else {
@@ -61,12 +67,17 @@ public class PlayingHelper {
                         listener.onProgressStart(getDuration());
                     }
                 } else {
+                    mIsProcessing = false;
                     play(listener);
                 }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
+            } finally {
+                mIsProcessing = false;
             }
         }
+
+        mIsProcessing = false;
         return mMediaPlayer.isPlaying();
     }
 
@@ -74,11 +85,17 @@ public class PlayingHelper {
         if (PlayingInfoHolder.getInstance().getCurrentSong() == null) {
             return false;
         }
+        if (mIsProcessing) {
+            return false;
+        }
+        mIsProcessing = true;
 
+        // stop current playing song
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
         }
 
+        // play the new one
         mMediaPlayer.reset();
         try {
             mMediaPlayer.setDataSource(PlayingInfoHolder.getInstance().getCurrentSong().path);
@@ -91,6 +108,8 @@ public class PlayingHelper {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            mIsProcessing = false;
         }
     }
 
@@ -107,10 +126,17 @@ public class PlayingHelper {
     }
 
     public void seekTo(int msec) {
+        if (mIsProcessing) {
+            return;
+        }
+        mIsProcessing = true;
+
         try {
             mMediaPlayer.seekTo(msec);
         } catch (IllegalStateException e) {
             e.printStackTrace();
+        } finally {
+            mIsProcessing = false;
         }
     }
 
