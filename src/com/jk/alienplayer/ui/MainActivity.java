@@ -1,7 +1,6 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.impl.PlayingHelper;
 import com.viewpagerindicator.TabPageIndicator;
 
 import android.content.Intent;
@@ -37,7 +36,6 @@ public class MainActivity extends FragmentActivity {
         TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
 
-        PlayingHelper.getInstance().openAudioEffect(this);
         mPlaybarHelper = new PlaybarHelper(this);
     }
 
