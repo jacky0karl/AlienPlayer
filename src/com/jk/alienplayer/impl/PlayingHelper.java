@@ -1,7 +1,10 @@
 package com.jk.alienplayer.impl;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.audiofx.AudioEffect;
 
 import com.jk.alienplayer.data.PlayingInfoHolder;
 
@@ -25,8 +28,26 @@ public class PlayingHelper {
         mMediaPlayer = new MediaPlayer();
     }
 
+    public void openAudioEffect(Context context) {
+        Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+        i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mMediaPlayer.getAudioSessionId());
+        i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
+        context.sendBroadcast(i);
+    }
+
+    public void closeAudioEffect(Context context) {
+        Intent i = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+        i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mMediaPlayer.getAudioSessionId());
+        i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
+        context.sendBroadcast(i);
+    }
+
     public void setOnCompletionListener(OnCompletionListener listener) {
         mMediaPlayer.setOnCompletionListener(listener);
+    }
+
+    public int getAudioSessionId() {
+        return mMediaPlayer.getAudioSessionId();
     }
 
     public boolean playOrPause(PlayingProgressBarListener listener) {

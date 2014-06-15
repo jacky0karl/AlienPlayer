@@ -6,8 +6,11 @@ import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.audiofx.AudioEffect;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,6 +18,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -68,6 +73,20 @@ public class SongDetailActivity extends FragmentActivity {
         syncView();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.song_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.audioEffect) {
+            displayAudioEffect();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void init() {
         mSongInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         setTitle(mSongInfo.title);
@@ -102,7 +121,18 @@ public class SongDetailActivity extends FragmentActivity {
         }
     }
 
-    public void startSeekBarUpdate() {
+    private void displayAudioEffect() {
+        Intent intent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, PlayingHelper.getInstance()
+                .getAudioSessionId());
+        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+
+        if (getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
+            startActivityForResult(intent, 0);
+        }
+    }
+
+    private void startSeekBarUpdate() {
         mHandler.removeCallbacks(mUpdateTask);
         mHandler.post(mUpdateTask);
     }
