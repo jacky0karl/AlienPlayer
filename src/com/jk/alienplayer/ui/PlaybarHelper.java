@@ -9,6 +9,7 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
@@ -63,9 +64,7 @@ public class PlaybarHelper {
     }
 
     private void init() {
-
         mProgressBar = (ProgressBar) mActivity.findViewById(R.id.progressBar);
-
         mPlayBtn = (ImageButton) mActivity.findViewById(R.id.play);
         mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -81,6 +80,15 @@ public class PlaybarHelper {
         mNextBtn = (ImageButton) mActivity.findViewById(R.id.next);
         mPrevBtn = (ImageButton) mActivity.findViewById(R.id.prev);
         mArtwork = (ImageView) mActivity.findViewById(R.id.artwork);
+        mArtwork.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {      
+                if (PlayingInfoHolder.getInstance().getCurrentSong() != null) {
+                    Intent intent = new Intent(mActivity, SongDetailActivity.class);
+                    mActivity.startActivity(intent);
+                }
+            }
+        });
     }
 
     public void syncView() {
@@ -97,8 +105,7 @@ public class PlaybarHelper {
 
         if (PlayingHelper.getInstance().isPlaying()) {
             mPlayBtn.setImageResource(R.drawable.pause);
-            mProgressBar.setMax(PlayingHelper.getInstance().getDuration());
-            mHandler.removeCallbacks(mUpdateTask);
+            mProgressBar.setMax(PlayingHelper.getInstance().getDuration());    
             startProgressUpdate();
         } else {
             mPlayBtn.setImageResource(R.drawable.play);
@@ -123,6 +130,7 @@ public class PlaybarHelper {
     }
 
     public void startProgressUpdate() {
+        mHandler.removeCallbacks(mUpdateTask);
         mHandler.post(mUpdateTask);
     }
 

@@ -6,6 +6,8 @@ public class SearchResult {
     public static final int TYPE_TRACKS = 2;
 
     public interface SearchResultData {
+        long getId();
+
         String getDisplayName();
     }
 

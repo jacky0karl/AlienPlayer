@@ -18,8 +18,12 @@ public class ArtistInfo implements SearchResultData {
     }
 
     @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
     public String getDisplayName() {
         return name;
     }
-
 }

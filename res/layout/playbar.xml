@@ -24,40 +24,6 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_launcher" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_toRightOf="@id/artwork" >
-
-        <ImageButton
-            android:id="@+id/prev"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
-            android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/prev" />
-
-        <ImageButton
-            android:id="@+id/play"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerInParent="true"
-            android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/play" />
-
-        <ImageButton
-            android:id="@+id/next"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/next" />
-    </RelativeLayout>
+    <include layout="@layout/playbtnbar" />
 
 </RelativeLayout>

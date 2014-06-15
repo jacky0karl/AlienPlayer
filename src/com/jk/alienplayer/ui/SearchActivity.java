@@ -3,18 +3,19 @@ package com.jk.alienplayer.ui;
 import java.util.List;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.ArtistInfo;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SearchResult;
-import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
+import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.ui.adapter.SearchResultsAdapter;
 
 import android.app.Activity;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,7 @@ import android.widget.SearchView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView.OnQueryTextListener;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends Activity implements OnItemClickListener {
     private ListView mListView;
     private SearchResultsAdapter mAdapter;
 
@@ -48,20 +49,12 @@ public class SearchActivity extends Activity {
         setContentView(R.layout.activity_search);
         init();
     }
-    
+
     private void init() {
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new SearchResultsAdapter(this);
         mListView.setAdapter(mAdapter);
-        
-
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SearchResult result = mAdapter.getItem(position);
-                
-            }
-        });
+        mListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -78,5 +71,30 @@ public class SearchActivity extends Activity {
         searchView.setSearchableInfo(info);
         searchView.setOnQueryTextListener(mQueryTextListener);
         searchView.setIconified(false);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        SearchResult result = mAdapter.getItem(position);
+        if (result.type == SearchResult.TYPE_TRACKS) {
+            PlayingInfoHolder.getInstance().setCurrentSong(this, (SongInfo) result.data);
+            PlayingHelper.getInstance().play(null);
+        }
+
+        Intent intent = new Intent(this, SongsActivity.class);
+        switch (result.type) {
+        case SearchResult.TYPE_ARTISTS:
+            intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
+            break;
+        case SearchResult.TYPE_ALBUMS:
+            intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ALBUM);
+            break;
+        default:
+            return;
+        }
+
+        intent.putExtra(SongsActivity.KEY, String.valueOf(result.data.getId()));
+        intent.putExtra(SongsActivity.LABEL, result.data.getDisplayName());
+        startActivity(intent);
     }
 }

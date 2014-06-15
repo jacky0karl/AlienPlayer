@@ -24,8 +24,12 @@ public class SongInfo implements SearchResultData {
     }
 
     @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
     public String getDisplayName() {
         return title;
     }
-
 }

@@ -85,6 +85,14 @@ public class PlayingHelper {
         return mMediaPlayer.getCurrentPosition();
     }
 
+    public void seekTo(int msec) {
+        try {
+            mMediaPlayer.seekTo(msec);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void release() {
         try {
             mMediaPlayer.stop();

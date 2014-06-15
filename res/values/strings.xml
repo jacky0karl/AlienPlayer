@@ -11,5 +11,8 @@
     <string name="artist">Artist</string>
     <string name="album">Album</string>
     <string name="track">Track</string>
+    <string name="artwork">Artwork</string>
+    <string name="lyric">Lyric</string>
+    <string name="info">Info</string>
 
 </resources>

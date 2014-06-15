@@ -18,8 +18,12 @@ public class AlbumInfo implements SearchResultData {
     }
 
     @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
     public String getDisplayName() {
         return name;
     }
-
 }
