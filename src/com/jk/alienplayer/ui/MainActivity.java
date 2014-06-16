@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.ui.lib.Playbar;
 import com.viewpagerindicator.TabPageIndicator;
 
 import android.content.Intent;
@@ -22,12 +23,13 @@ public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_TRACKS = 2;
     private static final int FRAGMENT_PLAYLIST = 3;
 
-    private PlaybarHelper mPlaybarHelper;
+    private Playbar mPlaybar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mPlaybar = (Playbar) findViewById(R.id.playbar);
 
         FragmentPagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
@@ -35,14 +37,12 @@ public class MainActivity extends FragmentActivity {
 
         TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
-
-        mPlaybarHelper = new PlaybarHelper(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mPlaybarHelper.syncView();
+        mPlaybar.syncView();
     }
 
     @Override
@@ -60,8 +60,8 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public PlaybarHelper getPlaybarHelper() {
-        return mPlaybarHelper;
+    public Playbar getPlaybarHelper() {
+        return mPlaybar;
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

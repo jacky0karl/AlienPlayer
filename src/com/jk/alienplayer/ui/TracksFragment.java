@@ -6,6 +6,7 @@ import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
+import com.jk.alienplayer.ui.lib.Playbar;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,7 +46,7 @@ public class TracksFragment extends Fragment {
 
     private void onSongClick(SongInfo song) {
         PlayingInfoHolder.getInstance().setCurrentSong(getActivity(), song);
-        PlaybarHelper helper = ((MainActivity) getActivity()).getPlaybarHelper();
+        Playbar helper = ((MainActivity) getActivity()).getPlaybarHelper();
         if (PlayingHelper.getInstance().play(helper.getListener())) {
             helper.setPlayBtnImage(R.drawable.pause);
         }

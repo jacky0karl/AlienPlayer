@@ -11,6 +11,10 @@
         android:layout_weight="1" >
     </ListView>
 
-    <include layout="@layout/playbar" />
+    <com.jk.alienplayer.ui.lib.Playbar
+        android:id="@+id/playbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </com.jk.alienplayer.ui.lib.Playbar>
 
 </LinearLayout>

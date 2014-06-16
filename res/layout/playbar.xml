@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="@dimen/playbar_height"
     android:background="#E6E6FA"
     android:paddingBottom="6dp"
     android:paddingLeft="6dp"

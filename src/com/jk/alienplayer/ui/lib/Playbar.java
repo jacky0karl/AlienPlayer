@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.lib;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
@@ -7,24 +7,27 @@ import com.jk.alienplayer.data.PreferencesHelper;
 import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
+import com.jk.alienplayer.ui.SongDetailActivity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
-public class PlaybarHelper {
-    private static int sPlaybarArtworkSize;
-    private Activity mActivity;
+public class Playbar extends FrameLayout {
 
+    private RelativeLayout mContentView;
     private ImageButton mPlayBtn;
     private ImageButton mNextBtn;
     private ImageButton mPrevBtn;
@@ -58,14 +61,28 @@ public class PlaybarHelper {
         }
     };
 
-    public PlaybarHelper(Activity activity) {
-        mActivity = activity;
+    public Playbar(Context context) {
+        super(context);
+        init();
+    }
+
+    public Playbar(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public Playbar(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         init();
     }
 
     private void init() {
-        mProgressBar = (ProgressBar) mActivity.findViewById(R.id.progressBar);
-        mPlayBtn = (ImageButton) mActivity.findViewById(R.id.play);
+        mContentView = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.playbar,
+                null);
+        addView(mContentView);
+
+        mProgressBar = (ProgressBar) mContentView.findViewById(R.id.progressBar);
+        mPlayBtn = (ImageButton) mContentView.findViewById(R.id.play);
         mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,15 +94,15 @@ public class PlaybarHelper {
             }
         });
 
-        mNextBtn = (ImageButton) mActivity.findViewById(R.id.next);
-        mPrevBtn = (ImageButton) mActivity.findViewById(R.id.prev);
-        mArtwork = (ImageView) mActivity.findViewById(R.id.artwork);
+        mNextBtn = (ImageButton) mContentView.findViewById(R.id.next);
+        mPrevBtn = (ImageButton) mContentView.findViewById(R.id.prev);
+        mArtwork = (ImageView) mContentView.findViewById(R.id.artwork);
         mArtwork.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {      
+            public void onClick(View v) {
                 if (PlayingInfoHolder.getInstance().getCurrentSong() != null) {
-                    Intent intent = new Intent(mActivity, SongDetailActivity.class);
-                    mActivity.startActivity(intent);
+                    Intent intent = new Intent(getContext(), SongDetailActivity.class);
+                    getContext().startActivity(intent);
                 }
             }
         });
@@ -93,19 +110,19 @@ public class PlaybarHelper {
 
     public void syncView() {
         PlayingHelper.getInstance().setOnCompletionListener(mCompletionListener);
-        SharedPreferences sp = PreferencesHelper.getSharedPreferences(mActivity);
+        SharedPreferences sp = PreferencesHelper.getSharedPreferences(getContext());
         long songId = sp.getLong(PreferencesHelper.CURRENT_SONG, -1);
         if (songId != -1) {
-            SongInfo info = DatabaseHelper.getSong(mActivity, songId);
+            SongInfo info = DatabaseHelper.getSong(getContext(), songId);
             if (info != null) {
-                PlayingInfoHolder.getInstance().setCurrentSong(mActivity, info);
+                PlayingInfoHolder.getInstance().setCurrentSong(getContext(), info);
                 setArtwork(info);
             }
         }
 
         if (PlayingHelper.getInstance().isPlaying()) {
             mPlayBtn.setImageResource(R.drawable.pause);
-            mProgressBar.setMax(PlayingHelper.getInstance().getDuration());    
+            mProgressBar.setMax(PlayingHelper.getInstance().getDuration());
             startProgressUpdate();
         } else {
             mPlayBtn.setImageResource(R.drawable.play);
