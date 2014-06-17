@@ -58,6 +58,16 @@
 
         <service android:name=".impl.PlayService" >
         </service>
+
+        <receiver android:name="APWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
     </application>
 
 </manifest>
