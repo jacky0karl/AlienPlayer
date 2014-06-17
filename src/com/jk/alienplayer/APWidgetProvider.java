@@ -1,6 +1,7 @@
 package com.jk.alienplayer;
 
 import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.ui.MainActivity;
 
 import android.app.PendingIntent;
@@ -22,21 +23,28 @@ public class APWidgetProvider extends AppWidgetProvider {
 
     private RemoteViews syncView(Context context) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-        views.setOnClickPendingIntent(R.id.artwork, buildIntent(context));
-
+        views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
         Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         if (artwork == null) {
             views.setImageViewResource(R.id.artwork, R.drawable.ic_launcher);
         } else {
             views.setImageViewBitmap(R.id.artwork, artwork);
         }
+
+        views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
         return views;
     }
 
-    private PendingIntent buildIntent(Context context) {
+    private PendingIntent getArtworkIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private PendingIntent getPlayIntent(Context context) {
+        Intent intent = new Intent(context, PlayService.class);
+        intent.putExtra(PlayService.ACTION, PlayService.ACTION_PLAY_PAUSE);
+        return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
