@@ -11,15 +11,25 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.widget.RemoteViews;
 
 public class APWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
+        RemoteViews views = syncView(context, intent);
+        ComponentName name = new ComponentName(APWidgetProvider.class.getPackage().getName(),
+                APWidgetProvider.class.getName());
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = manager.getAppWidgetIds(name);
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            manager.updateAppWidget(appWidgetIds[i], views);
+        }
+    }
+
+    private RemoteViews syncView(Context context, Intent intent) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
+        String action = intent.getAction();
         if (action.equals(PlayService.ACTION_START)) {
             int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
             views.setImageViewResource(R.id.play, R.drawable.pause);
@@ -40,29 +50,7 @@ public class APWidgetProvider extends AppWidgetProvider {
             int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
             int progress = intent.getIntExtra(PlayService.CURRENT_DURATION, 0);
             views.setProgressBar(R.id.progressBar, duration, progress, false);
-        } else {
-            super.onReceive(context, intent);
-            return;
         }
-
-        ComponentName name = new ComponentName(APWidgetProvider.class.getPackage().getName(),
-                APWidgetProvider.class.getName());
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = manager.getAppWidgetIds(name);
-        for (int i = 0; i < appWidgetIds.length; i++) {
-            manager.updateAppWidget(appWidgetIds[i], views);
-        }
-    }
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int i = 0; i < appWidgetIds.length; i++) {
-            appWidgetManager.updateAppWidget(appWidgetIds[i], syncView(context));
-        }
-    }
-
-    private RemoteViews syncView(Context context) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
         views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
         views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
         return views;
