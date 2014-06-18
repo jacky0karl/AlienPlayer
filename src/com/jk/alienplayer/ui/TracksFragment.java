@@ -4,10 +4,11 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SongInfo;
-import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.Playbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -46,10 +47,11 @@ public class TracksFragment extends Fragment {
 
     private void onSongClick(SongInfo song) {
         PlayingInfoHolder.getInstance().setCurrentSong(getActivity(), song);
+        Intent intent = PlayService
+                .getPlayingCommandIntent(getActivity(), PlayService.COMMAND_PLAY);
+        getActivity().startService(intent);
+
         Playbar helper = ((MainActivity) getActivity()).getPlaybarHelper();
-        if (PlayingHelper.getInstance().play(helper.getListener())) {
-            helper.setPlayBtnImage(R.drawable.pause);
-        }
         helper.setArtwork(song);
     }
 }

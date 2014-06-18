@@ -4,11 +4,12 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.SongInfo;
-import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.ui.adapter.SongsAdapter;
 import com.jk.alienplayer.ui.lib.Playbar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +41,12 @@ public class SongsActivity extends Activity {
         mPlaybar.syncView();
     }
 
+    @Override
+    protected void onDestroy() {
+        mPlaybar.finish();
+        super.onDestroy();
+    }
+
     private void init() {
         mPlaybar = (Playbar) findViewById(R.id.playbar);
         mKeyType = getIntent().getIntExtra(KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
@@ -60,9 +67,8 @@ public class SongsActivity extends Activity {
 
     private void onSongClick(SongInfo song) {
         PlayingInfoHolder.getInstance().setCurrentSong(this, song);
-        if (PlayingHelper.getInstance().play(mPlaybar.getListener())) {
-            mPlaybar.setPlayBtnImage(R.drawable.pause);
-        }
+        Intent intent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
+        startService(intent);
         mPlaybar.setArtwork(song);
     }
 }

@@ -5,17 +5,15 @@ import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PreferencesHelper;
 import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
-import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
+import com.jk.alienplayer.impl.PlayingHelper.OnPlayStatusChangedListener;
 import com.jk.alienplayer.ui.SongDetailActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,31 +31,28 @@ public class Playbar extends FrameLayout {
     private ImageButton mPrevBtn;
     private ImageView mArtwork;
     private ProgressBar mProgressBar;
-    private Handler mHandler = new Handler();
 
-    private PlayingProgressBarListener mListener = new PlayingProgressBarListener() {
+    private OnPlayStatusChangedListener mOnPlayStatusChangedListener = new OnPlayStatusChangedListener() {
         @Override
-        public void onProgressStart(int duration) {
+        public void onStart(int duration) {
+            mPlayBtn.setImageResource(R.drawable.pause);
             mProgressBar.setMax(duration);
-            startProgressUpdate();
         }
-    };
 
-    Runnable mUpdateTask = new Runnable() {
         @Override
-        public void run() {
-            int progress = PlayingHelper.getInstance().getCurrentPosition();
-            mProgressBar.setProgress(progress);
-            mHandler.postDelayed(mUpdateTask, 500);
-        }
-    };
-
-    private OnCompletionListener mCompletionListener = new OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
+        public void onPause() {
             mPlayBtn.setImageResource(R.drawable.play);
-            mHandler.removeCallbacks(mUpdateTask);
-            mProgressBar.setProgress(mProgressBar.getMax());
+        }
+
+        @Override
+        public void onStop() {
+            mPlayBtn.setImageResource(R.drawable.play);
+            mProgressBar.setProgress(0);
+        }
+
+        @Override
+        public void onProgressUpdate(int progress) {
+            mProgressBar.setProgress(progress);
         }
     };
 
@@ -86,11 +81,9 @@ public class Playbar extends FrameLayout {
         mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (PlayingHelper.getInstance().playOrPause(mListener)) {
-                    mPlayBtn.setImageResource(R.drawable.pause);
-                } else {
-                    mPlayBtn.setImageResource(R.drawable.play);
-                }
+                Intent intent = PlayService.getPlayingCommandIntent(getContext(),
+                        PlayService.COMMAND_PLAY_PAUSE);
+                getContext().startService(intent);
             }
         });
 
@@ -106,10 +99,17 @@ public class Playbar extends FrameLayout {
                 }
             }
         });
+
+        PlayingHelper.getInstance().registerOnPlayStatusChangedListener(
+                mOnPlayStatusChangedListener);
+    }
+
+    public void finish() {
+        PlayingHelper.getInstance().unregisterOnPlayStatusChangedListener(
+                mOnPlayStatusChangedListener);
     }
 
     public void syncView() {
-        PlayingHelper.getInstance().setOnCompletionListener(mCompletionListener);
         SharedPreferences sp = PreferencesHelper.getSharedPreferences(getContext());
         long songId = sp.getLong(PreferencesHelper.CURRENT_SONG, -1);
         if (songId != -1) {
@@ -118,14 +118,6 @@ public class Playbar extends FrameLayout {
                 PlayingInfoHolder.getInstance().setCurrentSong(getContext(), info);
                 setArtwork(info);
             }
-        }
-
-        if (PlayingHelper.getInstance().isPlaying()) {
-            mPlayBtn.setImageResource(R.drawable.pause);
-            mProgressBar.setMax(PlayingHelper.getInstance().getDuration());
-            startProgressUpdate();
-        } else {
-            mPlayBtn.setImageResource(R.drawable.play);
         }
     }
 
@@ -137,18 +129,4 @@ public class Playbar extends FrameLayout {
             mArtwork.setImageResource(R.drawable.ic_launcher);
         }
     }
-
-    public void setPlayBtnImage(int resId) {
-        mPlayBtn.setImageResource(resId);
-    }
-
-    public PlayingProgressBarListener getListener() {
-        return mListener;
-    }
-
-    public void startProgressUpdate() {
-        mHandler.removeCallbacks(mUpdateTask);
-        mHandler.post(mUpdateTask);
-    }
-
 }

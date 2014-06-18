@@ -3,16 +3,13 @@ package com.jk.alienplayer.ui;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
-import com.jk.alienplayer.impl.PlayingHelper.PlayingProgressBarListener;
+import com.jk.alienplayer.impl.PlayingHelper.OnPlayStatusChangedListener;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.media.audiofx.AudioEffect;
-
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -37,22 +34,28 @@ public class SongDetailActivity extends FragmentActivity {
     private ImageButton mPlayBtn;
     private ImageButton mNextBtn;
     private ImageButton mPrevBtn;
-    private Handler mHandler = new Handler();
 
-    private PlayingProgressBarListener mListener = new PlayingProgressBarListener() {
+    private OnPlayStatusChangedListener mOnPlayStatusChangedListener = new OnPlayStatusChangedListener() {
         @Override
-        public void onProgressStart(int duration) {
+        public void onStart(int duration) {
+            mPlayBtn.setImageResource(R.drawable.pause);
             mSeekBar.setMax(duration);
-            startSeekBarUpdate();
         }
-    };
 
-    private OnCompletionListener mCompletionListener = new OnCompletionListener() {
         @Override
-        public void onCompletion(MediaPlayer mp) {
+        public void onPause() {
             mPlayBtn.setImageResource(R.drawable.play);
-            mHandler.removeCallbacks(mUpdateTask);
-            mSeekBar.setProgress(mSeekBar.getMax());
+        }
+
+        @Override
+        public void onStop() {
+            mPlayBtn.setImageResource(R.drawable.play);
+            mSeekBar.setProgress(0);
+        }
+
+        @Override
+        public void onProgressUpdate(int progress) {
+            mSeekBar.setProgress(progress);
         }
     };
 
@@ -65,12 +68,6 @@ public class SongDetailActivity extends FragmentActivity {
         FragmentPagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        syncView();
     }
 
     @Override
@@ -87,6 +84,13 @@ public class SongDetailActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        PlayingHelper.getInstance().unregisterOnPlayStatusChangedListener(
+                mOnPlayStatusChangedListener);
+        super.onDestroy();
+    }
+
     private void init() {
         mSongInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         setTitle(mSongInfo.title);
@@ -98,27 +102,17 @@ public class SongDetailActivity extends FragmentActivity {
         mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (PlayingHelper.getInstance().playOrPause(mListener)) {
-                    mPlayBtn.setImageResource(R.drawable.pause);
-                } else {
-                    mPlayBtn.setImageResource(R.drawable.play);
-                }
+                Intent intent = PlayService.getPlayingCommandIntent(SongDetailActivity.this,
+                        PlayService.COMMAND_PLAY_PAUSE);
+                startService(intent);
             }
         });
 
         mNextBtn = (ImageButton) findViewById(R.id.next);
         mPrevBtn = (ImageButton) findViewById(R.id.prev);
-    }
 
-    public void syncView() {
-        PlayingHelper.getInstance().setOnCompletionListener(mCompletionListener);
-        if (PlayingHelper.getInstance().isPlaying()) {
-            mPlayBtn.setImageResource(R.drawable.pause);
-            mSeekBar.setMax(PlayingHelper.getInstance().getDuration());
-            startSeekBarUpdate();
-        } else {
-            mPlayBtn.setImageResource(R.drawable.play);
-        }
+        PlayingHelper.getInstance().registerOnPlayStatusChangedListener(
+                mOnPlayStatusChangedListener);
     }
 
     private void displayAudioEffect() {
@@ -132,20 +126,6 @@ public class SongDetailActivity extends FragmentActivity {
         }
     }
 
-    private void startSeekBarUpdate() {
-        mHandler.removeCallbacks(mUpdateTask);
-        mHandler.post(mUpdateTask);
-    }
-
-    Runnable mUpdateTask = new Runnable() {
-        @Override
-        public void run() {
-            int progress = PlayingHelper.getInstance().getCurrentPosition();
-            mSeekBar.setProgress(progress);
-            mHandler.postDelayed(mUpdateTask, 500);
-        }
-    };
-
     OnSeekBarChangeListener mSeekBarChangeListener = new OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -157,7 +137,9 @@ public class SongDetailActivity extends FragmentActivity {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-            PlayingHelper.getInstance().seekTo(seekBar.getProgress());
+            Intent intent = PlayService.getSeekIntent(SongDetailActivity.this,
+                    seekBar.getProgress());
+            startService(intent);
         }
     };
 

@@ -43,8 +43,8 @@ public class APWidgetProvider extends AppWidgetProvider {
     }
 
     private PendingIntent getPlayIntent(Context context) {
-        Intent intent = new Intent(context, PlayService.class);
-        intent.putExtra(PlayService.ACTION, PlayService.ACTION_PLAY_PAUSE);
+        Intent intent = PlayService
+                .getPlayingCommandIntent(context, PlayService.COMMAND_PLAY_PAUSE);
         return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

@@ -7,6 +7,7 @@ import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SearchResult;
 import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.ui.adapter.SearchResultsAdapter;
 
@@ -78,7 +79,9 @@ public class SearchActivity extends Activity implements OnItemClickListener {
         SearchResult result = mAdapter.getItem(position);
         if (result.type == SearchResult.TYPE_TRACKS) {
             PlayingInfoHolder.getInstance().setCurrentSong(this, (SongInfo) result.data);
-            PlayingHelper.getInstance().play(null);
+            Intent intent = PlayService.getPlayingCommandIntent(SearchActivity.this,
+                    PlayService.COMMAND_PLAY);
+            startService(intent);
         }
 
         Intent intent = new Intent(this, SongsActivity.class);
