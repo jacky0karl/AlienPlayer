@@ -116,11 +116,7 @@ public class SongDetailActivity extends FragmentActivity {
     }
 
     private void displayAudioEffect() {
-        Intent intent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, PlayingHelper.getInstance()
-                .getAudioSessionId());
-        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
-
+        Intent intent = PlayService.getDisplayAudioEffectIntent(this);
         if (getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
             startActivityForResult(intent, 0);
         }

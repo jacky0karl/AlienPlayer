@@ -94,7 +94,11 @@ public class PlayingHelper {
         }
     }
 
+    // FIXME
+    WeakReference<PlayService> mPlayServiceWr = null;
+
     public void openAudioEffect(Context context) {
+        mPlayServiceWr = new WeakReference<PlayService>((PlayService) context);
         Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
         i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mMediaPlayer.getAudioSessionId());
         i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
@@ -166,6 +170,7 @@ public class PlayingHelper {
         try {
             mMediaPlayer.setDataSource(info.path);
             mMediaPlayer.prepare();
+            notifyTrackChange();
             mMediaPlayer.start();
             mPlayStatus = PlayStatus.Playing;
             notifyStart();
@@ -176,18 +181,6 @@ public class PlayingHelper {
         } finally {
             mIsProcessing = false;
         }
-    }
-
-    public boolean isPlaying() {
-        return mMediaPlayer.isPlaying();
-    }
-
-    public int getDuration() {
-        return mMediaPlayer.getDuration();
-    }
-
-    public int getCurrentPosition() {
-        return mMediaPlayer.getCurrentPosition();
     }
 
     public void seekTo(int msec) {
@@ -222,8 +215,20 @@ public class PlayingHelper {
                 wr.get().onStart(mMediaPlayer.getDuration());
             }
         }
+
+        PlayService service = mPlayServiceWr.get();
+        if (service != null) {
+            service.sendStartBroadCast(mMediaPlayer.getDuration());
+        }
         mHandler.removeCallbacks(mUpdateTask);
         mHandler.post(mUpdateTask);
+    }
+
+    private void notifyTrackChange() {
+        PlayService service = mPlayServiceWr.get();
+        if (service != null) {
+            service.sendStatusBroadCast(PlayService.ACTION_TRACK_CHANGE);
+        }
     }
 
     private void notifyPause() {
@@ -231,6 +236,11 @@ public class PlayingHelper {
             if (wr.get() != null) {
                 wr.get().onPause();
             }
+        }
+
+        PlayService service = mPlayServiceWr.get();
+        if (service != null) {
+            service.sendStatusBroadCast(PlayService.ACTION_PAUSE);
         }
         mHandler.removeCallbacks(mUpdateTask);
     }
@@ -241,6 +251,11 @@ public class PlayingHelper {
                 wr.get().onStop();
             }
         }
+
+        PlayService service = mPlayServiceWr.get();
+        if (service != null) {
+            service.sendStatusBroadCast(PlayService.ACTION_STOP);
+        }
         mHandler.removeCallbacks(mUpdateTask);
     }
 
@@ -249,6 +264,12 @@ public class PlayingHelper {
             if (wr.get() != null) {
                 wr.get().onProgressUpdate(mMediaPlayer.getCurrentPosition());
             }
+        }
+
+        PlayService service = mPlayServiceWr.get();
+        if (service != null) {
+            service.sendProgressBroadCast(mMediaPlayer.getDuration(),
+                    mMediaPlayer.getCurrentPosition());
         }
     }
 

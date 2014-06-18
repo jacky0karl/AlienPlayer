@@ -3,18 +3,28 @@ package com.jk.alienplayer.impl;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
 
 public class PlayService extends Service {
 
+    public static final String BROADCAST_ACTION = "broadCast_action";
     public static final String PLAYING_COMMAND = "playing_command";
     public static final String SEEK_TIME_MSEC = "seek_time_msec";
+    public static final String TOTAL_DURATION = "total_duration";
+    public static final String CURRENT_DURATION = "current_duration";
 
     public static final int COMMAND_PLAY_PAUSE = 0;
     public static final int COMMAND_PLAY = 1;
     public static final int COMMAND_SEEK = 2;
     public static final int COMMAND_PREV = 3;
     public static final int COMMAND_NEXT = 4;
+
+    public static final String ACTION_START = "com.jk.alienplayer.start";
+    public static final String ACTION_PAUSE = "com.jk.alienplayer.pause";
+    public static final String ACTION_STOP = "com.jk.alienplayer.stop";
+    public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.progress_update";
+    public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.track_change";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -55,13 +65,34 @@ public class PlayService extends Service {
         return START_STICKY;
     }
 
-    // private void sendBroadCast() {
-    // Intent intent = new Intent(); //Itent就是我们要发送的内容
-    // intent.putExtra("data",
-    // "this is data from broadcast "+Calendar.getInstance().get(Calendar.SECOND));
-    // intent.setAction(flag); //设置你这个广播的action，只有和这个action一样的接受者才能接受者才能接收广播
-    // sendBroadcast(intent);
-    // }
+    public void sendStatusBroadCast(String action) {
+        Intent intent = new Intent();
+        intent.setAction(action);
+        sendBroadcast(intent);
+    }
+
+    public void sendStartBroadCast(int duration) {
+        Intent intent = new Intent();
+        intent.putExtra(TOTAL_DURATION, duration);
+        intent.setAction(ACTION_START);
+        sendBroadcast(intent);
+    }
+
+    public void sendProgressBroadCast(int duration, int progress) {
+        Intent intent = new Intent();
+        intent.putExtra(TOTAL_DURATION, duration);
+        intent.putExtra(CURRENT_DURATION, progress);
+        intent.setAction(ACTION_PROGRESS_UPDATE);
+        sendBroadcast(intent);
+    }
+
+    public static Intent getDisplayAudioEffectIntent(Context context) {
+        Intent intent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, PlayingHelper.getInstance()
+                .getAudioSessionId());
+        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
+        return intent;
+    }
 
     public static Intent getPlayingCommandIntent(Context context, int command) {
         Intent intent = new Intent(context, PlayService.class);
