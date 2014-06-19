@@ -10,6 +10,7 @@ public class SongInfo implements SearchResultData {
     public long duration;
     public String path;
     public long albumId;
+    public String artist;
 
     public SongInfo(long id, String title, long duration, String path) {
         if (TextUtils.isEmpty(title)) {

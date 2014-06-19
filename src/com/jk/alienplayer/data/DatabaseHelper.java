@@ -78,7 +78,8 @@ public class DatabaseHelper {
 
         String[] projection = new String[] { MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
+                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ARTIST };
         String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
         switch (keyType) {
         case TYPE_ARTIST:
@@ -115,7 +116,8 @@ public class DatabaseHelper {
         SongInfo info = null;
         String[] projection = new String[] { MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
+                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ARTIST };
         String selection = MediaStore.Audio.Media.IS_MUSIC + "=1 and ";
         selection += MediaStore.Audio.Media._ID + "=?";
         String[] selectionArgs = new String[] { String.valueOf(id) };
@@ -244,7 +246,8 @@ public class DatabaseHelper {
         List<SearchResult> results = new ArrayList<SearchResult>();
         String[] projection = new String[] { MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID };
+                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ARTIST };
         String selection = MediaStore.Audio.Media.IS_MUSIC + "=1";
         selection += " and " + MediaStore.Audio.Media.TITLE + " like ?";
         String[] selectionArgs = new String[] { "%" + key + "%" };
@@ -291,9 +294,12 @@ public class DatabaseHelper {
         String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
         long albumId = cursor
                 .getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+        String artist = cursor.getString(cursor
+                .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
 
         SongInfo info = new SongInfo(id, title, duration, path);
         info.albumId = albumId;
+        info.artist = artist;
         return info;
     }
 }

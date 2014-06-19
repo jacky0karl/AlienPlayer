@@ -2,28 +2,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/playbar_height"
-    android:background="#E6E6FA"
-    android:paddingBottom="6dp"
-    android:paddingLeft="6dp"
-    android:paddingRight="6dp" >
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+    android:background="@color/dark_bg"
+    android:padding="8dp" >
 
     <ImageView
         android:id="@+id/artwork"
         android:layout_width="@dimen/playbar_artwork_size"
         android:layout_height="@dimen/playbar_artwork_size"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/progressBar"
+        android:layout_alignParentTop="true"
         android:scaleType="fitCenter"
         android:src="@drawable/disk" />
 
-    <include layout="@layout/playbtnbar" />
+    <TextView
+        android:id="@+id/song"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/artwork"
+        android:textColor="#ddd" />
+
+    <TextView
+        android:id="@+id/artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/song"
+        android:layout_alignParentRight="true"
+        android:textColor="#ddd" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progressbar_height"
+        android:layout_alignLeft="@id/song"
+        android:layout_below="@id/song"
+        android:layout_marginTop="4dp"
+        android:secondaryProgress="0" />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/progressBar"
+        android:layout_below="@id/progressBar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        layout="@layout/playbtnbar" />
 
 </RelativeLayout>

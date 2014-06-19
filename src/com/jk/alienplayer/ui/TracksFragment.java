@@ -52,6 +52,6 @@ public class TracksFragment extends Fragment {
         getActivity().startService(intent);
 
         Playbar helper = ((MainActivity) getActivity()).getPlaybarHelper();
-        helper.setArtwork();
+        helper.syncView();
     }
 }

@@ -1,16 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true"
-    android:layout_marginLeft="30dp"
-    android:layout_marginRight="30dp"
-    android:layout_toRightOf="@id/artwork" >
+    android:layout_height="wrap_content" >
 
     <ImageButton
         android:id="@+id/prev"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
         android:layout_alignParentLeft="true"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
@@ -18,8 +14,8 @@
 
     <ImageButton
         android:id="@+id/play"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
         android:layout_centerInParent="true"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
@@ -27,8 +23,8 @@
 
     <ImageButton
         android:id="@+id/next"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
         android:layout_alignParentRight="true"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"

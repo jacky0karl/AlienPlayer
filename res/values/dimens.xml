@@ -1,7 +1,9 @@
 <resources>
 
     <dimen name="playbar_height">100dp</dimen>
-    <dimen name="playbar_artwork_size">80dp</dimen>
-    <dimen name="detail_artwork_size">200dp</dimen>
+    <dimen name="progressbar_height">2dp</dimen>
+    <dimen name="playbar_artwork_size">84dp</dimen>
+    <dimen name="detail_artwork_size">240dp</dimen>
+    <dimen name="button_size">48dp</dimen>
 
 </resources>

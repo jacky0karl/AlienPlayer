@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class Playbar extends FrameLayout {
 
@@ -30,6 +31,8 @@ public class Playbar extends FrameLayout {
     private ImageButton mNextBtn;
     private ImageButton mPrevBtn;
     private ImageView mArtwork;
+    private TextView mSongLabel;
+    private TextView mArtistLabel;
     private ProgressBar mProgressBar;
 
     private OnPlayStatusChangedListener mOnPlayStatusChangedListener = new OnPlayStatusChangedListener() {
@@ -76,6 +79,8 @@ public class Playbar extends FrameLayout {
                 null);
         addView(mContentView);
 
+        mSongLabel = (TextView) mContentView.findViewById(R.id.song);
+        mArtistLabel = (TextView) mContentView.findViewById(R.id.artist);
         mProgressBar = (ProgressBar) mContentView.findViewById(R.id.progressBar);
         mPlayBtn = (ImageButton) mContentView.findViewById(R.id.play);
         mPlayBtn.setOnClickListener(new OnClickListener() {
@@ -112,12 +117,13 @@ public class Playbar extends FrameLayout {
     public void syncView() {
         SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
         if (info != null) {
-
+            mSongLabel.setText(info.title);
+            mArtistLabel.setText(info.artist);
+            setArtwork();
         }
-        setArtwork();
     }
 
-    public void setArtwork() {
+    private void setArtwork() {
         Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         if (artwork != null) {
             mArtwork.setImageBitmap(artwork);

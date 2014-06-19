@@ -227,7 +227,8 @@ public class PlayingHelper {
     private void notifyTrackChange() {
         PlayService service = mPlayServiceWr.get();
         if (service != null) {
-            service.sendStatusBroadCast(PlayService.ACTION_TRACK_CHANGE);
+            SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
+            service.sendTrackChangeBroadCast(info.title, info.artist);
         }
     }
 

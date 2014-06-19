@@ -29,13 +29,17 @@ public class APWidgetProvider extends AppWidgetProvider {
     }
 
     private RemoteViews syncView(Context context, Intent intent) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.playbar);
         String action = intent.getAction();
         if (action.equals(PlayService.ACTION_START)) {
             int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
             views.setImageViewResource(R.id.play, R.drawable.pause);
             views.setProgressBar(R.id.progressBar, duration, 0, false);
         } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
+            String song = intent.getStringExtra(PlayService.SONG_NAME);
+            String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
+            views.setTextViewText(R.id.song, song);
+            views.setTextViewText(R.id.artist, artist);
             Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
             if (artwork == null) {
                 views.setImageViewResource(R.id.artwork, R.drawable.disk);
@@ -59,7 +63,7 @@ public class APWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.playbar);
         views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
         views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
 
@@ -84,7 +88,7 @@ public class APWidgetProvider extends AppWidgetProvider {
 
     private PendingIntent getPlayIntent(Context context) {
         Intent intent = PlayService
-                .getPlayingCommandIntent(context, PlayService.COMMAND_PLAY_PAUSE);       
+                .getPlayingCommandIntent(context, PlayService.COMMAND_PLAY_PAUSE);
         return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

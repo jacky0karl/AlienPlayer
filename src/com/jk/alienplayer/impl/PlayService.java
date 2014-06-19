@@ -16,6 +16,8 @@ public class PlayService extends Service {
     public static final String SEEK_TIME_MSEC = "seek_time_msec";
     public static final String TOTAL_DURATION = "total_duration";
     public static final String CURRENT_DURATION = "current_duration";
+    public static final String SONG_NAME = "song_name";
+    public static final String ARTIST_NAME = "artist_name";
 
     public static final int COMMAND_PLAY_PAUSE = 0;
     public static final int COMMAND_PLAY = 1;
@@ -81,6 +83,14 @@ public class PlayService extends Service {
         Intent intent = new Intent();
         intent.putExtra(TOTAL_DURATION, duration);
         intent.setAction(ACTION_START);
+        sendBroadcast(intent);
+    }
+
+    public void sendTrackChangeBroadCast(String song, String artist) {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_TRACK_CHANGE);
+        intent.putExtra(SONG_NAME, song);
+        intent.putExtra(ARTIST_NAME, artist);
         sendBroadcast(intent);
     }
 
