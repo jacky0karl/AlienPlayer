@@ -37,7 +37,7 @@ public class APWidgetProvider extends AppWidgetProvider {
         } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
             Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
             if (artwork == null) {
-                views.setImageViewResource(R.id.artwork, R.drawable.ic_launcher);
+                views.setImageViewResource(R.id.artwork, R.drawable.disk);
             } else {
                 views.setImageViewBitmap(R.id.artwork, artwork);
             }

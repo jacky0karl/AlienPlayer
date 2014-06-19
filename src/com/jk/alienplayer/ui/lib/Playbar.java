@@ -126,7 +126,7 @@ public class Playbar extends FrameLayout {
         if (artwork != null) {
             mArtwork.setImageBitmap(artwork);
         } else {
-            mArtwork.setImageResource(R.drawable.ic_launcher);
+            mArtwork.setImageResource(R.drawable.disk);
         }
     }
 }

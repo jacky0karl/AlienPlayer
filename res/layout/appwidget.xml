@@ -22,7 +22,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/progressBar"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/disk" />
 
     <include layout="@layout/playbtnbar" />
 

@@ -32,7 +32,7 @@ public class ArtworkFragment extends Fragment {
 
         mArtwork = (ImageView) root.findViewById(R.id.artwork);
         if (bmp == null) {
-            mArtwork.setImageResource(R.drawable.ic_launcher);
+            mArtwork.setImageResource(R.drawable.disk);
         } else {
             mArtwork.setImageBitmap(bmp);
         }
