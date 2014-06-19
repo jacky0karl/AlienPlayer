@@ -110,18 +110,14 @@ public class Playbar extends FrameLayout {
     }
 
     public void syncView() {
-        SharedPreferences sp = PreferencesHelper.getSharedPreferences(getContext());
-        long songId = sp.getLong(PreferencesHelper.CURRENT_SONG, -1);
-        if (songId != -1) {
-            SongInfo info = DatabaseHelper.getSong(getContext(), songId);
-            if (info != null) {
-                PlayingInfoHolder.getInstance().setCurrentSong(getContext(), info);
-                setArtwork(info);
-            }
+        SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
+        if (info != null) {
+
         }
+        setArtwork();
     }
 
-    public void setArtwork(SongInfo song) {
+    public void setArtwork() {
         Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         if (artwork != null) {
             mArtwork.setImageBitmap(artwork);

@@ -69,6 +69,6 @@ public class SongsActivity extends Activity {
         PlayingInfoHolder.getInstance().setCurrentSong(this, song);
         Intent intent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
         startService(intent);
-        mPlaybar.setArtwork(song);
+        mPlaybar.setArtwork();
     }
 }

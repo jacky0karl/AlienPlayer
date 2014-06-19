@@ -3,6 +3,7 @@ package com.jk.alienplayer.data;
 import com.jk.alienplayer.R;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 public class PlayingInfoHolder {
@@ -19,6 +20,17 @@ public class PlayingInfoHolder {
     }
 
     private PlayingInfoHolder() {
+    }
+
+    public void initCurrentSong(Context context) {
+        SharedPreferences sp = PreferencesHelper.getSharedPreferences(context);
+        long songId = sp.getLong(PreferencesHelper.CURRENT_SONG, -1);
+        if (songId != -1) {
+            SongInfo info = DatabaseHelper.getSong(context, songId);
+            if (info != null) {
+                PlayingInfoHolder.getInstance().setCurrentSong(context, info);
+            }
+        }
     }
 
     public SongInfo getCurrentSong() {

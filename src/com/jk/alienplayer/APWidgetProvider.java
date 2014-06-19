@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class APWidgetProvider extends AppWidgetProvider {
@@ -56,6 +57,24 @@ public class APWidgetProvider extends AppWidgetProvider {
         return views;
     }
 
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
+        views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
+        views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
+
+        Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
+        if (artwork == null) {
+            views.setImageViewResource(R.id.artwork, R.drawable.disk);
+        } else {
+            views.setImageViewBitmap(R.id.artwork, artwork);
+        }
+
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            appWidgetManager.updateAppWidget(appWidgetIds[i], views);
+        }
+    }
+
     private PendingIntent getArtworkIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
@@ -65,7 +84,7 @@ public class APWidgetProvider extends AppWidgetProvider {
 
     private PendingIntent getPlayIntent(Context context) {
         Intent intent = PlayService
-                .getPlayingCommandIntent(context, PlayService.COMMAND_PLAY_PAUSE);
+                .getPlayingCommandIntent(context, PlayService.COMMAND_PLAY_PAUSE);       
         return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

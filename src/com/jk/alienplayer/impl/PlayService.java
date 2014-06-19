@@ -1,10 +1,13 @@
 package com.jk.alienplayer.impl;
 
+import com.jk.alienplayer.data.PlayingInfoHolder;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
+import android.util.Log;
 
 public class PlayService extends Service {
 
@@ -34,6 +37,8 @@ public class PlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.e("#### PlayService", "onCreate");
+        PlayingInfoHolder.getInstance().initCurrentSong(this);
         PlayingHelper.getInstance().openAudioEffect(this);
     }
 
@@ -44,6 +49,7 @@ public class PlayService extends Service {
         }
 
         int action = intent.getIntExtra(PLAYING_COMMAND, -1);
+        Log.e("#### PlayService", "action = " + action);
         switch (action) {
         case COMMAND_PLAY_PAUSE:
             PlayingHelper.getInstance().playOrPause();
