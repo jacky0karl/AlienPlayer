@@ -35,18 +35,6 @@ public class SongsActivity extends Activity {
         init();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mPlaybar.syncView();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mPlaybar.finish();
-        super.onDestroy();
-    }
-
     private void init() {
         mPlaybar = (Playbar) findViewById(R.id.playbar);
         mKeyType = getIntent().getIntExtra(KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
@@ -69,6 +57,5 @@ public class SongsActivity extends Activity {
         PlayingInfoHolder.getInstance().setCurrentSong(this, song);
         Intent intent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
         startService(intent);
-        mPlaybar.syncView();
     }
 }

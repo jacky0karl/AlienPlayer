@@ -3,6 +3,9 @@ package com.jk.alienplayer;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
+import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.ui.MainActivity;
 
 import android.app.PendingIntent;
@@ -22,6 +25,11 @@ public class APWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         RemoteViews views = syncView(context, intent);
+        if (views == null) {
+            super.onReceive(context, intent);
+            return;
+        }
+
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = manager.getAppWidgetIds(sComponentName);
         for (int i = 0; i < appWidgetIds.length; i++) {
@@ -49,6 +57,8 @@ public class APWidgetProvider extends AppWidgetProvider {
             int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
             int progress = intent.getIntExtra(PlayService.CURRENT_DURATION, 0);
             views.setProgressBar(R.id.progressBar, duration, progress, false);
+        } else {
+            return null;
         }
 
         setOnClickEvents(context, views);
@@ -57,17 +67,28 @@ public class APWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.playbar);
-        setOnClickEvents(context, views);
-
-        SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
-        if (info != null) {
-            syncSongInfo(views, info.title, info.artist);
-        }
-
         for (int i = 0; i < appWidgetIds.length; i++) {
-            appWidgetManager.updateAppWidget(appWidgetIds[i], views);
+            appWidgetManager.updateAppWidget(appWidgetIds[i], initView(context));
         }
+    }
+
+    private RemoteViews initView(Context context) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.playbar);
+        SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
+        if (songInfo != null) {
+            syncSongInfo(views, songInfo.title, songInfo.artist);
+        }
+
+        PlayingInfo info = PlayingHelper.getPlayingInfo();
+        if (info.status == PlayStatus.Playing) {
+            views.setImageViewResource(R.id.play, R.drawable.pause);
+            views.setProgressBar(R.id.progressBar, info.duration, info.progress, false);
+        } else if (info.status == PlayStatus.Paused) {
+            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setProgressBar(R.id.progressBar, info.duration, info.progress, false);
+        }
+        setOnClickEvents(context, views);
+        return views;
     }
 
     private void syncSongInfo(RemoteViews views, String song, String artist) {

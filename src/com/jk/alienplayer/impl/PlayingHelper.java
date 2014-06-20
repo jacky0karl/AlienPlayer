@@ -1,8 +1,6 @@
 package com.jk.alienplayer.impl;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,35 +16,23 @@ import com.jk.alienplayer.data.SongInfo;
 
 public class PlayingHelper {
 
+    public static class PlayingInfo {
+        public PlayStatus status = PlayStatus.Idle;
+        public int duration = 0;
+        public int progress = 0;
+    }
+
     public static enum PlayStatus {
         Idle, Prepared, Playing, Paused, Stoped
     }
 
-    public interface OnPlayStatusChangedListener {
-        void onStart(int duration);
+    private static PlayingInfo sPlayingInfo = new PlayingInfo();
+    private static int sAudioSessionId = 0;
 
-        void onTrackChange();
-
-        void onPause();
-
-        void onStop();
-
-        void onProgressUpdate(int progress);
-    }
-
-    private static PlayingHelper sSelf = null;
     private MediaPlayer mMediaPlayer;
-    PlayStatus mPlayStatus = PlayStatus.Idle;
     private boolean mIsProcessing = false;
-    private List<WeakReference<OnPlayStatusChangedListener>> mListenerList;
+    private WeakReference<PlayService> mPlayServiceWr = null;
     private Handler mHandler = new Handler();
-
-    public static synchronized PlayingHelper getInstance() {
-        if (sSelf == null) {
-            sSelf = new PlayingHelper();
-        }
-        return sSelf;
-    }
 
     OnErrorListener mOnErrorListener = new OnErrorListener() {
         @Override
@@ -59,50 +45,35 @@ public class PlayingHelper {
     OnCompletionListener mOnCompletionListener = new OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
-            mPlayStatus = PlayStatus.Stoped;
+            sPlayingInfo.status = PlayStatus.Stoped;
             notifyStop();
         }
     };
 
-    private PlayingHelper() {
-        mListenerList = new ArrayList<WeakReference<OnPlayStatusChangedListener>>();
+    public PlayingHelper(PlayService service) {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.reset();
         mMediaPlayer.setOnErrorListener(mOnErrorListener);
         mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
+
+        sAudioSessionId = mMediaPlayer.getAudioSessionId();
+        sPlayingInfo.status = PlayStatus.Idle;
+
+        mPlayServiceWr = new WeakReference<PlayService>(service);
+        openAudioEffect(service);
     }
 
-    public void registerOnPlayStatusChangedListener(OnPlayStatusChangedListener l) {
-        if (l != null) {
-            WeakReference<OnPlayStatusChangedListener> wr = new WeakReference<OnPlayStatusChangedListener>(
-                    l);
-            mListenerList.add(wr);
-
-            if (mPlayStatus == PlayStatus.Playing) {
-                l.onStart(mMediaPlayer.getDuration());
-            } else if (mPlayStatus == PlayStatus.Paused) {
-                l.onPause();
-            } else {
-                l.onStop();
-            }
-        }
+    public static int getAudioSessionId() {
+        return sAudioSessionId;
     }
 
-    public void unregisterOnPlayStatusChangedListener(OnPlayStatusChangedListener l) {
-        if (l != null) {
-            WeakReference<OnPlayStatusChangedListener> wr = new WeakReference<OnPlayStatusChangedListener>(
-                    l);
-            mListenerList.remove(wr);
-        }
+    public static PlayingInfo getPlayingInfo() {
+        return sPlayingInfo;
     }
-
-    // FIXME
-    WeakReference<PlayService> mPlayServiceWr = null;
 
     public void openAudioEffect(Context context) {
-        mPlayServiceWr = new WeakReference<PlayService>((PlayService) context);
         Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-        i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mMediaPlayer.getAudioSessionId());
+        i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sAudioSessionId);
         i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
         context.sendBroadcast(i);
     }
@@ -114,10 +85,6 @@ public class PlayingHelper {
         context.sendBroadcast(i);
     }
 
-    public int getAudioSessionId() {
-        return mMediaPlayer.getAudioSessionId();
-    }
-
     public boolean playOrPause() {
         if (mIsProcessing) {
             return mMediaPlayer.isPlaying();
@@ -125,7 +92,7 @@ public class PlayingHelper {
         mIsProcessing = true;
 
         // first playing
-        if (mPlayStatus != PlayStatus.Playing && mPlayStatus != PlayStatus.Paused) {
+        if (sPlayingInfo.status != PlayStatus.Playing && sPlayingInfo.status != PlayStatus.Paused) {
             mIsProcessing = false;
             play();
             return mMediaPlayer.isPlaying();
@@ -135,11 +102,11 @@ public class PlayingHelper {
         try {
             if (mMediaPlayer.isPlaying()) {
                 mMediaPlayer.pause();
-                mPlayStatus = PlayStatus.Paused;
+                sPlayingInfo.status = PlayStatus.Paused;
                 notifyPause();
             } else {
                 mMediaPlayer.start();
-                mPlayStatus = PlayStatus.Playing;
+                sPlayingInfo.status = PlayStatus.Playing;
                 notifyStart();
             }
         } catch (IllegalArgumentException e) {
@@ -163,7 +130,7 @@ public class PlayingHelper {
         // stop current playing song
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
-            mPlayStatus = PlayStatus.Stoped;
+            sPlayingInfo.status = PlayStatus.Stoped;
             notifyStop();
         }
 
@@ -174,7 +141,7 @@ public class PlayingHelper {
             mMediaPlayer.prepare();
             notifyTrackChange();
             mMediaPlayer.start();
-            mPlayStatus = PlayStatus.Playing;
+            sPlayingInfo.status = PlayStatus.Playing;
             notifyStart();
             return true;
         } catch (Exception e) {
@@ -203,7 +170,7 @@ public class PlayingHelper {
     public void stop() {
         try {
             mMediaPlayer.stop();
-            mPlayStatus = PlayStatus.Stoped;
+            sPlayingInfo.status = PlayStatus.Stoped;
             notifyStop();
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,16 +185,11 @@ public class PlayingHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sSelf = null;
     }
 
     private void notifyStart() {
-        for (WeakReference<OnPlayStatusChangedListener> wr : mListenerList) {
-            if (wr.get() != null) {
-                wr.get().onStart(mMediaPlayer.getDuration());
-            }
-        }
-
+        sPlayingInfo.duration = mMediaPlayer.getDuration();
+        sPlayingInfo.progress = 0;
         PlayService service = mPlayServiceWr.get();
         if (service != null) {
             service.sendStartBroadCast(mMediaPlayer.getDuration());
@@ -237,12 +199,6 @@ public class PlayingHelper {
     }
 
     private void notifyTrackChange() {
-        for (WeakReference<OnPlayStatusChangedListener> wr : mListenerList) {
-            if (wr.get() != null) {
-                wr.get().onTrackChange();
-            }
-        }
-
         PlayService service = mPlayServiceWr.get();
         if (service != null) {
             SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
@@ -251,12 +207,6 @@ public class PlayingHelper {
     }
 
     private void notifyPause() {
-        for (WeakReference<OnPlayStatusChangedListener> wr : mListenerList) {
-            if (wr.get() != null) {
-                wr.get().onPause();
-            }
-        }
-
         PlayService service = mPlayServiceWr.get();
         if (service != null) {
             service.sendStatusBroadCast(PlayService.ACTION_PAUSE);
@@ -265,12 +215,7 @@ public class PlayingHelper {
     }
 
     private void notifyStop() {
-        for (WeakReference<OnPlayStatusChangedListener> wr : mListenerList) {
-            if (wr.get() != null) {
-                wr.get().onStop();
-            }
-        }
-
+        sPlayingInfo.progress = 0;
         PlayService service = mPlayServiceWr.get();
         if (service != null) {
             service.sendStatusBroadCast(PlayService.ACTION_STOP);
@@ -279,12 +224,7 @@ public class PlayingHelper {
     }
 
     private void notifyProgressUpdate() {
-        for (WeakReference<OnPlayStatusChangedListener> wr : mListenerList) {
-            if (wr.get() != null) {
-                wr.get().onProgressUpdate(mMediaPlayer.getCurrentPosition());
-            }
-        }
-
+        sPlayingInfo.progress = mMediaPlayer.getCurrentPosition();
         PlayService service = mPlayServiceWr.get();
         if (service != null) {
             service.sendProgressBroadCast(mMediaPlayer.getDuration(),

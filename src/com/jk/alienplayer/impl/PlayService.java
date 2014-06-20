@@ -3,8 +3,10 @@ package com.jk.alienplayer.impl;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
 import android.util.Log;
@@ -31,6 +33,8 @@ public class PlayService extends Service {
     public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.progress_update";
     public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.track_change";
 
+    private PlayingHelper mPlayingHelper;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -39,9 +43,8 @@ public class PlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("#### PlayService", "onCreate");
-        PlayingInfoHolder.getInstance().initCurrentSong(this);
-        PlayingHelper.getInstance().openAudioEffect(this);
+        Log.e("#### PlayService", "onCreate");      
+        mPlayingHelper = new PlayingHelper(this);
     }
 
     @Override
@@ -54,14 +57,14 @@ public class PlayService extends Service {
         Log.e("#### PlayService", "action = " + action);
         switch (action) {
         case COMMAND_PLAY_PAUSE:
-            PlayingHelper.getInstance().playOrPause();
+            mPlayingHelper.playOrPause();
             break;
         case COMMAND_PLAY:
-            PlayingHelper.getInstance().play();
+            mPlayingHelper.play();
             break;
         case COMMAND_SEEK:
             int msec = intent.getIntExtra(SEEK_TIME_MSEC, 0);
-            PlayingHelper.getInstance().seekTo(msec);
+            mPlayingHelper.seekTo(msec);
             break;
         case COMMAND_PREV:
             break;
@@ -102,10 +105,18 @@ public class PlayService extends Service {
         sendBroadcast(intent);
     }
 
+    public static void registerReceiver(Context context, BroadcastReceiver receiver) {
+        IntentFilter intentFilter = new IntentFilter(ACTION_TRACK_CHANGE);
+        intentFilter.addAction(ACTION_START);
+        intentFilter.addAction(ACTION_PAUSE);
+        intentFilter.addAction(ACTION_STOP);
+        intentFilter.addAction(ACTION_PROGRESS_UPDATE);
+        context.registerReceiver(receiver, intentFilter);
+    }
+
     public static Intent getDisplayAudioEffectIntent(Context context) {
         Intent intent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, PlayingHelper.getInstance()
-                .getAudioSessionId());
+        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, PlayingHelper.getAudioSessionId());
         intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
         return intent;
     }

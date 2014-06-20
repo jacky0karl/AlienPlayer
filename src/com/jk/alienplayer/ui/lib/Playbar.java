@@ -2,17 +2,16 @@ package com.jk.alienplayer.ui.lib;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.data.PreferencesHelper;
 import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
-import com.jk.alienplayer.impl.PlayingHelper.OnPlayStatusChangedListener;
+import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
+import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.ui.SongDetailActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -35,32 +34,25 @@ public class Playbar extends FrameLayout {
     private TextView mArtistLabel;
     private ProgressBar mProgressBar;
 
-    private OnPlayStatusChangedListener mOnPlayStatusChangedListener = new OnPlayStatusChangedListener() {
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onStart(int duration) {
-            mPlayBtn.setImageResource(R.drawable.pause);
-            mProgressBar.setMax(duration);
-        }
-
-        @Override
-        public void onPause() {
-            mPlayBtn.setImageResource(R.drawable.play);
-        }
-
-        @Override
-        public void onStop() {
-            mPlayBtn.setImageResource(R.drawable.play);
-            mProgressBar.setProgress(0);
-        }
-
-        @Override
-        public void onProgressUpdate(int progress) {
-            mProgressBar.setProgress(progress);
-        }
-
-        @Override
-        public void onTrackChange() {
-            syncView();
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(PlayService.ACTION_START)) {
+                int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
+                mPlayBtn.setImageResource(R.drawable.pause);
+                mProgressBar.setMax(duration);
+            } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
+                syncTrackInfo();
+            } else if (action.equals(PlayService.ACTION_PAUSE)) {
+                mPlayBtn.setImageResource(R.drawable.play);
+            } else if (action.equals(PlayService.ACTION_STOP)) {
+                mPlayBtn.setImageResource(R.drawable.play);
+                mProgressBar.setProgress(0);
+            } else if (action.equals(PlayService.ACTION_PROGRESS_UPDATE)) {
+                int progress = intent.getIntExtra(PlayService.CURRENT_DURATION, 0);
+                mProgressBar.setProgress(progress);
+            }
         }
     };
 
@@ -110,16 +102,25 @@ public class Playbar extends FrameLayout {
             }
         });
 
-        PlayingHelper.getInstance().registerOnPlayStatusChangedListener(
-                mOnPlayStatusChangedListener);
-    }
-
-    public void finish() {
-        PlayingHelper.getInstance().unregisterOnPlayStatusChangedListener(
-                mOnPlayStatusChangedListener);
+        PlayService.registerReceiver(getContext(), mReceiver);
+        syncView();
     }
 
     public void syncView() {
+        syncTrackInfo();
+        PlayingInfo info = PlayingHelper.getPlayingInfo();
+        if (info.status == PlayStatus.Playing) {
+            mPlayBtn.setImageResource(R.drawable.pause);
+            mProgressBar.setMax(info.duration);
+            mProgressBar.setProgress(info.progress);
+        } else if (info.status == PlayStatus.Paused) {
+            mPlayBtn.setImageResource(R.drawable.play);
+            mProgressBar.setMax(info.duration);
+            mProgressBar.setProgress(info.progress);
+        }
+    }
+
+    public void syncTrackInfo() {
         SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
         if (info != null) {
             mSongLabel.setText(info.title);

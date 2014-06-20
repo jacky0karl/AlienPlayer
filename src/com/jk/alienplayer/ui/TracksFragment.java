@@ -50,8 +50,5 @@ public class TracksFragment extends Fragment {
         Intent intent = PlayService
                 .getPlayingCommandIntent(getActivity(), PlayService.COMMAND_PLAY);
         getActivity().startService(intent);
-
-        Playbar helper = ((MainActivity) getActivity()).getPlaybarHelper();
-        helper.syncView();
     }
 }

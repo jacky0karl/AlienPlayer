@@ -5,9 +5,13 @@ import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
-import com.jk.alienplayer.impl.PlayingHelper.OnPlayStatusChangedListener;
+import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
+import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -34,34 +38,28 @@ public class SongDetailActivity extends FragmentActivity {
     private ImageButton mNextBtn;
     private ImageButton mPrevBtn;
 
-    private OnPlayStatusChangedListener mOnPlayStatusChangedListener = new OnPlayStatusChangedListener() {
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onStart(int duration) {
-            mPlayBtn.setImageResource(R.drawable.pause);
-            mSeekBar.setMax(duration);
-        }
-
-        @Override
-        public void onPause() {
-            mPlayBtn.setImageResource(R.drawable.play);
-        }
-
-        @Override
-        public void onStop() {
-            mPlayBtn.setImageResource(R.drawable.play);
-            mSeekBar.setProgress(0);
-        }
-
-        @Override
-        public void onProgressUpdate(int progress) {
-            mSeekBar.setProgress(progress);
-        }
-
-        @Override
-        public void onTrackChange() {
-            // TODO
-            mSongInfo = PlayingInfoHolder.getInstance().getCurrentSong();
-            setTitle(mSongInfo.title);
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(PlayService.ACTION_START)) {
+                int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
+                mPlayBtn.setImageResource(R.drawable.pause);
+                mSeekBar.setMax(duration);
+            } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
+                String song = intent.getStringExtra(PlayService.SONG_NAME);
+                String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
+                // TODO
+                setTitle(song);
+            } else if (action.equals(PlayService.ACTION_PAUSE)) {
+                mPlayBtn.setImageResource(R.drawable.play);
+            } else if (action.equals(PlayService.ACTION_STOP)) {
+                mPlayBtn.setImageResource(R.drawable.play);
+                mSeekBar.setProgress(0);
+            } else if (action.equals(PlayService.ACTION_PROGRESS_UPDATE)) {
+                int progress = intent.getIntExtra(PlayService.CURRENT_DURATION, 0);
+                mSeekBar.setProgress(progress);
+            }
         }
     };
 
@@ -90,13 +88,6 @@ public class SongDetailActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onDestroy() {
-        PlayingHelper.getInstance().unregisterOnPlayStatusChangedListener(
-                mOnPlayStatusChangedListener);
-        super.onDestroy();
-    }
-
     private void init() {
         mSongInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         setTitle(mSongInfo.title);
@@ -116,9 +107,21 @@ public class SongDetailActivity extends FragmentActivity {
 
         mNextBtn = (ImageButton) findViewById(R.id.next);
         mPrevBtn = (ImageButton) findViewById(R.id.prev);
+        PlayService.registerReceiver(this, mReceiver);
+        syncView();
+    }
 
-        PlayingHelper.getInstance().registerOnPlayStatusChangedListener(
-                mOnPlayStatusChangedListener);
+    public void syncView() {
+        PlayingInfo info = PlayingHelper.getPlayingInfo();
+        if (info.status == PlayStatus.Playing) {
+            mPlayBtn.setImageResource(R.drawable.pause);
+            mSeekBar.setMax(info.duration);
+            mSeekBar.setProgress(info.progress);
+        } else if (info.status == PlayStatus.Paused) {
+            mPlayBtn.setImageResource(R.drawable.play);
+            mSeekBar.setMax(info.duration);
+            mSeekBar.setProgress(info.progress);
+        }
     }
 
     private void displayAudioEffect() {
