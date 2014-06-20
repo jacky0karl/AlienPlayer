@@ -1,7 +1,5 @@
 package com.jk.alienplayer.impl;
 
-import com.jk.alienplayer.data.PlayingInfoHolder;
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -43,7 +41,7 @@ public class PlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("#### PlayService", "onCreate");      
+        Log.e("#### PlayService", "onCreate");
         mPlayingHelper = new PlayingHelper(this);
     }
 
