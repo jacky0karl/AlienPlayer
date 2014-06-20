@@ -1,6 +1,7 @@
 package com.jk.alienplayer;
 
 import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.ui.MainActivity;
 
@@ -11,18 +12,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 public class APWidgetProvider extends AppWidgetProvider {
 
+    private static ComponentName sComponentName = new ComponentName(APWidgetProvider.class
+            .getPackage().getName(), APWidgetProvider.class.getName());;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         RemoteViews views = syncView(context, intent);
-        ComponentName name = new ComponentName(APWidgetProvider.class.getPackage().getName(),
-                APWidgetProvider.class.getName());
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = manager.getAppWidgetIds(name);
+        int[] appWidgetIds = manager.getAppWidgetIds(sComponentName);
         for (int i = 0; i < appWidgetIds.length; i++) {
             manager.updateAppWidget(appWidgetIds[i], views);
         }
@@ -38,14 +39,7 @@ public class APWidgetProvider extends AppWidgetProvider {
         } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
             String song = intent.getStringExtra(PlayService.SONG_NAME);
             String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
-            views.setTextViewText(R.id.song, song);
-            views.setTextViewText(R.id.artist, artist);
-            Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
-            if (artwork == null) {
-                views.setImageViewResource(R.id.artwork, R.drawable.disk);
-            } else {
-                views.setImageViewBitmap(R.id.artwork, artwork);
-            }
+            syncSongInfo(views, song, artist);
         } else if (action.equals(PlayService.ACTION_PAUSE)) {
             views.setImageViewResource(R.id.play, R.drawable.play);
         } else if (action.equals(PlayService.ACTION_STOP)) {
@@ -56,22 +50,19 @@ public class APWidgetProvider extends AppWidgetProvider {
             int progress = intent.getIntExtra(PlayService.CURRENT_DURATION, 0);
             views.setProgressBar(R.id.progressBar, duration, progress, false);
         }
-        views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
-        views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
+
+        setOnClickEvents(context, views);
         return views;
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.playbar);
-        views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
-        views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
+        setOnClickEvents(context, views);
 
-        Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
-        if (artwork == null) {
-            views.setImageViewResource(R.id.artwork, R.drawable.disk);
-        } else {
-            views.setImageViewBitmap(R.id.artwork, artwork);
+        SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
+        if (info != null) {
+            syncSongInfo(views, info.title, info.artist);
         }
 
         for (int i = 0; i < appWidgetIds.length; i++) {
@@ -79,16 +70,47 @@ public class APWidgetProvider extends AppWidgetProvider {
         }
     }
 
+    private void syncSongInfo(RemoteViews views, String song, String artist) {
+        views.setTextViewText(R.id.song, song);
+        views.setTextViewText(R.id.artist, artist);
+        Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
+        if (artwork == null) {
+            views.setImageViewResource(R.id.artwork, R.drawable.disk);
+        } else {
+            views.setImageViewBitmap(R.id.artwork, artwork);
+        }
+    }
+
+    private void setOnClickEvents(Context context, RemoteViews views) {
+        views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
+        views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
+        views.setOnClickPendingIntent(R.id.prev, getPrevIntent(context));
+        views.setOnClickPendingIntent(R.id.next, getNextIntent(context));
+    }
+
     private PendingIntent getArtworkIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getPlayIntent(Context context) {
         Intent intent = PlayService
                 .getPlayingCommandIntent(context, PlayService.COMMAND_PLAY_PAUSE);
-        return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(context, PlayService.COMMAND_PLAY_PAUSE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private PendingIntent getPrevIntent(Context context) {
+        Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_PREV);
+        return PendingIntent.getService(context, PlayService.COMMAND_PREV, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private PendingIntent getNextIntent(Context context) {
+        Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_NEXT);
+        return PendingIntent.getService(context, PlayService.COMMAND_NEXT, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

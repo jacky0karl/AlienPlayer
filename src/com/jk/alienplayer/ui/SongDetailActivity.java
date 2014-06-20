@@ -8,7 +8,6 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.OnPlayStatusChangedListener;
 
 import android.content.Intent;
-import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -56,6 +55,13 @@ public class SongDetailActivity extends FragmentActivity {
         @Override
         public void onProgressUpdate(int progress) {
             mSeekBar.setProgress(progress);
+        }
+
+        @Override
+        public void onTrackChange() {
+            // TODO
+            mSongInfo = PlayingInfoHolder.getInstance().getCurrentSong();
+            setTitle(mSongInfo.title);
         }
     };
 

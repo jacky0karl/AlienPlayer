@@ -57,6 +57,11 @@ public class Playbar extends FrameLayout {
         public void onProgressUpdate(int progress) {
             mProgressBar.setProgress(progress);
         }
+
+        @Override
+        public void onTrackChange() {
+            syncView();
+        }
     };
 
     public Playbar(Context context) {

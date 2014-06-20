@@ -25,6 +25,8 @@ public class PlayingHelper {
     public interface OnPlayStatusChangedListener {
         void onStart(int duration);
 
+        void onTrackChange();
+
         void onPause();
 
         void onStop();
@@ -123,7 +125,7 @@ public class PlayingHelper {
         mIsProcessing = true;
 
         // first playing
-        if (mPlayStatus == PlayStatus.Idle) {
+        if (mPlayStatus != PlayStatus.Playing && mPlayStatus != PlayStatus.Paused) {
             mIsProcessing = false;
             play();
             return mMediaPlayer.isPlaying();
@@ -198,6 +200,16 @@ public class PlayingHelper {
         }
     }
 
+    public void stop() {
+        try {
+            mMediaPlayer.stop();
+            mPlayStatus = PlayStatus.Stoped;
+            notifyStop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void release() {
         try {
             mMediaPlayer.stop();
@@ -225,6 +237,12 @@ public class PlayingHelper {
     }
 
     private void notifyTrackChange() {
+        for (WeakReference<OnPlayStatusChangedListener> wr : mListenerList) {
+            if (wr.get() != null) {
+                wr.get().onTrackChange();
+            }
+        }
+
         PlayService service = mPlayServiceWr.get();
         if (service != null) {
             SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
