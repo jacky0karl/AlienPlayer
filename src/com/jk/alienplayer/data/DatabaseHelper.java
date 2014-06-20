@@ -49,12 +49,12 @@ public class DatabaseHelper {
 
     public static List<AlbumInfo> getAlbums(Context context) {
         List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM };
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.ARTIST };
 
         Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
                 SELECTION, null, Media.ARTIST);
         if (cursor != null) {
-            Log.e("#########", "Albums count = " + cursor.getCount());
+            Log.e("####", "Albums count = " + cursor.getCount());
             if (cursor.moveToFirst()) {
                 do {
                     albums.add(bulidAlbumInfo(cursor));
@@ -206,7 +206,7 @@ public class DatabaseHelper {
     private static List<SearchResult> searchAlbums(Context context, String key) {
         List<SearchResult> results = new ArrayList<SearchResult>();
 
-        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM };
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.ARTIST };
         String selection = SELECTION;
         selection += " and " + Media.ALBUM + " like ?";
         String[] selectionArgs = new String[] { "%" + key + "%" };
@@ -261,7 +261,8 @@ public class DatabaseHelper {
     private static AlbumInfo bulidAlbumInfo(Cursor cursor) {
         long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ALBUM_ID));
         String album = cursor.getString(cursor.getColumnIndexOrThrow(Media.ALBUM));
-        AlbumInfo info = new AlbumInfo(albumId, album);
+        String artist = cursor.getString(cursor.getColumnIndexOrThrow(Media.ARTIST));
+        AlbumInfo info = new AlbumInfo(albumId, album, artist);
         return info;
     }
 

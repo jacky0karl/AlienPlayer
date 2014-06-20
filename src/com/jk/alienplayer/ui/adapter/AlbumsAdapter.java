@@ -51,8 +51,9 @@ public class AlbumsAdapter extends BaseAdapter {
         ViewHolder viewHolder = null;
         if (view == null) {
             viewHolder = new ViewHolder();
-            view = mInflater.inflate(R.layout.list_item, null);
+            view = mInflater.inflate(R.layout.list_item_double, null);
             viewHolder.name = (TextView) view.findViewById(R.id.content);
+            viewHolder.artist = (TextView) view.findViewById(R.id.artist);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -60,10 +61,12 @@ public class AlbumsAdapter extends BaseAdapter {
 
         AlbumInfo info = mAlbums.get(position);
         viewHolder.name.setText(info.name);
+        viewHolder.artist.setText(info.artist);
         return view;
     }
 
     static class ViewHolder {
         TextView name;
+        TextView artist;
     }
 }

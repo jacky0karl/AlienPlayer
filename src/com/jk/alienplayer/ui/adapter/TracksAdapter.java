@@ -51,8 +51,9 @@ public class TracksAdapter extends BaseAdapter {
         ViewHolder viewHolder = null;
         if (view == null) {
             viewHolder = new ViewHolder();
-            view = mInflater.inflate(R.layout.list_item, null);
+            view = mInflater.inflate(R.layout.list_item_double, null);
             viewHolder.name = (TextView) view.findViewById(R.id.content);
+            viewHolder.artist = (TextView) view.findViewById(R.id.artist);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -60,10 +61,12 @@ public class TracksAdapter extends BaseAdapter {
 
         SongInfo info = mTracks.get(position);
         viewHolder.name.setText(info.title);
+        viewHolder.artist.setText(info.artist);
         return view;
     }
 
     static class ViewHolder {
         TextView name;
+        TextView artist;
     }
 }
