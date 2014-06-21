@@ -1,10 +1,12 @@
 package com.jk.alienplayer.ui;
 
+import java.util.List;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.SongsAdapter;
 import com.jk.alienplayer.ui.lib.Playbar;
 
@@ -23,7 +25,7 @@ public class SongsActivity extends Activity {
     public static final String LABEL = "label";
 
     private int mKeyType;
-    private String mKey;
+    private long mKey;
     private ListView mListView;
     private SongsAdapter mAdapter;
     private Playbar mPlaybar;
@@ -35,16 +37,29 @@ public class SongsActivity extends Activity {
         init();
     }
 
+    @Override
+    protected void onDestroy() {
+        mPlaybar.finish();
+        super.onDestroy();
+    }
+
     private void init() {
         mPlaybar = (Playbar) findViewById(R.id.playbar);
         mKeyType = getIntent().getIntExtra(KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
-        mKey = getIntent().getStringExtra(KEY);
+        mKey = getIntent().getLongExtra(KEY, -1);
         setTitle(getIntent().getStringExtra(LABEL));
 
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new SongsAdapter(this);
         mListView.setAdapter(mAdapter);
-        mAdapter.setSongs(DatabaseHelper.getTracks(this, mKeyType, mKey));
+
+        List<SongInfo> songs = null;
+        if (mKeyType == DatabaseHelper.TYPE_PLAYLIST) {
+            songs = DatabaseHelper.getPlaylistMembers(this, mKey);
+        } else {
+            songs = DatabaseHelper.getTracks(this, mKeyType, mKey);
+        }
+        mAdapter.setSongs(songs);
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

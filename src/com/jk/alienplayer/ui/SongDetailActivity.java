@@ -2,11 +2,11 @@ package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
+import com.jk.alienplayer.metadata.SongInfo;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -109,6 +109,12 @@ public class SongDetailActivity extends FragmentActivity {
         mPrevBtn = (ImageButton) findViewById(R.id.prev);
         PlayService.registerReceiver(this, mReceiver);
         syncView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
     public void syncView() {

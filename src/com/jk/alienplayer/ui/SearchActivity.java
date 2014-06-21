@@ -5,10 +5,10 @@ import java.util.List;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.SearchResult;
-import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.metadata.SearchResult;
+import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.SearchResultsAdapter;
 
 import android.app.Activity;
@@ -96,7 +96,7 @@ public class SearchActivity extends Activity implements OnItemClickListener {
             return;
         }
 
-        intent.putExtra(SongsActivity.KEY, String.valueOf(result.data.getId()));
+        intent.putExtra(SongsActivity.KEY, result.data.getId());
         intent.putExtra(SongsActivity.LABEL, result.data.getDisplayName());
         startActivity(intent);
     }

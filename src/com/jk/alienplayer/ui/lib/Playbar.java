@@ -2,11 +2,11 @@ package com.jk.alienplayer.ui.lib;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
+import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.SongDetailActivity;
 
 import android.content.BroadcastReceiver;
@@ -104,6 +104,10 @@ public class Playbar extends FrameLayout {
 
         PlayService.registerReceiver(getContext(), mReceiver);
         syncView();
+    }
+
+    public void finish() {
+        getContext().unregisterReceiver(mReceiver);
     }
 
     public void syncView() {

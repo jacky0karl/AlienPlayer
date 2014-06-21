@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.ui.lib.Playbar;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -18,10 +19,10 @@ import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
-    private static final int FRAGMENT_ARTISTS = 0;
-    private static final int FRAGMENT_ALBUMS = 1;
-    private static final int FRAGMENT_TRACKS = 2;
-    private static final int FRAGMENT_PLAYLIST = 3;
+    private static final int FRAGMENT_PLAYLIST = 0;
+    private static final int FRAGMENT_ARTISTS = 1;
+    private static final int FRAGMENT_ALBUMS = 2;
+    private static final int FRAGMENT_TRACKS = 3;
 
     private Playbar mPlaybar;
 
@@ -37,6 +38,12 @@ public class MainActivity extends FragmentActivity {
 
         TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPlaybar.finish();
+        super.onDestroy();
     }
 
     @Override
@@ -66,6 +73,8 @@ public class MainActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
+            case FRAGMENT_PLAYLIST:
+                return new PlaylistsFragment();
             case FRAGMENT_ARTISTS:
                 return new ArtistsFragment();
             case FRAGMENT_ALBUMS:
@@ -73,13 +82,15 @@ public class MainActivity extends FragmentActivity {
             case FRAGMENT_TRACKS:
                 return new TracksFragment();
             default:
-                return new ArtistsFragment();
+                return new PlaylistsFragment();
             }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
+            case FRAGMENT_PLAYLIST:
+                return getString(R.string.playlists);
             case FRAGMENT_ARTISTS:
                 return getString(R.string.artists);
             case FRAGMENT_ALBUMS:
@@ -93,7 +104,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 }

@@ -12,7 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.metadata.SongInfo;
 
 public class PlayingHelper {
 

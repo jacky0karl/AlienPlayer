@@ -1,4 +1,4 @@
-package com.jk.alienplayer.data;
+package com.jk.alienplayer.metadata;
 
 public class SearchResult {
     public static final int TYPE_ARTISTS = 0;

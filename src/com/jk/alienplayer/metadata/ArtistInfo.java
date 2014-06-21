@@ -1,26 +1,19 @@
-package com.jk.alienplayer.data;
+package com.jk.alienplayer.metadata;
 
-import com.jk.alienplayer.data.SearchResult.SearchResultData;
+import com.jk.alienplayer.metadata.SearchResult.SearchResultData;
 
 import android.text.TextUtils;
 
-public class AlbumInfo implements SearchResultData {
+public class ArtistInfo implements SearchResultData {
     public long id;
     public String name;
-    public String artist;
 
-    public AlbumInfo(long id, String name, String artist) {
+    public ArtistInfo(long id, String name) {
         this.id = id;
         if (TextUtils.isEmpty(name)) {
             this.name = "unknown";
         } else {
             this.name = name;
-        }
-
-        if (TextUtils.isEmpty(artist)) {
-            this.artist = "unknown";
-        } else {
-            this.artist = artist;
         }
     }
 

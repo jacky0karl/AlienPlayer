@@ -1,6 +1,7 @@
 package com.jk.alienplayer.data;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.metadata.SongInfo;
 
 import android.content.Context;
 import android.content.SharedPreferences;

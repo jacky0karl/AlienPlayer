@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.ArtistInfo;
+import com.jk.alienplayer.metadata.ArtistInfo;
 
 import android.content.Context;
 import android.view.LayoutInflater;

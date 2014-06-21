@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.metadata.PlaylistInfo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,32 +13,32 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class TracksAdapter extends BaseAdapter {
+public class PlaylistsAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private List<SongInfo> mTracks;
+    private List<PlaylistInfo> mPlaylists;
 
-    public void setTracks(List<SongInfo> tracks) {
-        if (tracks != null) {
-            mTracks = tracks;
+    public void setPlaylists(List<PlaylistInfo> playlist) {
+        if (playlist != null) {
+            mPlaylists = playlist;
             notifyDataSetChanged();
         }
     }
 
-    public TracksAdapter(Context context) {
+    public PlaylistsAdapter(Context context) {
         super();
         mInflater = LayoutInflater.from(context);
-        mTracks = new ArrayList<SongInfo>();
+        mPlaylists = new ArrayList<PlaylistInfo>();
     }
 
     @Override
     public int getCount() {
-        return mTracks.size();
+        return mPlaylists.size();
     }
 
     @Override
-    public SongInfo getItem(int position) {
-        return mTracks.get(position);
+    public PlaylistInfo getItem(int position) {
+        return mPlaylists.get(position);
     }
 
     @Override
@@ -51,22 +51,19 @@ public class TracksAdapter extends BaseAdapter {
         ViewHolder viewHolder = null;
         if (view == null) {
             viewHolder = new ViewHolder();
-            view = mInflater.inflate(R.layout.list_item_double, null);
+            view = mInflater.inflate(R.layout.list_item, null);
             viewHolder.name = (TextView) view.findViewById(R.id.content);
-            viewHolder.artist = (TextView) view.findViewById(R.id.artist);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        SongInfo info = mTracks.get(position);
-        viewHolder.name.setText(info.title);
-        viewHolder.artist.setText(info.artist);
+        PlaylistInfo info = mPlaylists.get(position);
+        viewHolder.name.setText(info.name);
         return view;
     }
 
     static class ViewHolder {
         TextView name;
-        TextView artist;
     }
 }

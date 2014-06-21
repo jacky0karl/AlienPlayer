@@ -2,8 +2,8 @@ package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.metadata.ArtistInfo;
-import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
+import com.jk.alienplayer.metadata.PlaylistInfo;
+import com.jk.alienplayer.ui.adapter.PlaylistsAdapter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +15,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class ArtistsFragment extends Fragment {
+public class PlaylistsFragment extends Fragment {
 
     private ListView mListView;
-    private ArtistsAdapter mAdapter;
+    private PlaylistsAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,14 +29,14 @@ public class ArtistsFragment extends Fragment {
 
     private void init(View root) {
         mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new ArtistsAdapter(getActivity());
+        mAdapter = new PlaylistsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-        mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
+        mAdapter.setPlaylists(DatabaseHelper.getPlaylists(getActivity()));
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ArtistInfo info = mAdapter.getItem(position);
+                PlaylistInfo info = mAdapter.getItem(position);
                 startSongsPage(info.id, info.name);
             }
         });
@@ -44,7 +44,7 @@ public class ArtistsFragment extends Fragment {
 
     private void startSongsPage(long key, String label) {
         Intent intent = new Intent(getActivity(), SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
+        intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_PLAYLIST);
         intent.putExtra(SongsActivity.KEY, key);
         intent.putExtra(SongsActivity.LABEL, label);
         startActivity(intent);

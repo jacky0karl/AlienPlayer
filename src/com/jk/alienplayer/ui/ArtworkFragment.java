@@ -4,7 +4,7 @@ import com.jk.alienplayer.R;
 
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.SongInfo;
+import com.jk.alienplayer.metadata.SongInfo;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;

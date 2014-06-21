@@ -1,6 +1,6 @@
-package com.jk.alienplayer.data;
+package com.jk.alienplayer.metadata;
 
-import com.jk.alienplayer.data.SearchResult.SearchResultData;
+import com.jk.alienplayer.metadata.SearchResult.SearchResultData;
 
 import android.text.TextUtils;
 

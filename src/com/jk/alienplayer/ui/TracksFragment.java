@@ -3,8 +3,8 @@ package com.jk.alienplayer.ui;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.SongInfo;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.Playbar;
 
@@ -34,7 +34,7 @@ public class TracksFragment extends Fragment {
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new TracksAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-        mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(), DatabaseHelper.TYPE_ALL, null));
+        mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(), DatabaseHelper.TYPE_ALL, -1));
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
