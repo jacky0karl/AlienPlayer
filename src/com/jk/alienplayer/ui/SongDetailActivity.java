@@ -45,6 +45,10 @@ public class SongDetailActivity extends FragmentActivity {
     private TextView mSeekTime;
     private PopupWindow mPopupWindow;
 
+    private boolean mIsTrackingTouch = false;
+    private int mTimetagOffset;
+    private int mSeekBarW = 0;
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -121,14 +125,22 @@ public class SongDetailActivity extends FragmentActivity {
             }
         });
 
-        mSeekTime = new TextView(this);
-        mSeekTime.setTextColor(getResources().getColor(android.R.color.white));
-        mPopupWindow = new PopupWindow(mSeekTime, LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT, false);
         mNextBtn = (ImageButton) findViewById(R.id.next);
         mPrevBtn = (ImageButton) findViewById(R.id.prev);
         PlayService.registerReceiver(this, mReceiver);
+        setupPopupWindow();
         syncView();
+    }
+
+    private void setupPopupWindow() {
+        mTimetagOffset = getResources().getDimensionPixelOffset(R.dimen.timetag_offset);
+        mSeekTime = new TextView(this);
+        int padding = getResources().getDimensionPixelOffset(R.dimen.normal_padding);
+        mSeekTime.setPadding(padding, padding, padding, padding);
+        mSeekTime.setBackgroundColor(getResources().getColor(R.color.half_t_bg));
+        mSeekTime.setTextColor(getResources().getColor(android.R.color.white));
+        mPopupWindow = new PopupWindow(mSeekTime, LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT, false);
     }
 
     @Override
@@ -157,9 +169,6 @@ public class SongDetailActivity extends FragmentActivity {
         }
     }
 
-    private int mSeekBarW = 0;
-    private int mSeekBarH = 0;
-    private boolean mIsTrackingTouch = false;
     OnSeekBarChangeListener mSeekBarChangeListener = new OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -167,7 +176,7 @@ public class SongDetailActivity extends FragmentActivity {
                 mPopupWindow.dismiss();
                 float ratio = (float) progress / (float) seekBar.getMax();
                 mSeekTime.setText(PlayingTimeUtils.toDisplayTime(progress));
-                mPopupWindow.showAsDropDown(mSeekBar, (int) (mSeekBarW * ratio), -mSeekBarH * 2);
+                mPopupWindow.showAsDropDown(mSeekBar, (int) (mSeekBarW * ratio), -mTimetagOffset);
             }
         }
 
@@ -175,7 +184,6 @@ public class SongDetailActivity extends FragmentActivity {
         public void onStartTrackingTouch(SeekBar seekBar) {
             mIsTrackingTouch = true;
             mSeekBarW = mSeekBar.getWidth();
-            mSeekBarH = mSeekBar.getHeight();
         }
 
         @Override

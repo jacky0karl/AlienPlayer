@@ -2,4 +2,5 @@
 <resources>
 
     <color name="dark_bg">#333333</color>
+    <color name="half_t_bg">#77ffffff</color>
 </resources>
