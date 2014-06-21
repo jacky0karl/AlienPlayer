@@ -62,7 +62,6 @@ public class SongDetailActivity extends FragmentActivity {
                 String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
                 setTitle(song);
                 getActionBar().setSubtitle(artist);
-                // TODO set fragment
             } else if (action.equals(PlayService.ACTION_PAUSE)) {
                 mPlayBtn.setImageResource(R.drawable.play);
             } else if (action.equals(PlayService.ACTION_STOP)) {
@@ -173,10 +172,9 @@ public class SongDetailActivity extends FragmentActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (fromUser) {
-                mPopupWindow.dismiss();
                 float ratio = (float) progress / (float) seekBar.getMax();
                 mSeekTime.setText(PlayingTimeUtils.toDisplayTime(progress));
-                mPopupWindow.showAsDropDown(mSeekBar, (int) (mSeekBarW * ratio), -mTimetagOffset);
+                mPopupWindow.update(seekBar, (int) (mSeekBarW * ratio), -mTimetagOffset, -1, -1);
             }
         }
 
@@ -184,6 +182,7 @@ public class SongDetailActivity extends FragmentActivity {
         public void onStartTrackingTouch(SeekBar seekBar) {
             mIsTrackingTouch = true;
             mSeekBarW = mSeekBar.getWidth();
+            mPopupWindow.showAsDropDown(seekBar);
         }
 
         @Override

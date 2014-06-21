@@ -11,7 +11,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        PlayingInfoHolder.getInstance().initCurrentSong(this);
+        PlayingInfoHolder.getInstance().init(this);
         Intent intent = new Intent(this, PlayService.class);
         startService(intent);
     }
