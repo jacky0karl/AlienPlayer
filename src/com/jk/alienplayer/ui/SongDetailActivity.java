@@ -7,11 +7,11 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.utils.PlayingTimeUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -22,9 +22,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 public class SongDetailActivity extends FragmentActivity {
 
@@ -37,6 +40,10 @@ public class SongDetailActivity extends FragmentActivity {
     private ImageButton mPlayBtn;
     private ImageButton mNextBtn;
     private ImageButton mPrevBtn;
+    private TextView mProgress;
+    private TextView mDuration;
+    private TextView mSeekTime;
+    private PopupWindow mPopupWindow;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -49,8 +56,9 @@ public class SongDetailActivity extends FragmentActivity {
             } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
                 String song = intent.getStringExtra(PlayService.SONG_NAME);
                 String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
-                // TODO
                 setTitle(song);
+                getActionBar().setSubtitle(artist);
+                // TODO set fragment
             } else if (action.equals(PlayService.ACTION_PAUSE)) {
                 mPlayBtn.setImageResource(R.drawable.play);
             } else if (action.equals(PlayService.ACTION_STOP)) {
@@ -58,7 +66,10 @@ public class SongDetailActivity extends FragmentActivity {
                 mSeekBar.setProgress(0);
             } else if (action.equals(PlayService.ACTION_PROGRESS_UPDATE)) {
                 int progress = intent.getIntExtra(PlayService.CURRENT_DURATION, 0);
-                mSeekBar.setProgress(progress);
+                if (!mIsTrackingTouch) {
+                    mSeekBar.setProgress(progress);
+                }
+                mProgress.setText(PlayingTimeUtils.toDisplayTime(progress));
             }
         }
     };
@@ -91,6 +102,11 @@ public class SongDetailActivity extends FragmentActivity {
     private void init() {
         mSongInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         setTitle(mSongInfo.title);
+        getActionBar().setSubtitle(mSongInfo.artist);
+        mProgress = (TextView) findViewById(R.id.progress);
+        mDuration = (TextView) findViewById(R.id.duration);
+        mProgress.setText(PlayingTimeUtils.toDisplayTime(0));
+        mDuration.setText(PlayingTimeUtils.toDisplayTime(mSongInfo.duration));
 
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mSeekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
@@ -105,6 +121,10 @@ public class SongDetailActivity extends FragmentActivity {
             }
         });
 
+        mSeekTime = new TextView(this);
+        mSeekTime.setTextColor(getResources().getColor(android.R.color.white));
+        mPopupWindow = new PopupWindow(mSeekTime, LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT, false);
         mNextBtn = (ImageButton) findViewById(R.id.next);
         mPrevBtn = (ImageButton) findViewById(R.id.prev);
         PlayService.registerReceiver(this, mReceiver);
@@ -137,17 +157,32 @@ public class SongDetailActivity extends FragmentActivity {
         }
     }
 
+    private int mSeekBarW = 0;
+    private int mSeekBarH = 0;
+    private boolean mIsTrackingTouch = false;
     OnSeekBarChangeListener mSeekBarChangeListener = new OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser) {
+                mPopupWindow.dismiss();
+                float ratio = (float) progress / (float) seekBar.getMax();
+                mSeekTime.setText(PlayingTimeUtils.toDisplayTime(progress));
+                mPopupWindow.showAsDropDown(mSeekBar, (int) (mSeekBarW * ratio), -mSeekBarH * 2);
+            }
         }
 
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
+            mIsTrackingTouch = true;
+            mSeekBarW = mSeekBar.getWidth();
+            mSeekBarH = mSeekBar.getHeight();
         }
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
+            mIsTrackingTouch = false;
+            mPopupWindow.dismiss();
+
             Intent intent = PlayService.getSeekIntent(SongDetailActivity.this,
                     seekBar.getProgress());
             startService(intent);
