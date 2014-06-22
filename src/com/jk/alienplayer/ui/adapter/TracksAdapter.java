@@ -10,13 +10,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class TracksAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private List<SongInfo> mTracks;
+    private OnItemClickListener mItemClickListener = null;
 
     public void setTracks(List<SongInfo> tracks) {
         if (tracks != null) {
@@ -25,9 +29,10 @@ public class TracksAdapter extends BaseAdapter {
         }
     }
 
-    public TracksAdapter(Context context) {
+    public TracksAdapter(Context context, OnItemClickListener listener) {
         super();
         mInflater = LayoutInflater.from(context);
+        mItemClickListener = listener;
         mTracks = new ArrayList<SongInfo>();
     }
 
@@ -47,13 +52,14 @@ public class TracksAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, ViewGroup parent) {
         ViewHolder viewHolder = null;
         if (view == null) {
             viewHolder = new ViewHolder();
             view = mInflater.inflate(R.layout.list_item_double, null);
             viewHolder.name = (TextView) view.findViewById(R.id.content);
             viewHolder.artist = (TextView) view.findViewById(R.id.artist);
+            viewHolder.action = (ImageView) view.findViewById(R.id.action);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -62,11 +68,18 @@ public class TracksAdapter extends BaseAdapter {
         SongInfo info = mTracks.get(position);
         viewHolder.name.setText(info.title);
         viewHolder.artist.setText(info.artist);
+        viewHolder.action.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mItemClickListener.onItemClick(null, v, position, getItemId(position));
+            }
+        });
         return view;
     }
 
     static class ViewHolder {
         TextView name;
         TextView artist;
+        ImageView action;
     }
 }

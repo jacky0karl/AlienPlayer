@@ -8,9 +8,10 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:background="@color/dark_bg"
+        android:gravity="center_vertical|left"
         android:paddingLeft="30dp"
-        android:background="#256"
-        android:gravity="center_vertical|left" >
+        android:textColor="@android:color/white" >
     </TextView>
 
     <LinearLayout
@@ -21,8 +22,9 @@
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:gravity="center_vertical|left"
             android:paddingLeft="30dp"
-            android:gravity="center_vertical|left" >
+            android:textSize="18sp" >
         </TextView>
     </LinearLayout>
 

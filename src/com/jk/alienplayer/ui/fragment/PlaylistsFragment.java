@@ -8,42 +8,92 @@ import com.jk.alienplayer.ui.adapter.PlaylistsAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.provider.MediaStore.Audio.Playlists;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class PlaylistsFragment extends Fragment implements OnMenuItemClickListener {
 
+    private LayoutInflater mInflater;
     private ListView mListView;
     private PlaylistsAdapter mAdapter;
     private ListMenu mListMenu;
     private PopupWindow mPopupWindow;
-    private PopupMenu mPopupMenu;
+    private PlaylistInfo mCurrPlaylist;
+
+    private ContentObserver mContentObserver = new ContentObserver(null) {
+        @Override
+        public void onChange(boolean selfChange) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.setPlaylists(DatabaseHelper.getPlaylists(getActivity()));
+                }
+            });
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
+        getActivity().getContentResolver().registerContentObserver(Playlists.EXTERNAL_CONTENT_URI,
+                true, mContentObserver);
         return root;
     }
 
     @Override
     public void onDestroy() {
         mPopupWindow.dismiss();
+        getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
         super.onDestroy();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.playlist, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add) {
+            addPlaylist();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(int menuId) {
+        mPopupWindow.dismiss();
+        if (ListMenu.MEMU_DELETE == menuId) {
+            DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
+        }
+    }
+
     private void init(View root) {
+        setHasOptionsMenu(true);
+        mInflater = (LayoutInflater) getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new PlaylistsAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
@@ -55,9 +105,7 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
     private void setupPopupWindow() {
         mListMenu = new ListMenu(getActivity());
         mListMenu.setMenuItemClickListener(this);
-        mListMenu.addMenu(ListMenu.MEMU_ID_DELETE, R.string.delete);
-        mListMenu.addMenu(1, R.string.delete);
-        mListMenu.addMenu(2, R.string.delete);
+        mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
         mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT, false);
         mPopupWindow.setOutsideTouchable(true);
@@ -68,11 +116,11 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            PlaylistInfo info = mAdapter.getItem(position);
+            mCurrPlaylist = mAdapter.getItem(position);
             if (view.getId() == R.id.action) {
                 mPopupWindow.showAsDropDown(view);
             } else {
-                startSongsPage(info.id, info.name);
+                startSongsPage(mCurrPlaylist.id, mCurrPlaylist.name);
             }
         }
     };
@@ -85,10 +133,22 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
         startActivity(intent);
     }
 
-    @Override
-    public void onClick(int menuId) {
-        // TODO Auto-generated method stub
-        
-    }
+    private void addPlaylist() {
+        final EditText edit = (EditText) mInflater.inflate(R.layout.edit, null);
+        edit.setHeight(getActivity().getResources().getDimensionPixelSize(R.dimen.button_size));
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == Dialog.BUTTON_POSITIVE) {
+                    String name = edit.getText().toString().trim();
+                    DatabaseHelper.addPlaylist(getActivity(), name);
+                }
+            }
+        };
 
+        Dialog dialog = new AlertDialog.Builder(getActivity()).setView(edit)
+                .setPositiveButton(R.string.ok, listener)
+                .setNegativeButton(R.string.cancel, listener).create();
+        dialog.show();
+    }
 }

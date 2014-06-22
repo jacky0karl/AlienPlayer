@@ -12,6 +12,7 @@ import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -189,6 +190,33 @@ public class DatabaseHelper {
             cursor.close();
         }
         return playlists;
+    }
+
+    public static void addPlaylist(Context context, String name) {
+        if (TextUtils.isEmpty(name) || RecentsDBHelper.RECENTS_LIST_NAME.equals(name)) {
+            return;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(Playlists.NAME, name);
+        values.put(Playlists.DATE_ADDED, System.currentTimeMillis() / 1000);
+        context.getContentResolver().insert(Playlists.EXTERNAL_CONTENT_URI, values);
+    }
+
+    public static boolean deletePlaylist(Context context, long id) {
+        String selection = Playlists._ID + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(id) };
+        int ret = context.getContentResolver().delete(Playlists.EXTERNAL_CONTENT_URI, selection,
+                selectionArgs);
+        return ret > 0;
+    }
+
+    public static void addMemberToPlaylist(Context context, long playlistId, long trackId) {
+        ContentValues values = new ContentValues();
+        values.put(Playlists.Members.AUDIO_ID, trackId);
+        values.put(Playlists.Members.PLAY_ORDER, System.currentTimeMillis());
+        Uri uri = Playlists.Members.getContentUri("external", playlistId);
+        context.getContentResolver().insert(uri, values);
     }
 
     public static List<SongInfo> getPlaylistMembers(Context context, long playlistId) {
