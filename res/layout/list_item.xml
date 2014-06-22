@@ -9,7 +9,10 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/list_item_height"
         android:layout_weight="1"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxWidth="@dimen/max_text_width"
+        android:singleLine="true"
         android:textSize="18sp" />
 
     <ImageView

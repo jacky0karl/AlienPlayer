@@ -10,7 +10,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="4dp"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxWidth="@dimen/max_text_width"
+        android:singleLine="true"
         android:textSize="18sp" />
 
     <TextView
@@ -19,7 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/content"
         android:layout_marginLeft="20dp"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxWidth="@dimen/max_text_width"
+        android:singleLine="true"
         android:textColor="#999"
         android:textSize="14sp" />
 

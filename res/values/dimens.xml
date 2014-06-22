@@ -8,6 +8,7 @@
     <dimen name="progressbar_height">2dp</dimen>
     <dimen name="playbar_artwork_size">84dp</dimen>
     <dimen name="detail_artwork_size">240dp</dimen>
+    <dimen name="max_text_width">240dp</dimen>
     <dimen name="button_size">48dp</dimen>
     <dimen name="timetag_offset">90dp</dimen>
 
