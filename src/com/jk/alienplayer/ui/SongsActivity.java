@@ -7,7 +7,7 @@ import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.adapter.SongsAdapter;
+import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.Playbar;
 
 import android.app.Activity;
@@ -27,7 +27,7 @@ public class SongsActivity extends Activity {
     private int mKeyType;
     private long mKey;
     private ListView mListView;
-    private SongsAdapter mAdapter;
+    private TracksAdapter mAdapter;
     private Playbar mPlaybar;
 
     @Override
@@ -50,7 +50,7 @@ public class SongsActivity extends Activity {
         setTitle(getIntent().getStringExtra(LABEL));
 
         mListView = (ListView) findViewById(R.id.list);
-        mAdapter = new SongsAdapter(this);
+        mAdapter = new TracksAdapter(this);
         mListView.setAdapter(mAdapter);
 
         List<SongInfo> songs = null;
@@ -59,7 +59,7 @@ public class SongsActivity extends Activity {
         } else {
             songs = DatabaseHelper.getTracks(this, mKeyType, mKey);
         }
-        mAdapter.setSongs(songs);
+        mAdapter.setTracks(songs);
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

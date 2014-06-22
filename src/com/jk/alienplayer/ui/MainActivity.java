@@ -1,10 +1,10 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.ui.fragment.AlbumsFragment;
 import com.jk.alienplayer.ui.fragment.ArtistsFragment;
 import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
+import com.jk.alienplayer.ui.fragment.RecentsFragment;
 import com.jk.alienplayer.ui.fragment.TracksFragment;
 import com.jk.alienplayer.ui.lib.Playbar;
 import com.viewpagerindicator.TabPageIndicator;
@@ -23,10 +23,11 @@ import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
-    private static final int FRAGMENT_PLAYLIST = 0;
-    private static final int FRAGMENT_ARTISTS = 1;
-    private static final int FRAGMENT_ALBUMS = 2;
-    private static final int FRAGMENT_TRACKS = 3;
+    private static final int FRAGMENT_PLAYLIST = 1;
+    private static final int FRAGMENT_ARTISTS = 2;
+    private static final int FRAGMENT_ALBUMS = 3;
+    private static final int FRAGMENT_TRACKS = 4;
+    private static final int FRAGMENT_COUNT = 5;
 
     private Playbar mPlaybar;
 
@@ -77,6 +78,8 @@ public class MainActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
+            case FRAGMENT_RECENTS:
+                return new RecentsFragment();
             case FRAGMENT_PLAYLIST:
                 return new PlaylistsFragment();
             case FRAGMENT_ARTISTS:
@@ -93,6 +96,8 @@ public class MainActivity extends FragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
+            case FRAGMENT_RECENTS:
+                return getString(R.string.recents);
             case FRAGMENT_PLAYLIST:
                 return getString(R.string.playlists);
             case FRAGMENT_ARTISTS:
@@ -108,7 +113,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return FRAGMENT_COUNT;
         }
     }
 }

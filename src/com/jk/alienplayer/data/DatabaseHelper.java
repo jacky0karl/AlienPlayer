@@ -31,7 +31,7 @@ public class DatabaseHelper {
     public static final int TYPE_PLAYLIST = 3;
 
     private static long sRecentsId = -1;
-    private static final String RECENTS_LIST = "com.jk.alienplayer.recent";
+    private static final String RECENTS_LIST_NAME = "com.jk.alienplayer.recent";
     private static final int MIN_MUSIC_SIZE = 1024 * 1024;
     private static final String DISTINCT = "DISTINCT ";
     private static final String MEDIA_SELECTION = Media.SIZE + ">'"
@@ -40,7 +40,7 @@ public class DatabaseHelper {
     public static long createRecents(Context context) {
         String[] projection = new String[] { Playlists._ID };
         String selection = Playlists.NAME + "=?";
-        String[] selectionArgs = new String[] { RECENTS_LIST };
+        String[] selectionArgs = new String[] { RECENTS_LIST_NAME };
         Cursor cursor = context.getContentResolver().query(Playlists.EXTERNAL_CONTENT_URI,
                 projection, selection, selectionArgs, null);
         if (cursor != null) {
@@ -52,11 +52,19 @@ public class DatabaseHelper {
         }
 
         ContentValues values = new ContentValues();
-        values.put(Playlists.NAME, RECENTS_LIST);
+        values.put(Playlists.NAME, RECENTS_LIST_NAME);
         values.put(Playlists.DATE_ADDED, System.currentTimeMillis() / 1000);
         Uri ret = context.getContentResolver().insert(Playlists.EXTERNAL_CONTENT_URI, values);
         sRecentsId = Long.parseLong(ret.getLastPathSegment());
         return sRecentsId;
+    }
+
+    public static Uri getRecentsUri(Context context) {
+        return Uri.parse(Playlists.EXTERNAL_CONTENT_URI + "/" + sRecentsId);
+    }
+
+    public static List<SongInfo> getRecentTracks(Context context) {
+        return getPlaylistMembers(context, sRecentsId);
     }
 
     public static void addToRecents(Context context, long audioId, boolean isUpdate) {
@@ -215,8 +223,10 @@ public class DatabaseHelper {
     public static List<PlaylistInfo> getPlaylists(Context context) {
         List<PlaylistInfo> playlists = new ArrayList<PlaylistInfo>();
         String[] projection = new String[] { Playlists._ID, Playlists.NAME };
+        String selection = Playlists.NAME + "<>?";
+        String[] selectionArgs = new String[] { RECENTS_LIST_NAME };
         Cursor cursor = context.getContentResolver().query(Playlists.EXTERNAL_CONTENT_URI,
-                projection, null, null, Playlists.DATE_MODIFIED + " DESC");
+                projection, selection, selectionArgs, Playlists.DATE_MODIFIED + " DESC");
         if (cursor != null) {
             Log.e("####", "Playlists count = " + cursor.getCount());
             if (cursor.moveToFirst()) {

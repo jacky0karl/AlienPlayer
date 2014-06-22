@@ -8,8 +8,6 @@ import com.jk.alienplayer.metadata.SongInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore.Audio.Playlists;
 
 public class PlayingInfoHolder {
     private static PlayingInfoHolder sSelf = null;
@@ -68,8 +66,8 @@ public class PlayingInfoHolder {
             mPlaybarArtwork = DatabaseHelper.getArtwork(context, mCurrentSong.id,
                     mCurrentSong.albumId, mPlaybarArtworkSize);
 
-            // update Resents
-            boolean update = isInResents(currentSong.id);
+            // update Recents
+            boolean update = isInRecents(currentSong.id);
             if (!update) {
                 mRecentsList.add(currentSong);
             }
@@ -77,7 +75,7 @@ public class PlayingInfoHolder {
         }
     }
 
-    private boolean isInResents(long newId) {
+    private boolean isInRecents(long newId) {
         for (int i = 0; i < mRecentsList.size(); i++) {
             if (mRecentsList.get(i).id == newId) {
                 return true;

@@ -6,6 +6,7 @@
     <string name="audioEffect">Audio Effect</string>
     <string name="search">Search</string>
     <string name="search_hint">Artists, albums, and tracks</string>
+    <string name="recents">Recents</string>
     <string name="playlists">Playlists</string>
     <string name="artists">Artists</string>
     <string name="albums">Albums</string>
