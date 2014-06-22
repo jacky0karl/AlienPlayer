@@ -20,6 +20,7 @@ import android.support.v4.view.ViewPager;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.PopupWindow;
 
 public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
@@ -30,6 +31,7 @@ public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_COUNT = 5;
 
     private Playbar mPlaybar;
+    private PopupWindow mPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,8 @@ public class MainActivity extends FragmentActivity {
         if (item.getItemId() == R.id.action_search) {
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
+        } else if (item.getItemId() == R.id.action_volume) {
+
         }
         return super.onOptionsItemSelected(item);
     }
