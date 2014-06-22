@@ -12,7 +12,6 @@ import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
 
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,57 +29,10 @@ public class DatabaseHelper {
     public static final int TYPE_ALBUM = 2;
     public static final int TYPE_PLAYLIST = 3;
 
-    private static long sRecentsId = -1;
-    private static final String RECENTS_LIST_NAME = "com.jk.alienplayer.recent";
     private static final int MIN_MUSIC_SIZE = 1024 * 1024;
     private static final String DISTINCT = "DISTINCT ";
     private static final String MEDIA_SELECTION = Media.SIZE + ">'"
             + String.valueOf(MIN_MUSIC_SIZE) + "' and " + Media.IS_MUSIC + "=1";
-
-    public static long createRecents(Context context) {
-        String[] projection = new String[] { Playlists._ID };
-        String selection = Playlists.NAME + "=?";
-        String[] selectionArgs = new String[] { RECENTS_LIST_NAME };
-        Cursor cursor = context.getContentResolver().query(Playlists.EXTERNAL_CONTENT_URI,
-                projection, selection, selectionArgs, null);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                sRecentsId = cursor.getLong(cursor.getColumnIndexOrThrow(Playlists._ID));
-                return sRecentsId;
-            }
-            cursor.close();
-        }
-
-        ContentValues values = new ContentValues();
-        values.put(Playlists.NAME, RECENTS_LIST_NAME);
-        values.put(Playlists.DATE_ADDED, System.currentTimeMillis() / 1000);
-        Uri ret = context.getContentResolver().insert(Playlists.EXTERNAL_CONTENT_URI, values);
-        sRecentsId = Long.parseLong(ret.getLastPathSegment());
-        return sRecentsId;
-    }
-
-    public static Uri getRecentsUri(Context context) {
-        return Uri.parse(Playlists.EXTERNAL_CONTENT_URI + "/" + sRecentsId);
-    }
-
-    public static List<SongInfo> getRecentTracks(Context context) {
-        return getPlaylistMembers(context, sRecentsId);
-    }
-
-    public static void addToRecents(Context context, long audioId, boolean isUpdate) {
-        ContentValues values = new ContentValues();
-        values.put(Playlists.Members.PLAY_ORDER, System.currentTimeMillis());
-        Uri uri = Playlists.Members.getContentUri("external", sRecentsId);
-
-        if (isUpdate) {
-            String where = Playlists.Members.AUDIO_ID + "=?";
-            String[] selectionArgs = new String[] { String.valueOf(audioId) };
-            context.getContentResolver().update(uri, values, where, selectionArgs);
-        } else {
-            values.put(Playlists.Members.AUDIO_ID, audioId);
-            context.getContentResolver().insert(uri, values);
-        }
-    }
 
     public static List<ArtistInfo> getArtists(Context context) {
         List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
@@ -224,7 +176,7 @@ public class DatabaseHelper {
         List<PlaylistInfo> playlists = new ArrayList<PlaylistInfo>();
         String[] projection = new String[] { Playlists._ID, Playlists.NAME };
         String selection = Playlists.NAME + "<>?";
-        String[] selectionArgs = new String[] { RECENTS_LIST_NAME };
+        String[] selectionArgs = new String[] { RecentsDBHelper.RECENTS_LIST_NAME };
         Cursor cursor = context.getContentResolver().query(Playlists.EXTERNAL_CONTENT_URI,
                 projection, selection, selectionArgs, Playlists.DATE_MODIFIED + " DESC");
         if (cursor != null) {

@@ -3,6 +3,7 @@ package com.jk.alienplayer.ui.fragment;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.data.RecentsDBHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
@@ -29,7 +30,7 @@ public class RecentsFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.setTracks(DatabaseHelper.getRecentTracks(getActivity()));
+                    mAdapter.setTracks(RecentsDBHelper.getRecentTracks(getActivity()));
                 }
             });
         }
@@ -40,7 +41,7 @@ public class RecentsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
         getActivity().getContentResolver().registerContentObserver(
-                DatabaseHelper.getRecentsUri(getActivity()), true, mContentObserver);
+                RecentsDBHelper.getRecentsUri(getActivity()), true, mContentObserver);
         return root;
     }
 
@@ -54,7 +55,7 @@ public class RecentsFragment extends Fragment {
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new TracksAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-        mAdapter.setTracks(DatabaseHelper.getRecentTracks(getActivity()));
+        mAdapter.setTracks(RecentsDBHelper.getRecentTracks(getActivity()));
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override

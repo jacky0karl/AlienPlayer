@@ -9,11 +9,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
-public class PlayingInfoHolder {
+public class PlayingInfoHolder {    
     private static PlayingInfoHolder sSelf = null;
 
     private SongInfo mCurrentSong = null;
-    private long mRecentsId = -1;
     private List<SongInfo> mRecentsList = null;
     private Bitmap mPlaybarArtwork = null;
     private int mPlaybarArtworkSize;
@@ -46,8 +45,8 @@ public class PlayingInfoHolder {
         }
 
         // init RecentsList
-        mRecentsId = DatabaseHelper.createRecents(context);
-        mRecentsList = DatabaseHelper.getPlaylistMembers(context, mRecentsId);
+        RecentsDBHelper.initRecents(context);
+        mRecentsList = RecentsDBHelper.getRecentTracks(context);
     }
 
     public SongInfo getCurrentSong() {
@@ -71,7 +70,7 @@ public class PlayingInfoHolder {
             if (!update) {
                 mRecentsList.add(currentSong);
             }
-            DatabaseHelper.addToRecents(context, currentSong.id, update);
+            RecentsDBHelper.addToRecents(context, currentSong.id, update);
         }
     }
 
