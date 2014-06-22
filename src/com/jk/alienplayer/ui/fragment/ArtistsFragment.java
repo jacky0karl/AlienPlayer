@@ -9,6 +9,7 @@ import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,18 +31,24 @@ public class ArtistsFragment extends Fragment {
 
     private void init(View root) {
         mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new ArtistsAdapter(getActivity());
+        mAdapter = new ArtistsAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
         mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
 
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ArtistInfo info = mAdapter.getItem(position);
+        mListView.setOnItemClickListener(mOnItemClickListener);
+    }
+
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            ArtistInfo info = mAdapter.getItem(position);
+            if (view.getId() == R.id.action) {
+                Log.e("#### onItemClick", "position = " + position);
+            } else {
                 startSongsPage(info.id, info.name);
             }
-        });
-    }
+        }
+    };
 
     private void startSongsPage(long key, String label) {
         Intent intent = new Intent(getActivity(), SongsActivity.class);

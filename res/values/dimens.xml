@@ -3,6 +3,8 @@
     <dimen name="normal_padding">8dp</dimen>
     <dimen name="playbar_height">100dp</dimen>
     <dimen name="list_item_height">60dp</dimen>
+    <dimen name="menu_width">180dp</dimen>
+    <dimen name="menu_height">40dp</dimen>
     <dimen name="progressbar_height">2dp</dimen>
     <dimen name="playbar_artwork_size">84dp</dimen>
     <dimen name="detail_artwork_size">240dp</dimen>

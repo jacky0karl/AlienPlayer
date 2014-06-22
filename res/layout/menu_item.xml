@@ -1,0 +1,8 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/menu_width"
+    android:layout_height="@dimen/menu_height"
+    android:background="@color/menu_bg"
+    android:gravity="center"
+    android:textColor="@android:color/white"
+    android:textSize="18sp" />

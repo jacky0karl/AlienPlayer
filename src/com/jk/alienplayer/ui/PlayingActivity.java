@@ -137,7 +137,7 @@ public class PlayingActivity extends FragmentActivity {
         mSeekTime = new TextView(this);
         int padding = getResources().getDimensionPixelOffset(R.dimen.normal_padding);
         mSeekTime.setPadding(padding, padding, padding, padding);
-        mSeekTime.setBackgroundColor(getResources().getColor(R.color.half_t_bg));
+        mSeekTime.setBackgroundColor(getResources().getColor(R.color.half_transparent));
         mSeekTime.setTextColor(getResources().getColor(android.R.color.white));
         mPopupWindow = new PopupWindow(mSeekTime, LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT, false);

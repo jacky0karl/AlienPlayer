@@ -51,7 +51,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".ui.SongDetailActivity"
+            android:name=".ui.PlayingActivity"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PageIndicatorDefaults" >

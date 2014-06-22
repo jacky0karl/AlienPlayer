@@ -66,10 +66,6 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public Playbar getPlaybarHelper() {
-        return mPlaybar;
-    }
-
     class PagerAdapter extends FragmentPagerAdapter {
         public PagerAdapter(FragmentManager fm) {
             super(fm);
