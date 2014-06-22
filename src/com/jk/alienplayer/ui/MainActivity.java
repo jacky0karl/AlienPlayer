@@ -2,6 +2,10 @@ package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.ui.fragment.AlbumsFragment;
+import com.jk.alienplayer.ui.fragment.ArtistsFragment;
+import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
+import com.jk.alienplayer.ui.fragment.TracksFragment;
 import com.jk.alienplayer.ui.lib.Playbar;
 import com.viewpagerindicator.TabPageIndicator;
 

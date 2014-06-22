@@ -7,6 +7,7 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.ui.fragment.ArtworkFragment;
 import com.jk.alienplayer.utils.PlayingTimeUtils;
 
 import android.content.BroadcastReceiver;
@@ -29,7 +30,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class SongDetailActivity extends FragmentActivity {
+public class PlayingActivity extends FragmentActivity {
 
     private static final int FRAGMENT_ARTWORK = 0;
     private static final int FRAGMENT_LYRIC = 1;
@@ -118,7 +119,7 @@ public class SongDetailActivity extends FragmentActivity {
         mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = PlayService.getPlayingCommandIntent(SongDetailActivity.this,
+                Intent intent = PlayService.getPlayingCommandIntent(PlayingActivity.this,
                         PlayService.COMMAND_PLAY_PAUSE);
                 startService(intent);
             }
@@ -190,7 +191,7 @@ public class SongDetailActivity extends FragmentActivity {
             mIsTrackingTouch = false;
             mPopupWindow.dismiss();
 
-            Intent intent = PlayService.getSeekIntent(SongDetailActivity.this,
+            Intent intent = PlayService.getSeekIntent(PlayingActivity.this,
                     seekBar.getProgress());
             startService(intent);
         }

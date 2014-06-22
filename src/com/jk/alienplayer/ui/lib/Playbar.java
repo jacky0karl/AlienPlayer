@@ -7,7 +7,7 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.SongDetailActivity;
+import com.jk.alienplayer.ui.PlayingActivity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -96,7 +96,7 @@ public class Playbar extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (PlayingInfoHolder.getInstance().getCurrentSong() != null) {
-                    Intent intent = new Intent(getContext(), SongDetailActivity.class);
+                    Intent intent = new Intent(getContext(), PlayingActivity.class);
                     getContext().startActivity(intent);
                 }
             }

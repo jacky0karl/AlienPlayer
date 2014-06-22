@@ -1,9 +1,12 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.fragment;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.metadata.AlbumInfo;
-import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.ui.adapter.TracksAdapter;
+import com.jk.alienplayer.ui.lib.Playbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +18,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class AlbumsFragment extends Fragment {
+public class TracksFragment extends Fragment {
 
     private ListView mListView;
-    private AlbumsAdapter mAdapter;
+    private TracksAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,25 +32,23 @@ public class AlbumsFragment extends Fragment {
 
     private void init(View root) {
         mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new AlbumsAdapter(getActivity());
+        mAdapter = new TracksAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-        mAdapter.setAlbums(DatabaseHelper.getAlbums(getActivity()));
+        mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(), DatabaseHelper.TYPE_ALL, -1));
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlbumInfo info = mAdapter.getItem(position);
-                startSongsPage(info.id, info.name);
+                SongInfo info = mAdapter.getItem(position);
+                onSongClick(info);
             }
         });
     }
 
-    private void startSongsPage(long key, String label) {
-        Intent intent = new Intent(getActivity(), SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ALBUM);
-        intent.putExtra(SongsActivity.KEY, key);
-        intent.putExtra(SongsActivity.LABEL, label);
-        startActivity(intent);
+    private void onSongClick(SongInfo song) {
+        PlayingInfoHolder.getInstance().setCurrentSong(getActivity(), song);
+        Intent intent = PlayService
+                .getPlayingCommandIntent(getActivity(), PlayService.COMMAND_PLAY);
+        getActivity().startService(intent);
     }
-
 }

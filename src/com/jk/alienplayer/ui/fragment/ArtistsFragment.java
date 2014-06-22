@@ -1,8 +1,9 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.fragment;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.ArtistInfo;
+import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
 
 import android.content.Intent;
