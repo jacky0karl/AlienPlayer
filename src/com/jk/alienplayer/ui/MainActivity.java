@@ -6,11 +6,14 @@ import com.jk.alienplayer.ui.fragment.ArtistsFragment;
 import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
 import com.jk.alienplayer.ui.fragment.RecentsFragment;
 import com.jk.alienplayer.ui.fragment.TracksFragment;
+import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.Playbar;
 import com.viewpagerindicator.TabPageIndicator;
 
+import android.content.Context;
 import android.content.Intent;
 
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,9 +21,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.PopupWindow;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
@@ -32,6 +40,9 @@ public class MainActivity extends FragmentActivity {
 
     private Playbar mPlaybar;
     private PopupWindow mPopupWindow;
+    private AudioManager mAudioManager = null;
+    private SeekBar mVolumeBar;
+    private TabPageIndicator mIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +54,41 @@ public class MainActivity extends FragmentActivity {
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
-        TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
-        indicator.setViewPager(pager);
+        mIndicator = (TabPageIndicator) findViewById(R.id.indicator);
+        mIndicator.setViewPager(pager);
+        setupVolumeBar();
+    }
+
+    private void setupVolumeBar() {
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        mVolumeBar = (SeekBar) LayoutInflater.from(this).inflate(R.layout.volume, null);
+        mVolumeBar.setMax(maxVolume);
+        mVolumeBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        int width = getResources().getDimensionPixelOffset(R.dimen.volumebar_width);
+        mPopupWindow = new PopupWindow(mVolumeBar, width, LayoutParams.WRAP_CONTENT, false);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
     }
 
     @Override
@@ -65,9 +109,17 @@ public class MainActivity extends FragmentActivity {
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
-
+            showVolumeBar();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showVolumeBar() {
+        int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mPopupWindow.showAtLocation(mIndicator, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+
+        mVolumeBar.setProgress(volume);
+        mPopupWindow.update();
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
