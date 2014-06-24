@@ -4,6 +4,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
@@ -61,7 +62,7 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new TracksAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
-        mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(), DatabaseHelper.TYPE_ALL, -1));
+        mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(), CurrentlistInfo.TYPE_ALL, -1));
         mListView.setOnItemClickListener(mOnItemClickListener);
         setupPopupWindow();
     }
@@ -79,7 +80,7 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     }
 
     private void onSongClick(SongInfo song) {
-        PlayingInfoHolder.getInstance().setCurrentSong(getActivity(), song);
+        PlayingInfoHolder.getInstance().setCurrentInfo(getActivity(), song, null);
         Intent intent = PlayService
                 .getPlayingCommandIntent(getActivity(), PlayService.COMMAND_PLAY);
         getActivity().startService(intent);

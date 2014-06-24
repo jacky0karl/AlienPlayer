@@ -1,5 +1,7 @@
 package com.jk.alienplayer.ui.fragment;
 
+import java.util.List;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
@@ -37,10 +39,11 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     private ContentObserver mContentObserver = new ContentObserver(null) {
         @Override
         public void onChange(boolean selfChange) {
+            final List<SongInfo> recentsList = RecentsDBHelper.getRecentTracks(getActivity());
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.setTracks(RecentsDBHelper.getRecentTracks(getActivity()));
+                    mAdapter.setTracks(recentsList);
                 }
             });
         }
@@ -96,7 +99,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     }
 
     private void onSongClick(SongInfo song) {
-        PlayingInfoHolder.getInstance().setCurrentSong(getActivity(), song);
+        PlayingInfoHolder.getInstance().setCurrentInfo(getActivity(), song, null);
         Intent intent = PlayService
                 .getPlayingCommandIntent(getActivity(), PlayService.COMMAND_PLAY);
         getActivity().startService(intent);

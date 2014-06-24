@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.jk.alienplayer.metadata.AlbumInfo;
 import com.jk.alienplayer.metadata.ArtistInfo;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.PlaylistInfo;
 import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
@@ -25,10 +26,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class DatabaseHelper {
-    public static final int TYPE_ALL = 0;
-    public static final int TYPE_ARTIST = 1;
-    public static final int TYPE_ALBUM = 2;
-    public static final int TYPE_PLAYLIST = 3;
 
     private static final int MIN_MUSIC_SIZE = 1024 * 1024;
     private static final String DISTINCT = "DISTINCT ";
@@ -81,10 +78,10 @@ public class DatabaseHelper {
                 Media.ALBUM_ID, Media.ARTIST };
         String selection = MEDIA_SELECTION;
         switch (keyType) {
-        case TYPE_ARTIST:
+        case CurrentlistInfo.TYPE_ARTIST:
             selection += " and " + Media.ARTIST_ID + "=?";
             break;
-        case TYPE_ALBUM:
+        case CurrentlistInfo.TYPE_ALBUM:
             selection += " and " + Media.ALBUM_ID + "=?";
             break;
         default:
@@ -92,7 +89,7 @@ public class DatabaseHelper {
         }
 
         String[] selectionArgs = null;
-        if (keyType != TYPE_ALL) {
+        if (keyType != CurrentlistInfo.TYPE_ALL) {
             selectionArgs = new String[] { String.valueOf(key) };
         }
 

@@ -6,6 +6,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.SearchResultsAdapter;
@@ -77,7 +78,7 @@ public class SearchActivity extends Activity implements OnItemClickListener {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SearchResult result = mAdapter.getItem(position);
         if (result.type == SearchResult.TYPE_TRACKS) {
-            PlayingInfoHolder.getInstance().setCurrentSong(this, (SongInfo) result.data);
+            PlayingInfoHolder.getInstance().setCurrentInfo(this, (SongInfo) result.data, null);
             Intent intent = PlayService.getPlayingCommandIntent(SearchActivity.this,
                     PlayService.COMMAND_PLAY);
             startService(intent);
@@ -86,10 +87,10 @@ public class SearchActivity extends Activity implements OnItemClickListener {
         Intent intent = new Intent(this, SongsActivity.class);
         switch (result.type) {
         case SearchResult.TYPE_ARTISTS:
-            intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
+            intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
             break;
         case SearchResult.TYPE_ALBUMS:
-            intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ALBUM);
+            intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ALBUM);
             break;
         default:
             return;

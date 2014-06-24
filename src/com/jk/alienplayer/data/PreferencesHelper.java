@@ -6,7 +6,16 @@ import android.content.SharedPreferences.Editor;
 
 public class PreferencesHelper {
     private static final String PREFERENCES_NAME = "preferences_name";
-    public static final String CURRENT_SONG = "current_song";
+    public static final String CURRENT_SONG_ID = "current_song";
+    public static final String CURRENT_SONG_LIST_ID = "current_song";
+    public static final String CURRENT_SONG_LIST_TYPE = "current_song";
+
+    public static void putIntValue(Context context, String key, int value) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        Editor editor = sp.edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
 
     public static void putLongValue(Context context, String key, long value) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);

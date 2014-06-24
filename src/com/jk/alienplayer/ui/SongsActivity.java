@@ -6,6 +6,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
@@ -39,6 +40,7 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
     private PopupWindow mPopupWindow;
     private SongInfo mCurrTrack;
     private Dialog mPlaylistSeletor = null;
+    private List<SongInfo> mSongList = null;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -68,7 +70,7 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
 
     private void init() {
         mPlaybar = (Playbar) findViewById(R.id.playbar);
-        mKeyType = getIntent().getIntExtra(KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
+        mKeyType = getIntent().getIntExtra(KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
         mKey = getIntent().getLongExtra(KEY, -1);
         setTitle(getIntent().getStringExtra(LABEL));
 
@@ -76,13 +78,12 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
         mAdapter = new TracksAdapter(this, mOnItemClickListener);
         mListView.setAdapter(mAdapter);
 
-        List<SongInfo> songs = null;
-        if (mKeyType == DatabaseHelper.TYPE_PLAYLIST) {
-            songs = DatabaseHelper.getPlaylistMembers(this, mKey);
+        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+            mSongList = DatabaseHelper.getPlaylistMembers(this, mKey);
         } else {
-            songs = DatabaseHelper.getTracks(this, mKeyType, mKey);
+            mSongList = DatabaseHelper.getTracks(this, mKeyType, mKey);
         }
-        mAdapter.setTracks(songs);
+        mAdapter.setTracks(mSongList);
         mListView.setOnItemClickListener(mOnItemClickListener);
         setupPopupWindow();
     }
@@ -100,7 +101,9 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
     }
 
     private void onSongClick(SongInfo song) {
-        PlayingInfoHolder.getInstance().setCurrentSong(this, song);
+        CurrentlistInfo currentlistInfo = new CurrentlistInfo(mKey, mKeyType, mSongList);
+        PlayingInfoHolder.getInstance().setCurrentInfo(this, song, currentlistInfo);
+
         Intent intent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
         startService(intent);
     }

@@ -3,6 +3,7 @@ package com.jk.alienplayer.ui.fragment;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.ArtistInfo;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
 
@@ -52,7 +53,7 @@ public class ArtistsFragment extends Fragment {
 
     private void startSongsPage(long key, String label) {
         Intent intent = new Intent(getActivity(), SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, DatabaseHelper.TYPE_ARTIST);
+        intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
         intent.putExtra(SongsActivity.KEY, key);
         intent.putExtra(SongsActivity.LABEL, label);
         startActivity(intent);
