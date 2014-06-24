@@ -2,6 +2,7 @@ package com.jk.alienplayer.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CurrentlistInfo {
 
@@ -75,5 +76,9 @@ public class CurrentlistInfo {
         if (currentIndex < 0) {
             currentIndex = songList.size() - 1;
         }
+    }
+
+    public void shuffle() {
+        currentIndex = new Random().nextInt(songList.size());
     }
 }

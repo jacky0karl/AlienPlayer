@@ -81,7 +81,7 @@ public class PlayingActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_song_detail);
+        setContentView(R.layout.activity_playing);
         init();
 
         FragmentPagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());

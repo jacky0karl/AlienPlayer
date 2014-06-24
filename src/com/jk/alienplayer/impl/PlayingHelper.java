@@ -47,12 +47,7 @@ public class PlayingHelper {
         public void onCompletion(MediaPlayer mp) {
             sPlayingInfo.status = PlayStatus.Stoped;
             notifyStop();
-
-            PlayService service = mPlayServiceWr.get();
-            if (service != null) {
-                PlayingInfoHolder.getInstance().next(service);
-                play();
-            }
+            repeat();
         }
     };
 
@@ -230,11 +225,19 @@ public class PlayingHelper {
         }
     }
 
-    Runnable mUpdateTask = new Runnable() {
+    private Runnable mUpdateTask = new Runnable() {
         @Override
         public void run() {
             notifyProgressUpdate();
             mHandler.postDelayed(mUpdateTask, 500);
         }
     };
+
+    private void repeat() {
+        PlayService service = mPlayServiceWr.get();
+        if (service != null) {
+            PlayingInfoHolder.getInstance().next(service);
+            play();
+        }
+    }
 }

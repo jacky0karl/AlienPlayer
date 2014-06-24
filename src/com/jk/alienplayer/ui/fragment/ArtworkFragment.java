@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -23,6 +24,7 @@ public class ArtworkFragment extends Fragment {
 
     private int mArtworkSize;
     private ImageView mArtwork;
+    private ImageView mRepeatBtn;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -35,7 +37,7 @@ public class ArtworkFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_playing, container, false);
+        View root = inflater.inflate(R.layout.fragment_artwork, container, false);
         init(root);
         IntentFilter intentFilter = new IntentFilter(PlayService.ACTION_TRACK_CHANGE);
         getActivity().registerReceiver(mReceiver, intentFilter);
@@ -52,6 +54,24 @@ public class ArtworkFragment extends Fragment {
         mArtworkSize = getActivity().getResources().getDimensionPixelSize(
                 R.dimen.detail_artwork_size);
         mArtwork = (ImageView) root.findViewById(R.id.artwork);
+        mRepeatBtn = (ImageView) root.findViewById(R.id.repeat_btn);
+        mRepeatBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int repeatMode = PlayingInfoHolder.getInstance().getRepeatMode();
+                if (repeatMode == PlayingInfoHolder.REPEAT_ALL) {
+                    repeatMode = PlayingInfoHolder.REPEAT_ONE;
+                    mRepeatBtn.setImageResource(R.drawable.repeat_one);
+                } else if (repeatMode == PlayingInfoHolder.REPEAT_ONE) {
+                    repeatMode = PlayingInfoHolder.REPEAT_SHUFFLE;
+                    mRepeatBtn.setImageResource(R.drawable.repeat_shuffle);
+                } else {
+                    repeatMode = PlayingInfoHolder.REPEAT_ALL;
+                    mRepeatBtn.setImageResource(R.drawable.repeat_all);
+                }
+                PlayingInfoHolder.getInstance().setRepeatMode(getActivity(), repeatMode);
+            }
+        });
         syncView();
     }
 
@@ -63,6 +83,15 @@ public class ArtworkFragment extends Fragment {
             mArtwork.setImageResource(R.drawable.disk);
         } else {
             mArtwork.setImageBitmap(bmp);
+        }
+
+        int repeatMode = PlayingInfoHolder.getInstance().getRepeatMode();
+        if (repeatMode == PlayingInfoHolder.REPEAT_ALL) {
+            mRepeatBtn.setImageResource(R.drawable.repeat_all);
+        } else if (repeatMode == PlayingInfoHolder.REPEAT_ONE) {
+            mRepeatBtn.setImageResource(R.drawable.repeat_one);
+        } else {
+            mRepeatBtn.setImageResource(R.drawable.repeat_shuffle);
         }
     }
 }

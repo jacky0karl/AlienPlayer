@@ -9,6 +9,7 @@ public class PreferencesHelper {
     public static final String CURRENT_SONG_ID = "current_song_id";
     public static final String CURRENT_SONG_LIST_ID = "current_songlist_id";
     public static final String CURRENT_SONG_LIST_TYPE = "current_songlist_type";
+    public static final String REPEAT_MODE = "repeat_mode";
 
     public static void putIntValue(Context context, String key, int value) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);

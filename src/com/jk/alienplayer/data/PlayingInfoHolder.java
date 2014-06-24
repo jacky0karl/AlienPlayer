@@ -11,13 +11,17 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 public class PlayingInfoHolder {
+    public static final int REPEAT_ONE = 1;
+    public static final int REPEAT_ALL = 2;
+    public static final int REPEAT_SHUFFLE = 3;
+
     private static PlayingInfoHolder sSelf = null;
 
     private CurrentlistInfo mCurrentlistInfo = null;
-
     private List<SongInfo> mRecentsList = null;
     private Bitmap mPlaybarArtwork = null;
     private int mPlaybarArtworkSize;
+    private int mRepeatMode = REPEAT_ALL;
 
     public static synchronized PlayingInfoHolder getInstance() {
         if (sSelf == null) {
@@ -34,8 +38,11 @@ public class PlayingInfoHolder {
         mPlaybarArtworkSize = context.getResources().getDimensionPixelOffset(
                 R.dimen.playbar_artwork_size);
 
-        // init CurrentSong
+        // init RepeatMode
         SharedPreferences sp = PreferencesHelper.getSharedPreferences(context);
+        mRepeatMode = sp.getInt(PreferencesHelper.REPEAT_MODE, REPEAT_ALL);
+
+        // init CurrentSong
         long songId = sp.getLong(PreferencesHelper.CURRENT_SONG_ID, -1);
         SongInfo currentSong = null;
         if (songId != -1) {
@@ -71,12 +78,27 @@ public class PlayingInfoHolder {
         }
     }
 
+    public int getRepeatMode() {
+        return mRepeatMode;
+    }
+
+    public void setRepeatMode(Context context, int repeatMode) {
+        mRepeatMode = repeatMode;
+        PreferencesHelper.putIntValue(context, PreferencesHelper.REPEAT_MODE, repeatMode);
+    }
+
     public CurrentlistInfo getCurrentlistInfo() {
         return mCurrentlistInfo;
     }
 
     public void next(Context context) {
-        mCurrentlistInfo.next();
+        if (mRepeatMode == PlayingInfoHolder.REPEAT_ALL) {
+            mCurrentlistInfo.next();
+        } else if (mRepeatMode == PlayingInfoHolder.REPEAT_SHUFFLE) {
+            mCurrentlistInfo.shuffle();
+        } else {
+            return;
+        }       
         setCurrentSong(context, getCurrentSong());
     }
 
