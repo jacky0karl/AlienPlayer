@@ -126,7 +126,25 @@ public class PlayingActivity extends FragmentActivity {
         });
 
         mNextBtn = (ImageButton) findViewById(R.id.next);
+        mNextBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = PlayService.getPlayingCommandIntent(PlayingActivity.this,
+                        PlayService.COMMAND_NEXT);
+                PlayingActivity.this.startService(intent);
+            }
+        });
+
         mPrevBtn = (ImageButton) findViewById(R.id.prev);
+        mPrevBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = PlayService.getPlayingCommandIntent(PlayingActivity.this,
+                        PlayService.COMMAND_PREV);
+                PlayingActivity.this.startService(intent);
+            }
+        });
+
         PlayService.registerReceiver(this, mReceiver);
         setupPopupWindow();
         syncView();
@@ -191,8 +209,7 @@ public class PlayingActivity extends FragmentActivity {
             mIsTrackingTouch = false;
             mPopupWindow.dismiss();
 
-            Intent intent = PlayService.getSeekIntent(PlayingActivity.this,
-                    seekBar.getProgress());
+            Intent intent = PlayService.getSeekIntent(PlayingActivity.this, seekBar.getProgress());
             startService(intent);
         }
     };

@@ -71,6 +71,20 @@ public class PlayingInfoHolder {
         }
     }
 
+    public CurrentlistInfo getCurrentlistInfo() {
+        return mCurrentlistInfo;
+    }
+
+    public void next(Context context) {
+        mCurrentlistInfo.next();
+        setCurrentSong(context, getCurrentSong());
+    }
+
+    public void prev(Context context) {
+        mCurrentlistInfo.prev();
+        setCurrentSong(context, getCurrentSong());
+    }
+
     public SongInfo getCurrentSong() {
         return mCurrentlistInfo.getCurrentSong();
     }

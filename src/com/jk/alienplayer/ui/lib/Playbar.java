@@ -90,7 +90,25 @@ public class Playbar extends FrameLayout {
         });
 
         mNextBtn = (ImageButton) mContentView.findViewById(R.id.next);
+        mNextBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = PlayService.getPlayingCommandIntent(getContext(),
+                        PlayService.COMMAND_NEXT);
+                getContext().startService(intent);
+            }
+        });
+        
         mPrevBtn = (ImageButton) mContentView.findViewById(R.id.prev);
+        mPrevBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = PlayService.getPlayingCommandIntent(getContext(),
+                        PlayService.COMMAND_PREV);
+                getContext().startService(intent);
+            }
+        });
+        
         mArtwork = (ImageView) mContentView.findViewById(R.id.artwork);
         mArtwork.setOnClickListener(new OnClickListener() {
             @Override

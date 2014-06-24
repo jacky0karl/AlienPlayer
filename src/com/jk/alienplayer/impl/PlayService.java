@@ -1,5 +1,7 @@
 package com.jk.alienplayer.impl;
 
+import com.jk.alienplayer.data.PlayingInfoHolder;
+
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -65,8 +67,12 @@ public class PlayService extends Service {
             mPlayingHelper.seekTo(msec);
             break;
         case COMMAND_PREV:
+            PlayingInfoHolder.getInstance().prev(this);
+            mPlayingHelper.play();
             break;
         case COMMAND_NEXT:
+            PlayingInfoHolder.getInstance().next(this);
+            mPlayingHelper.play();
             break;
         default:
             break;

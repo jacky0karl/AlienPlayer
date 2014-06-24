@@ -47,6 +47,12 @@ public class PlayingHelper {
         public void onCompletion(MediaPlayer mp) {
             sPlayingInfo.status = PlayStatus.Stoped;
             notifyStop();
+
+            PlayService service = mPlayServiceWr.get();
+            if (service != null) {
+                PlayingInfoHolder.getInstance().next(service);
+                play();
+            }
         }
     };
 
@@ -127,14 +133,6 @@ public class PlayingHelper {
         }
         mIsProcessing = true;
 
-        // stop current playing song
-        if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            sPlayingInfo.status = PlayStatus.Stoped;
-            notifyStop();
-        }
-
-        // play the new one
         mMediaPlayer.reset();
         try {
             mMediaPlayer.setDataSource(info.path);
