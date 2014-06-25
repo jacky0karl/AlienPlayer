@@ -18,6 +18,7 @@
     <string name="artwork">Artwork</string>
     <string name="lyric">Lyric</string>
     <string name="info">Info</string>
+    <string name="no_lyric">No Lyric</string>
 
     <!-- menu title -->
     <string name="delete">Delete</string>

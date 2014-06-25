@@ -43,6 +43,10 @@ public class CurrentlistInfo {
         return type;
     }
 
+    public List<SongInfo> getSongList() {
+        return songList;
+    }
+
     public SongInfo getCurrentSong() {
         if (songList.size() == 0) {
             return null;

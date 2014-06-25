@@ -74,7 +74,7 @@ public class PlayingInfoHolder {
         mCurrentlistInfo = new CurrentlistInfo(songListId, songListType, currentSongList);
 
         if (!mCurrentlistInfo.setCurrentSong(currentSong)) {
-            setCurrentSong(context, getCurrentSong());
+            updateCurrentSongInfo(context, getCurrentSong());
         }
     }
 
@@ -87,8 +87,8 @@ public class PlayingInfoHolder {
         PreferencesHelper.putIntValue(context, PreferencesHelper.REPEAT_MODE, repeatMode);
     }
 
-    public CurrentlistInfo getCurrentlistInfo() {
-        return mCurrentlistInfo;
+    public List<SongInfo> getCurrentlist() {
+        return mCurrentlistInfo.getSongList();
     }
 
     public void next(Context context) {
@@ -98,13 +98,13 @@ public class PlayingInfoHolder {
             mCurrentlistInfo.shuffle();
         } else {
             return;
-        }       
-        setCurrentSong(context, getCurrentSong());
+        }
+        updateCurrentSongInfo(context, getCurrentSong());
     }
 
     public void prev(Context context) {
         mCurrentlistInfo.prev();
-        setCurrentSong(context, getCurrentSong());
+        updateCurrentSongInfo(context, getCurrentSong());
     }
 
     public SongInfo getCurrentSong() {
@@ -126,13 +126,21 @@ public class PlayingInfoHolder {
 
         setCurrentlistInfo(context, currentlistInfo);
         if (mCurrentlistInfo.setCurrentSong(currentSong)) {
-            setCurrentSong(context, currentSong);
+            updateCurrentSongInfo(context, currentSong);
         } else {
-            setCurrentSong(context, getCurrentSong());
+            updateCurrentSongInfo(context, getCurrentSong());
         }
     }
 
-    private void setCurrentSong(Context context, SongInfo currentSong) {
+    public void setCurrentSong(Context context, SongInfo currentSong) {
+        if (mCurrentlistInfo.setCurrentSong(currentSong)) {
+            updateCurrentSongInfo(context, currentSong);
+        } else {
+            updateCurrentSongInfo(context, getCurrentSong());
+        }
+    }
+
+    private void updateCurrentSongInfo(Context context, SongInfo currentSong) {
         if (currentSong != null) {
             PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG_ID,
                     currentSong.id);

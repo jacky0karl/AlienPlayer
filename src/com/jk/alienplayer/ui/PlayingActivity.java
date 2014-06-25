@@ -8,6 +8,8 @@ import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.fragment.ArtworkFragment;
+import com.jk.alienplayer.ui.fragment.CurrentListFragment;
+import com.jk.alienplayer.ui.fragment.LyricFragment;
 import com.jk.alienplayer.utils.PlayingTimeUtils;
 
 import android.content.BroadcastReceiver;
@@ -33,8 +35,8 @@ import android.widget.TextView;
 public class PlayingActivity extends FragmentActivity {
 
     private static final int FRAGMENT_ARTWORK = 0;
-    private static final int FRAGMENT_LYRIC = 1;
-    private static final int FRAGMENT_INFO = 2;
+    private static final int FRAGMENT_CURR_LIST = 1;
+    private static final int FRAGMENT_LYRIC = 2;
 
     private SongInfo mSongInfo;
     private SeekBar mSeekBar;
@@ -224,12 +226,12 @@ public class PlayingActivity extends FragmentActivity {
             switch (position) {
             case FRAGMENT_ARTWORK:
                 return new ArtworkFragment();
+            case FRAGMENT_CURR_LIST:
+                return new CurrentListFragment();
             case FRAGMENT_LYRIC:
-                return new ArtworkFragment();
-            case FRAGMENT_INFO:
-                return new ArtworkFragment();
+                return new LyricFragment();
             default:
-                return new ArtworkFragment();
+                return null;
             }
         }
 

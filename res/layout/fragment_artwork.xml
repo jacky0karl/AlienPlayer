@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:background="@color/dark_bg" >
 
     <ImageView
         android:id="@+id/repeat_btn"
         android:layout_width="@dimen/button_size"
         android:layout_height="@dimen/button_size"
-        android:layout_marginLeft="60dp"
-        android:clickable="true"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/repeat_all" />
 
     <ImageView
