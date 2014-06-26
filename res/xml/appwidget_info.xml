@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialLayout="@layout/playbar"
-    android:minHeight="@dimen/playbar_height"
+    android:minHeight="70dp"
     android:minWidth="300dp"
     android:previewImage="@drawable/app_icon"
     android:resizeMode="horizontal|vertical"

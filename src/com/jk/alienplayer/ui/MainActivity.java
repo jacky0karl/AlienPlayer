@@ -67,6 +67,9 @@ public class MainActivity extends FragmentActivity {
         if (item.getItemId() == R.id.action_search) {
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
+        } else if (item.getItemId() == R.id.network_search) {
+            Intent intent = new Intent(this, NetworkSearchActivity.class);
+            startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mIndicator, Gravity.CENTER);
         }

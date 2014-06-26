@@ -6,6 +6,7 @@
     <string name="volume">Volume</string>
     <string name="audioEffect">Audio Effect</string>
     <string name="search">Search</string>
+    <string name="network_search">Network Search</string>
     <string name="search_hint">Artists, albums, and tracks</string>
     <string name="recents">Recents</string>
     <string name="playlists">Playlists</string>
@@ -19,6 +20,7 @@
     <string name="lyric">Lyric</string>
     <string name="info">Info</string>
     <string name="no_lyric">No Lyric</string>
+    <string name="no_result">No Result</string>
 
     <!-- menu title -->
     <string name="delete">Delete</string>
