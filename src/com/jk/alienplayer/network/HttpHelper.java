@@ -20,7 +20,6 @@ import org.apache.http.util.EntityUtils;
 
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
@@ -35,6 +34,7 @@ public class HttpHelper {
     private static final String SEARCH_URL = "http://music.163.com/api/search/get/";
     private static final String GET_ALBUMS_URL = "http://music.163.com/api/artist/albums/";
     private static final String GET_TRACKS_URL = "http://music.163.com/api/album/";
+    private static final String TRACK_DOWANLOAD_URL = "http://m1.music.126.net/";
 
     public interface HttpResponseHandler {
         void onSuccess(String response);
@@ -42,7 +42,17 @@ public class HttpHelper {
         void onFail(int status, String response);
     }
 
+    public interface FileDownloadListener {
+        void onSuccess(String dfsId, String filename);
+
+        void onFail(String dfsId);
+    }
+
     public static void search(final int type, final String key, final HttpResponseHandler handler) {
+        if (handler == null) {
+            return;
+        }
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -84,7 +94,11 @@ public class HttpHelper {
     }
 
     public static void getAlbums(final String artistId, final HttpResponseHandler handler) {
-        Thread t = new Thread(new Runnable() {
+        if (handler == null) {
+            return;
+        }
+
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -106,11 +120,15 @@ public class HttpHelper {
                 }
             }
         });
-        t.start();
+        thread.start();
     }
 
     public static void getTracks(final String albumId, final HttpResponseHandler handler) {
-        Thread t = new Thread(new Runnable() {
+        if (handler == null) {
+            return;
+        }
+
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -131,30 +149,35 @@ public class HttpHelper {
                 }
             }
         });
-        t.start();
+        thread.start();
     }
 
-    public static void downloadTrack(final String dfsId) {
-        Thread t = new Thread(new Runnable() {
+    public static void downloadTrack(final String dfsId, final String name,
+            final FileDownloadListener listener) {
+        if (listener == null) {
+            return;
+        }
+
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     String encryptedId = encrypt(dfsId);
-                    String baseUrl = "http://m1.music.126.net/" + encryptedId + "/" + dfsId
-                            + ".mp3";
+                    String baseUrl = TRACK_DOWANLOAD_URL + encryptedId + "/" + dfsId + ".mp3";
 
                     InputStream is = WebFileSavingUtil.getInputStream(baseUrl);
-                    if (WebFileSavingUtil.saveFile(ROOT_PATH + "jk1.mp3", is)) {
-                        Log.e("getTrack", "OK");
+                    String filename = ROOT_PATH + name + ".mp3";
+                    if (WebFileSavingUtil.saveFile(filename, is)) {
+                        listener.onSuccess(dfsId, filename);
                         return;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.e("getTrack", "NOK");
+                listener.onFail(dfsId);
             }
         });
-        t.start();
+        thread.start();
     }
 
     private static String encrypt(String str) {
@@ -173,7 +196,6 @@ public class HttpHelper {
             String result = base64.substring(0, base64.length() - 1);
             result = result.replace('/', '_');
             result = result.replace('+', '-');
-            Log.e("#####", "ret = " + result);
             return result;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

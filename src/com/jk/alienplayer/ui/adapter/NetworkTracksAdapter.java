@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class NetworkTracksAdapter extends BaseAdapter {
@@ -54,6 +55,7 @@ public class NetworkTracksAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.search_network_track_item, null);
             viewHolder.name = (TextView) view.findViewById(R.id.content);
             viewHolder.artists = (TextView) view.findViewById(R.id.artists);
+            viewHolder.downloadBtn = (ImageView) view.findViewById(R.id.downloadBtn);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -62,11 +64,17 @@ public class NetworkTracksAdapter extends BaseAdapter {
         NetworkTrackInfo info = mTracks.get(position);
         viewHolder.name.setText(info.name);
         viewHolder.artists.setText(info.artists);
+        if (info.downloaded) {
+            viewHolder.downloadBtn.setImageResource(R.drawable.download_btn_finish);
+        } else {
+            viewHolder.downloadBtn.setImageResource(R.drawable.download_btn);
+        }
         return view;
     }
 
     static class ViewHolder {
         TextView name;
         TextView artists;
+        ImageView downloadBtn;
     }
 }

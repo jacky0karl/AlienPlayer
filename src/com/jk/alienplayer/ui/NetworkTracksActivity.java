@@ -6,11 +6,17 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.JsonHelper;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.network.HttpHelper;
+import com.jk.alienplayer.network.HttpHelper.FileDownloadListener;
 import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.adapter.NetworkTracksAdapter;
+import com.jk.alienplayer.ui.lib.DialogBuilder;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -31,7 +37,8 @@ public class NetworkTracksActivity extends Activity {
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            NetworkTrackInfo info = mAdapter.getItem(position);
+            downloadTrack(info);
         }
     };
 
@@ -79,4 +86,52 @@ public class NetworkTracksActivity extends Activity {
             mLoading.setVisibility(View.GONE);
         }
     };
+
+    private FileDownloadListener mDownloadListener = new FileDownloadListener() {
+        @Override
+        public void onSuccess(String dfsId, String filename) {
+            int pos = findNetworkPosition(dfsId);
+            if (pos != -1) {
+                mAdapter.getItem(pos).downloaded = true;
+            }
+
+            NetworkTracksActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onFail(String dfsId) {
+            Log.e("FileDownloadListener", "onFail");
+        }
+    };
+
+    private void downloadTrack(final NetworkTrackInfo info) {
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == Dialog.BUTTON_POSITIVE) {
+                    HttpHelper.downloadTrack(String.valueOf(info.dfsId), info.name,
+                            mDownloadListener);
+                }
+            }
+        };
+
+        Dialog dialog = DialogBuilder.buildAlertDialog(this, R.string.download_track_confirm,
+                listener);
+        dialog.show();
+    }
+
+    private int findNetworkPosition(String dfsId) {
+        for (int i = 0; i < mAdapter.getCount(); i++) {
+            NetworkTrackInfo info = mAdapter.getItem(i);
+            if (info.dfsId == Long.parseLong(dfsId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

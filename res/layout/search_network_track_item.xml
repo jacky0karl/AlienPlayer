@@ -44,6 +44,14 @@
             android:singleLine="true"
             android:textColor="#999"
             android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/downloadBtn"
+            android:layout_width="@dimen/button_size"
+            android:layout_height="@dimen/button_size"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/download_btn" />
     </RelativeLayout>
 
 </LinearLayout>
