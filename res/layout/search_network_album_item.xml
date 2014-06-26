@@ -11,7 +11,8 @@
         android:background="@color/dark_bg"
         android:gravity="center_vertical|left"
         android:paddingLeft="30dp"
-        android:textColor="@android:color/white" >
+        android:textColor="@android:color/white"
+        android:visibility="gone" >
     </TextView>
 
     <RelativeLayout

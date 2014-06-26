@@ -70,6 +70,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PageIndicatorDefaults" >
         </activity>
+        <activity
+            android:name=".ui.NetworkAlbumsActivity"
+            android:parentActivityName=".ui.NetworkSearchActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.NetworkTracksActivity"
+            android:parentActivityName=".ui.NetworkSearchActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <service android:name=".impl.PlayService" >
         </service>

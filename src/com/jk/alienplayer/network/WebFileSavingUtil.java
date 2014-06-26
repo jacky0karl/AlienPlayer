@@ -26,15 +26,6 @@ public class WebFileSavingUtil {
         return inputStream;
     }
 
-    /**
-     * ensure the path of file is created.
-     * 
-     * @param filePath
-     *            filePath to save
-     * @param is
-     *            InputStream
-     * @return true if save file succeed
-     */
     public static boolean saveFile(String filePath, InputStream is) {
         if (is == null) {
             return false;
@@ -66,12 +57,6 @@ public class WebFileSavingUtil {
         }
     }
 
-    /**
-     * ensure the path of file is created.
-     * 
-     * @param file
-     *            file to ensure
-     * */
     public static void ensurePath(File file) {
         String filePath = file.getParent();
         File dir = new File(filePath);

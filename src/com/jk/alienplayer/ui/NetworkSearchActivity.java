@@ -33,7 +33,6 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     private ProgressBar mLoading;
     private ListView mListView;
     private NetworkSearchResultsAdapter mAdapter;
-    private HttpHelper mHttpHelper;
     private String mQueryKey;
 
     private OnQueryTextListener mQueryTextListener = new OnQueryTextListener() {
@@ -45,7 +44,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
 
             mQueryKey = query;
             mLoading.setVisibility(View.VISIBLE);
-            mHttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
+            HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
             return true;
         }
 
@@ -58,8 +57,8 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     private HttpResponseHandler mSearchArtistHandler = new HttpResponseHandler() {
         @Override
         public void onSuccess(String response) {
-            mHttpHelper.search(NetworkSearchResult.TYPE_ALBUMS, mQueryKey, mSearchAlbumHandler);
-            final List<NetworkSearchResult> artists = JsonHelper.parseArtists(response);
+            HttpHelper.search(NetworkSearchResult.TYPE_ALBUMS, mQueryKey, mSearchAlbumHandler);
+            final List<NetworkSearchResult> artists = JsonHelper.parseSearchArtists(response);
             NetworkSearchActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -77,8 +76,8 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     private HttpResponseHandler mSearchAlbumHandler = new HttpResponseHandler() {
         @Override
         public void onSuccess(String response) {
-            mHttpHelper.search(NetworkSearchResult.TYPE_TRACKS, mQueryKey, mSearchTrackHandler);
-            final List<NetworkSearchResult> albums = JsonHelper.parseAlbums(response);
+            HttpHelper.search(NetworkSearchResult.TYPE_TRACKS, mQueryKey, mSearchTrackHandler);
+            final List<NetworkSearchResult> albums = JsonHelper.parseSearchAlbums(response);
             NetworkSearchActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -96,7 +95,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     private HttpResponseHandler mSearchTrackHandler = new HttpResponseHandler() {
         @Override
         public void onSuccess(String response) {
-            final List<NetworkSearchResult> tracks = JsonHelper.parseTracks(response);
+            final List<NetworkSearchResult> tracks = JsonHelper.parseSearchTracks(response);
             NetworkSearchActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -120,7 +119,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_network_search);
+        setContentView(R.layout.activity_network_list);
         init();
     }
 
@@ -131,7 +130,6 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
         mAdapter = new NetworkSearchResultsAdapter(this);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
-        mHttpHelper = new HttpHelper(this);
     }
 
     @Override
@@ -154,6 +152,17 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         NetworkSearchResult result = mAdapter.getItem(position);
+        if (result.type == NetworkSearchResult.TYPE_ARTISTS) {
+            Intent intent = new Intent(this, NetworkAlbumsActivity.class);
+            intent.putExtra(NetworkAlbumsActivity.ARTIST_ID, result.id);
+            intent.putExtra(NetworkAlbumsActivity.LABEL, result.name);
+            startActivity(intent);
+        } else if (result.type == NetworkSearchResult.TYPE_ALBUMS) {
+            Intent intent = new Intent(this, NetworkTracksActivity.class);
+            intent.putExtra(NetworkTracksActivity.ALBUM_ID, result.id);
+            intent.putExtra(NetworkTracksActivity.LABEL, result.name);
+            startActivity(intent);
+        }
 
     }
 }
