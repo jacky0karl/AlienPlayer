@@ -1,6 +1,5 @@
 package com.jk.alienplayer.network;
 
-import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -20,13 +19,9 @@ import org.apache.http.util.EntityUtils;
 
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 
-import android.os.Environment;
 import android.util.Base64;
-import android.util.Log;
 
 public class HttpHelper {
-    public static final String ROOT_PATH = Environment.getExternalStorageDirectory().getPath()
-            + File.separator + "AlienPlayer" + File.separator;
 
     private static final String COOKIE = "appver=1.7.6;";
     private static final String KEY = "3go8&$8*3*3h0k(2)2";
@@ -165,9 +160,9 @@ public class HttpHelper {
                     String encryptedId = encrypt(dfsId);
                     String baseUrl = TRACK_DOWANLOAD_URL + encryptedId + "/" + dfsId + ".mp3";
 
-                    InputStream is = WebFileSavingUtil.getInputStream(baseUrl);
-                    String filename = ROOT_PATH + name + ".mp3";
-                    if (WebFileSavingUtil.saveFile(filename, is)) {
+                    InputStream is = FileSavingUtil.getInputStream(baseUrl);
+                    String filename = FileSavingUtil.sRootPath + name + ".mp3";
+                    if (FileSavingUtil.saveFile(filename, is)) {
                         listener.onSuccess(dfsId, filename);
                         return;
                     }
