@@ -23,7 +23,7 @@ import android.util.Base64;
 
 public class HttpHelper {
 
-    private static final String COOKIE = "appver=1.7.6;";
+    private static final String COOKIE = "appver=1.7.6;os=Android";
     private static final String KEY = "3go8&$8*3*3h0k(2)2";
     private static final String LIMIT = "20";
     private static final String SEARCH_URL = "http://music.163.com/api/search/get/";
