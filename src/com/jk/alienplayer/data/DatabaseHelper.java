@@ -1,5 +1,6 @@
 package com.jk.alienplayer.data;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -11,10 +12,12 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.PlaylistInfo;
 import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.network.FileSavingUtil;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,11 +29,22 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class DatabaseHelper {
-
     private static final int MIN_MUSIC_SIZE = 1024 * 1024;
     private static final String DISTINCT = "DISTINCT ";
     private static final String MEDIA_SELECTION = Media.SIZE + ">'"
             + String.valueOf(MIN_MUSIC_SIZE) + "' and " + Media.IS_MUSIC + "=1";
+
+    public static void scanMedia(Context context) {
+        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        scanIntent.setData(Uri.fromFile(new File(FileSavingUtil.sRootPath)));
+        context.sendBroadcast(scanIntent);
+    }
+
+    public static void scanMedia(Context context, String filename) {
+        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        scanIntent.setData(Uri.fromFile(new File(filename)));
+        context.sendBroadcast(scanIntent);
+    }
 
     public static List<ArtistInfo> getArtists(Context context) {
         List<ArtistInfo> artists = new ArrayList<ArtistInfo>();

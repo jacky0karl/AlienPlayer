@@ -4,6 +4,7 @@
     <string name="app_name">AlienPlayer</string>
     <string name="settings">Settings</string>
     <string name="volume">Volume</string>
+    <string name="media_scan">Media Scan</string>
     <string name="audioEffect">Audio Effect</string>
     <string name="search">Search</string>
     <string name="network_search">Network Search</string>

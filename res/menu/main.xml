@@ -6,12 +6,16 @@
         android:showAsAction="always"/>
     <item
         android:id="@+id/action_volume"
-        android:orderInCategory="98"
+        android:orderInCategory="97"
         android:showAsAction="never"
         android:title="@string/volume"/>
     <item
+        android:id="@+id/action_scan"
+        android:orderInCategory="98"
+        android:showAsAction="never"
+        android:title="@string/media_scan"/>
+    <item
         android:id="@+id/network_search"
-        android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="99"
         android:showAsAction="never"
         android:title="@string/network_search"/>

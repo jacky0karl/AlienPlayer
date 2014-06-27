@@ -3,6 +3,7 @@ package com.jk.alienplayer.ui;
 import java.util.List;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.JsonHelper;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.network.HttpHelper;
@@ -90,6 +91,8 @@ public class NetworkTracksActivity extends Activity {
     private FileDownloadListener mDownloadListener = new FileDownloadListener() {
         @Override
         public void onSuccess(String dfsId, String filename) {
+            Log.e("FileDownloadListener", "onSuccess");
+            DatabaseHelper.scanMedia(NetworkTracksActivity.this, filename);
             int pos = findNetworkPosition(dfsId);
             if (pos != -1) {
                 mAdapter.getItem(pos).downloaded = true;

@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.ui.fragment.AlbumsFragment;
 import com.jk.alienplayer.ui.fragment.ArtistsFragment;
 import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
@@ -10,7 +11,10 @@ import com.jk.alienplayer.ui.lib.Playbar;
 import com.jk.alienplayer.ui.lib.VolumeBarWindow;
 import com.viewpagerindicator.TabPageIndicator;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -34,11 +38,27 @@ public class MainActivity extends FragmentActivity {
     private VolumeBarWindow mVolumeBar;
     private TabPageIndicator mIndicator;
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
+                //
+            } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+                MainActivity.this.recreate();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mPlaybar = (Playbar) findViewById(R.id.playbar);
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_SCANNER_STARTED);
+        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+        intentFilter.addDataScheme("file");
+        registerReceiver(mReceiver, intentFilter);
 
         FragmentPagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
@@ -51,6 +71,7 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(mReceiver);
         mVolumeBar.dismiss();
         mPlaybar.finish();
         super.onDestroy();
@@ -72,6 +93,8 @@ public class MainActivity extends FragmentActivity {
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mIndicator, Gravity.CENTER);
+        } else if (item.getItemId() == R.id.action_scan) {
+            DatabaseHelper.scanMedia(this);
         }
         return super.onOptionsItemSelected(item);
     }
