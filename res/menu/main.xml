@@ -15,10 +15,10 @@
         android:showAsAction="never"
         android:title="@string/media_scan"/>
     <item
-        android:id="@+id/network_search"
+        android:id="@+id/discover"
         android:orderInCategory="99"
         android:showAsAction="never"
-        android:title="@string/network_search"/>
+        android:title="@string/discover"/>
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

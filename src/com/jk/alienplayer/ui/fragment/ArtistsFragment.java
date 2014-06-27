@@ -7,6 +7,8 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,11 +25,28 @@ public class ArtistsFragment extends Fragment {
     private ListView mListView;
     private ArtistsAdapter mAdapter;
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+                mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
+            }
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
+        DatabaseHelper.registerScanReceiver(getActivity(), mReceiver);
         return root;
+    }
+
+    @Override
+    public void onDestroy() {
+        getActivity().unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
     private void init(View root) {
@@ -35,7 +54,6 @@ public class ArtistsFragment extends Fragment {
         mAdapter = new ArtistsAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
         mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
-
         mListView.setOnItemClickListener(mOnItemClickListener);
     }
 

@@ -7,6 +7,8 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,10 +24,21 @@ public class AlbumsFragment extends Fragment {
     private ListView mListView;
     private AlbumsAdapter mAdapter;
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+                mAdapter.setAlbums(DatabaseHelper.getAlbums(getActivity()));
+            }
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
+        DatabaseHelper.registerScanReceiver(getActivity(), mReceiver);
         return root;
     }
 
@@ -34,7 +47,6 @@ public class AlbumsFragment extends Fragment {
         mAdapter = new AlbumsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
         mAdapter.setAlbums(DatabaseHelper.getAlbums(getActivity()));
-
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -42,6 +54,12 @@ public class AlbumsFragment extends Fragment {
                 startSongsPage(info.id, info.name);
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        getActivity().unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
     private void startSongsPage(long key, String label) {

@@ -14,10 +14,12 @@ import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.network.FileSavingUtil;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,6 +46,13 @@ public class DatabaseHelper {
         Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         scanIntent.setData(Uri.fromFile(new File(filename)));
         context.sendBroadcast(scanIntent);
+    }
+
+    public static void registerScanReceiver(Context context, BroadcastReceiver receiver) {
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_SCANNER_STARTED);
+        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+        intentFilter.addDataScheme("file");
+        context.registerReceiver(receiver, intentFilter);
     }
 
     public static List<ArtistInfo> getArtists(Context context) {

@@ -12,6 +12,8 @@ import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.ui.lib.PlaylistSeletor;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +35,17 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     private SongInfo mCurrTrack;
     private Dialog mPlaylistSeletor = null;
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+                mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(),
+                        CurrentlistInfo.TYPE_ALL, -1));
+            }
+        }
+    };
+
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -49,12 +62,14 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
+        DatabaseHelper.registerScanReceiver(getActivity(), mReceiver);
         return root;
     }
 
     @Override
     public void onDestroy() {
         mPopupWindow.dismiss();
+        getActivity().unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 

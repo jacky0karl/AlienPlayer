@@ -88,7 +88,7 @@ public class JsonHelper {
                         artists += artist + " ";
                     }
 
-                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
+                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists.trim());
                     tracks.add(info);
                 }
             }
@@ -148,7 +148,7 @@ public class JsonHelper {
                         artists += artist + " ";
                     }
 
-                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
+                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists.trim());
                     info.dfsId = dfsId;
                     info.position = position;
                     tracks.add(info);

@@ -7,7 +7,7 @@
     <string name="media_scan">Media Scan</string>
     <string name="audioEffect">Audio Effect</string>
     <string name="search">Search</string>
-    <string name="network_search">Network Search</string>
+    <string name="discover">Discover</string>
     <string name="search_hint">Artists, albums, and tracks</string>
     <string name="recents">Recents</string>
     <string name="playlists">Playlists</string>
