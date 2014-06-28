@@ -5,6 +5,7 @@ import java.util.List;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.JsonHelper;
+import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.HttpHelper.FileDownloadListener;
@@ -15,6 +16,7 @@ import com.jk.alienplayer.ui.lib.DialogBuilder;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.Log;
@@ -92,7 +94,11 @@ public class NetworkTracksActivity extends Activity {
         @Override
         public void onSuccess(String dfsId, String filename) {
             Log.e("FileDownloadListener", "onSuccess");
-            DatabaseHelper.scanMedia(NetworkTracksActivity.this, filename);
+            // TODO
+            Intent intent = new Intent(NetworkTracksActivity.this, MediaScanService.class);
+            intent.putExtra(MediaScanService.SCAN_COMMAND, MediaScanService.SCAN_FILE);
+            intent.putExtra(MediaScanService.FILE_PATH, filename);
+            startService(intent);
             int pos = findNetworkPosition(dfsId);
             if (pos != -1) {
                 mAdapter.getItem(pos).downloaded = true;

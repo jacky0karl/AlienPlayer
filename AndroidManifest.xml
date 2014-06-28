@@ -83,6 +83,8 @@
 
         <service android:name=".impl.PlayService" >
         </service>
+        <service android:name=".impl.MediaScanService" >
+        </service>
 
         <receiver
             android:name="APWidgetProvider"

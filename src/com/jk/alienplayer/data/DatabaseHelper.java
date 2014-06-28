@@ -36,18 +36,6 @@ public class DatabaseHelper {
     private static final String MEDIA_SELECTION = Media.SIZE + ">'"
             + String.valueOf(MIN_MUSIC_SIZE) + "' and " + Media.IS_MUSIC + "=1";
 
-    public static void scanMedia(Context context) {
-        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        scanIntent.setData(Uri.fromFile(new File(FileSavingUtil.sRootPath)));
-        context.sendBroadcast(scanIntent);
-    }
-
-    public static void scanMedia(Context context, String filename) {
-        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        scanIntent.setData(Uri.fromFile(new File(filename)));
-        context.sendBroadcast(scanIntent);
-    }
-
     public static void registerScanReceiver(Context context, BroadcastReceiver receiver) {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_SCANNER_STARTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);

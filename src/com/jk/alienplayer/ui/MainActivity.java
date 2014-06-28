@@ -1,7 +1,6 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.ui.fragment.AlbumsFragment;
 import com.jk.alienplayer.ui.fragment.ArtistsFragment;
 import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
@@ -18,7 +17,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,8 +71,6 @@ public class MainActivity extends FragmentActivity {
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mIndicator, Gravity.CENTER);
-        } else if (item.getItemId() == R.id.action_scan) {
-            DatabaseHelper.scanMedia(this);
         }
         return super.onOptionsItemSelected(item);
     }
