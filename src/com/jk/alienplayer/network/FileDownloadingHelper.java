@@ -45,6 +45,7 @@ public class FileDownloadingHelper {
     }
 
     public void setupRootPath(Context context) {
+        mContext = context;
         StorageManager sm = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
         String systemPath = null;
         try {
@@ -118,7 +119,7 @@ public class FileDownloadingHelper {
             inputStream.close();
             info.status = FileDownloadingInfo.Status.COMPLETED;
             if (mContext != null) {
-                MediaScanService.startScan(mContext, String.valueOf(info.trackInfo.dfsId));
+                MediaScanService.startScan(mContext, filePath);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

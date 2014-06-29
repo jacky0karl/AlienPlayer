@@ -18,7 +18,6 @@ public class MediaScanService extends Service {
 
     public static final String ACTION_MEDIA_SCAN_COMPLETED = "com.jk.alienplayer.MEDIA_SCAN_COMPLETED";
     public static final String FILE_PATH = "file_path";
-    public static final String FILE_DFS_ID = "file_dfsId";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -64,10 +63,10 @@ public class MediaScanService extends Service {
         return START_STICKY;
     }
 
-    public static void startScan(Context context, String dfsId) {
+    public static void startScan(Context context, String filePath) {
         Intent intent = new Intent(context, MediaScanService.class);
         intent.putExtra(MediaScanService.SCAN_COMMAND, MediaScanService.SCAN_FILE);
-        intent.putExtra(MediaScanService.FILE_DFS_ID, dfsId);
+        intent.putExtra(MediaScanService.FILE_PATH, filePath);
         context.startService(intent);
     }
 
