@@ -2,6 +2,7 @@ package com.jk.alienplayer.ui.fragment;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.ArtistInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.SongsActivity;
@@ -29,7 +30,7 @@ public class ArtistsFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+            if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
                 mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
             }
         }
@@ -39,7 +40,7 @@ public class ArtistsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
-        DatabaseHelper.registerScanReceiver(getActivity(), mReceiver);
+        MediaScanService.registerScanReceiver(getActivity(), mReceiver);
         return root;
     }
 

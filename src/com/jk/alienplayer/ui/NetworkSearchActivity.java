@@ -10,9 +10,6 @@ import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.adapter.NetworkSearchResultsAdapter;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -139,14 +136,18 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.download_list) {
+            Intent intent = new Intent(this, DownloadListActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initSearchBar(MenuItem item) {
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
         SearchView searchView = (SearchView) item.getActionView();
-        searchView.setSearchableInfo(info);
         searchView.setOnQueryTextListener(mQueryTextListener);
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setIconified(false);
     }
 
     @Override

@@ -2,8 +2,13 @@
 
     <item
         android:id="@+id/search"
-        android:actionViewClass="android.widget.SearchView"
+        android:actionLayout="@layout/search_view"
         android:icon="@android:drawable/ic_menu_search"
         android:showAsAction="always"/>
+    <item
+        android:id="@+id/download_list"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/download_list"/>
 
 </menu>

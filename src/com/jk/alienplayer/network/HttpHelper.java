@@ -1,6 +1,5 @@
 package com.jk.alienplayer.network;
 
-import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -35,12 +34,6 @@ public class HttpHelper {
         void onSuccess(String response);
 
         void onFail(int status, String response);
-    }
-
-    public interface FileDownloadListener {
-        void onSuccess(String dfsId, String filename);
-
-        void onFail(String dfsId);
     }
 
     public static void search(final int type, final String key, final HttpResponseHandler handler) {
@@ -147,32 +140,9 @@ public class HttpHelper {
         thread.start();
     }
 
-    public static void downloadTrack(final String dfsId, final String name,
-            final FileDownloadListener listener) {
-        if (listener == null) {
-            return;
-        }
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String encryptedId = encrypt(dfsId);
-                    String baseUrl = TRACK_DOWANLOAD_URL + encryptedId + "/" + dfsId + ".mp3";
-
-                    InputStream is = FileSavingUtil.getInputStream(baseUrl);
-                    String filename = FileSavingUtil.sRootPath + name + ".mp3";
-                    if (FileSavingUtil.saveFile(filename, is)) {
-                        listener.onSuccess(dfsId, filename);
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                listener.onFail(dfsId);
-            }
-        });
-        thread.start();
+    public static String getDownloadTrackUrl(String dfsId) {
+        String encryptedId = encrypt(dfsId);
+        return TRACK_DOWANLOAD_URL + encryptedId + "/" + dfsId + ".mp3";
     }
 
     private static String encrypt(String str) {

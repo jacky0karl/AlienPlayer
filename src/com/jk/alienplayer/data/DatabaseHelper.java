@@ -1,6 +1,5 @@
 package com.jk.alienplayer.data;
 
-import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -12,14 +11,10 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.PlaylistInfo;
 import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.network.FileSavingUtil;
 
-import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,13 +30,6 @@ public class DatabaseHelper {
     private static final String DISTINCT = "DISTINCT ";
     private static final String MEDIA_SELECTION = Media.SIZE + ">'"
             + String.valueOf(MIN_MUSIC_SIZE) + "' and " + Media.IS_MUSIC + "=1";
-
-    public static void registerScanReceiver(Context context, BroadcastReceiver receiver) {
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_SCANNER_STARTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-        intentFilter.addDataScheme("file");
-        context.registerReceiver(receiver, intentFilter);
-    }
 
     public static List<ArtistInfo> getArtists(Context context) {
         List<ArtistInfo> artists = new ArrayList<ArtistInfo>();

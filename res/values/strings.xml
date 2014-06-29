@@ -22,6 +22,8 @@
     <string name="info">Info</string>
     <string name="no_lyric">No Lyric</string>
     <string name="no_result">No Result</string>
+    <string name="no_item">No Item</string>
+    <string name="download_list">Download List</string>
 
     <!-- menu title -->
     <string name="delete">Delete</string>

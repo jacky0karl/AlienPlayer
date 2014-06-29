@@ -56,13 +56,6 @@
             android:label="@string/discover"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".ui.PlayingActivity"
@@ -77,6 +70,12 @@
         </activity>
         <activity
             android:name=".ui.NetworkTracksActivity"
+            android:parentActivityName=".ui.NetworkSearchActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.DownloadListActivity"
+            android:label="@string/download_list"
             android:parentActivityName=".ui.NetworkSearchActivity"
             android:screenOrientation="portrait" >
         </activity>

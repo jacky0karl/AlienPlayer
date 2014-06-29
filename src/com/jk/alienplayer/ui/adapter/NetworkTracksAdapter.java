@@ -64,11 +64,6 @@ public class NetworkTracksAdapter extends BaseAdapter {
         NetworkTrackInfo info = mTracks.get(position);
         viewHolder.name.setText(info.name);
         viewHolder.artists.setText(info.artists);
-        if (info.downloaded) {
-            viewHolder.downloadBtn.setImageResource(R.drawable.download_btn_finish);
-        } else {
-            viewHolder.downloadBtn.setImageResource(R.drawable.download_btn);
-        }
         return view;
     }
 

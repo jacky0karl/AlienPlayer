@@ -1,7 +1,10 @@
 package com.jk.alienplayer.impl;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
@@ -13,7 +16,9 @@ public class MediaScanService extends Service {
     public static final int SCAN_ALL = 0;
     public static final int SCAN_FILE = 1;
 
+    public static final String ACTION_MEDIA_SCAN_COMPLETED = "com.jk.alienplayer.MEDIA_SCAN_COMPLETED";
     public static final String FILE_PATH = "file_path";
+    public static final String FILE_DFS_ID = "file_dfsId";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -28,8 +33,9 @@ public class MediaScanService extends Service {
 
         @Override
         public void onScanCompleted(String path, Uri uri) {
-            // TODO Auto-generated method stub
-
+            Intent intent = new Intent(ACTION_MEDIA_SCAN_COMPLETED);
+            intent.putExtra(FILE_PATH, path);
+            MediaScanService.this.sendBroadcast(intent);
         }
     };
 
@@ -58,4 +64,15 @@ public class MediaScanService extends Service {
         return START_STICKY;
     }
 
+    public static void startScan(Context context, String dfsId) {
+        Intent intent = new Intent(context, MediaScanService.class);
+        intent.putExtra(MediaScanService.SCAN_COMMAND, MediaScanService.SCAN_FILE);
+        intent.putExtra(MediaScanService.FILE_DFS_ID, dfsId);
+        context.startService(intent);
+    }
+
+    public static void registerScanReceiver(Context context, BroadcastReceiver receiver) {
+        IntentFilter intentFilter = new IntentFilter(ACTION_MEDIA_SCAN_COMPLETED);
+        context.registerReceiver(receiver, intentFilter);
+    }
 }
