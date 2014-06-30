@@ -12,5 +12,6 @@
     <dimen name="max_text_width">240dp</dimen>
     <dimen name="button_size">48dp</dimen>
     <dimen name="timetag_offset">90dp</dimen>
+    <dimen name="list_avatar_size">50dp</dimen>
 
 </resources>

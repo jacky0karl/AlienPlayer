@@ -9,12 +9,15 @@ import com.jk.alienplayer.metadata.NetworkArtistInfo;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.metadata.SearchResult;
+import com.jk.alienplayer.utils.ImageLoaderUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class NetworkSearchResultsAdapter extends BaseAdapter {
@@ -90,6 +93,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
             viewHolder = new ArtistViewHolder();
             view = mInflater.inflate(R.layout.search_network_artist_item, null);
             viewHolder.title = (TextView) view.findViewById(R.id.title);
+            viewHolder.avatar = (ImageView) view.findViewById(R.id.avatar);
             viewHolder.content = (TextView) view.findViewById(R.id.content);
             view.setTag(viewHolder);
         } else {
@@ -97,6 +101,9 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkArtistInfo result = (NetworkArtistInfo) mResults.get(position);
+        viewHolder.avatar.setImageResource(R.drawable.disk);
+        ImageLoader.getInstance().displayImage(result.avatar, viewHolder.avatar,
+                ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
         if (position == 0) {
             showTitle(viewHolder.title, result.type);
@@ -114,6 +121,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
             viewHolder = new AlbumViewHolder();
             view = mInflater.inflate(R.layout.search_network_album_item, null);
             viewHolder.title = (TextView) view.findViewById(R.id.title);
+            viewHolder.artwork = (ImageView) view.findViewById(R.id.artwork);
             viewHolder.content = (TextView) view.findViewById(R.id.content);
             viewHolder.artist = (TextView) view.findViewById(R.id.artist);
             view.setTag(viewHolder);
@@ -122,6 +130,9 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkAlbumInfo result = (NetworkAlbumInfo) mResults.get(position);
+        viewHolder.artwork.setImageResource(R.drawable.disk);
+        ImageLoader.getInstance().displayImage(result.avatar, viewHolder.artwork,
+                ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
         viewHolder.artist.setText(result.artist);
         if (position == 0) {
@@ -162,17 +173,20 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
 
     static class ArtistViewHolder {
         TextView title;
+        ImageView avatar;
         TextView content;
     }
 
     static class AlbumViewHolder {
         TextView title;
+        ImageView artwork;
         TextView content;
         TextView artist;
     }
 
     static class TrackViewHolder {
         TextView title;
+        ImageView avatar;
         TextView content;
         TextView artists;
     }

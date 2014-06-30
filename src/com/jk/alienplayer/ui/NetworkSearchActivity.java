@@ -138,7 +138,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.discover, menu);
         initSearchBar(menu.findItem(R.id.search));
         return true;
     }
