@@ -93,7 +93,8 @@ public class NetworkTracksActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == Dialog.BUTTON_POSITIVE) {
-                    String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId));
+                    String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId),
+                            info.ext);
                     FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
                 }
             }

@@ -19,7 +19,6 @@ import org.apache.http.util.EntityUtils;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 
 import android.util.Base64;
-import android.util.Log;
 
 public class HttpHelper {
 
@@ -29,6 +28,7 @@ public class HttpHelper {
     private static final String SEARCH_URL = "http://music.163.com/api/search/get/";
     private static final String GET_ALBUMS_URL = "http://music.163.com/api/artist/albums/";
     private static final String GET_TRACKS_URL = "http://music.163.com/api/album/";
+    private static final String GET_TRACK_URL = "http://music.163.com/api/song/detail/";
     private static final String TRACK_DOWANLOAD_URL = "http://m1.music.126.net/";
 
     public interface HttpResponseHandler {
@@ -74,8 +74,8 @@ public class HttpHelper {
                         handler.onFail(status, responseStr);
                     }
                 } catch (Exception e) {
-                    handler.onFail(0, "exception");
                     e.printStackTrace();
+                    handler.onFail(-1, e.getMessage());
                 }
             }
         });
@@ -106,6 +106,7 @@ public class HttpHelper {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    handler.onFail(-1, e.getMessage());
                 }
             }
         });
@@ -135,6 +136,7 @@ public class HttpHelper {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    handler.onFail(-1, e.getMessage());
                 }
             }
         });
@@ -142,40 +144,39 @@ public class HttpHelper {
     }
 
     public static void getTrack(final String trackId, final HttpResponseHandler handler) {
-        // if (handler == null) {
-        // return;
-        // }
+        if (handler == null) {
+            return;
+        }
 
-        //final String GET_TRACK_URL = "http://music.163.com/api/song/detail/";
-        final String GET_TRACK_URL = "http://music.163.com/api/song/detail/?ids=[209932]";
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    HttpGet get = new HttpGet(GET_TRACK_URL);
+                    String url = GET_TRACK_URL + "?ids=[" + trackId + "]";
+                    HttpGet get = new HttpGet(url);
                     get.setHeader("Cookie", COOKIE);
                     HttpClient httpClient = new DefaultHttpClient();
 
                     HttpResponse response = httpClient.execute(get);
                     int status = response.getStatusLine().getStatusCode();
                     String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
-                    Log.e("dadasdsa", responseStr);
                     if (status == 200) {
-                       // handler.onSuccess(responseStr);
+                        handler.onSuccess(responseStr);
                     } else {
-                      //  handler.onFail(status, responseStr);
+                        handler.onFail(status, responseStr);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    handler.onFail(-1, e.getMessage());
                 }
             }
         });
         thread.start();
     }
 
-    public static String getDownloadTrackUrl(String dfsId) {
+    public static String getDownloadTrackUrl(String dfsId, String ext) {
         String encryptedId = encrypt(dfsId);
-        return TRACK_DOWANLOAD_URL + encryptedId + "/" + dfsId + ".mp3";
+        return TRACK_DOWANLOAD_URL + encryptedId + "/" + dfsId + "." + ext;
     }
 
     private static String encrypt(String str) {

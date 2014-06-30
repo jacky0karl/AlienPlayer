@@ -5,12 +5,18 @@ import java.util.List;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.JsonHelper;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
+import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.adapter.NetworkSearchResultsAdapter;
+import com.jk.alienplayer.ui.lib.DialogBuilder;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -23,6 +29,7 @@ import android.widget.SearchView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NetworkSearchActivity extends Activity implements OnItemClickListener {
 
@@ -163,7 +170,45 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
             intent.putExtra(NetworkTracksActivity.ALBUM_ID, result.id);
             intent.putExtra(NetworkTracksActivity.LABEL, result.name);
             startActivity(intent);
+        } else if (result.type == NetworkSearchResult.TYPE_TRACKS) {
+            downloadTrack((NetworkTrackInfo) result);
+        }
+    }
+
+    private void downloadTrack(final NetworkTrackInfo info) {
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == Dialog.BUTTON_POSITIVE) {
+                    HttpHelper.getTrack(String.valueOf(info.id), mDownloadInfoHandler);
+                }
+            }
+        };
+
+        Dialog dialog = DialogBuilder.buildAlertDialog(this, R.string.download_track_confirm,
+                listener);
+        dialog.show();
+    }
+
+    private HttpResponseHandler mDownloadInfoHandler = new HttpResponseHandler() {
+        @Override
+        public void onSuccess(String response) {
+            NetworkTrackInfo info = JsonHelper.parseTrack(response);
+            if (info != null) {
+                String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId), info.ext);
+                FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
+            }
         }
 
-    }
+        @Override
+        public void onFail(int status, String response) {
+            NetworkSearchActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), R.string.download_fail,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    };
 }

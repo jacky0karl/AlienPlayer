@@ -1,7 +1,6 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.ui.fragment.AlbumsFragment;
 import com.jk.alienplayer.ui.fragment.ArtistsFragment;
 import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
@@ -47,7 +46,6 @@ public class MainActivity extends FragmentActivity {
         mIndicator = (TabPageIndicator) findViewById(R.id.indicator);
         mIndicator.setViewPager(pager);
         mVolumeBar = VolumeBarWindow.createVolumeBarWindow(this);
-        HttpHelper.getTrack("209932", null);
     }
 
     @Override

@@ -82,16 +82,9 @@ public class JsonHelper {
 
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
+                    String artists = getArtistsOfTrack(trackObj);
 
-                    String artists = "";
-                    JSONArray artistsArray = trackObj.getJSONArray("artists");
-                    for (int j = 0; j < artistsArray.length(); j++) {
-                        JSONObject artistObj = artistsArray.getJSONObject(j);
-                        String artist = artistObj.getString("name");
-                        artists += artist + " ";
-                    }
-
-                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists.trim());
+                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
                     info.album = albumStr;
                     tracks.add(info);
                 }
@@ -141,24 +134,20 @@ public class JsonHelper {
                     long id = trackObj.getLong("id");
                     String name = trackObj.getString("name");
                     int position = trackObj.getInt("position");
+
                     JSONObject hMusicObj = trackObj.getJSONObject("hMusic");
                     long dfsId = hMusicObj.getLong("dfsId");
+                    String ext = hMusicObj.getString("extension");
 
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
+                    String artists = getArtistsOfTrack(trackObj);
 
-                    String artists = "";
-                    JSONArray artistsArray = trackObj.getJSONArray("artists");
-                    for (int j = 0; j < artistsArray.length(); j++) {
-                        JSONObject artistObj = artistsArray.getJSONObject(j);
-                        String artist = artistObj.getString("name");
-                        artists += artist + " ";
-                    }
-
-                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists.trim());
+                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
                     info.dfsId = dfsId;
                     info.album = albumStr;
                     info.position = position;
+                    info.ext = ext;
                     tracks.add(info);
                 }
             }
@@ -166,5 +155,55 @@ public class JsonHelper {
             e.printStackTrace();
         }
         return tracks;
+    }
+
+    public static NetworkTrackInfo parseTrack(String jsonStr) {
+        try {
+            JSONObject json = new JSONObject(jsonStr);
+            int status = json.getInt(STATUS);
+            if (status == STATUS_OK) {
+                JSONArray trackArray = json.getJSONArray("songs");
+                for (int i = 0; i < trackArray.length();) {
+                    JSONObject trackObj = trackArray.getJSONObject(i);
+                    long id = trackObj.getLong("id");
+                    String name = trackObj.getString("name");
+                    int position = trackObj.getInt("position");
+
+                    JSONObject hMusicObj = trackObj.getJSONObject("hMusic");
+                    long dfsId = hMusicObj.getLong("dfsId");
+                    String ext = hMusicObj.getString("extension");
+
+                    JSONObject albumObj = trackObj.getJSONObject("album");
+                    String albumStr = albumObj.getString("name");
+                    String artists = getArtistsOfTrack(trackObj);
+
+                    NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
+                    info.dfsId = dfsId;
+                    info.album = albumStr;
+                    info.position = position;
+                    info.ext = ext;
+                    return info;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static String getArtistsOfTrack(JSONObject trackObj) {
+        String artists = "";
+        JSONArray artistsArray;
+        try {
+            artistsArray = trackObj.getJSONArray("artists");
+            for (int j = 0; j < artistsArray.length(); j++) {
+                JSONObject artistObj = artistsArray.getJSONObject(j);
+                String artist = artistObj.getString("name");
+                artists += artist + " ";
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return artists.trim();
     }
 }

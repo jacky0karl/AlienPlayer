@@ -204,8 +204,11 @@ public class FileDownloadingHelper {
         sb.append(sRootPath);
         sb.append(info.artists);
         sb.append(File.separator);
+        sb.append(info.album);
+        sb.append(File.separator);
         sb.append(info.name);
-        sb.append(".mp3");
+        sb.append(".");
+        sb.append(info.ext);
         return sb.toString();
     }
 }
