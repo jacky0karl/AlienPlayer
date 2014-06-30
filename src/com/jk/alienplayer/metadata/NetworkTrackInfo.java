@@ -3,6 +3,7 @@ package com.jk.alienplayer.metadata;
 public class NetworkTrackInfo extends NetworkSearchResult {
 
     public String artists;
+    public String album;
     public int position = 0;
     public long dfsId = 0;
 

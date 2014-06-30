@@ -80,6 +80,9 @@ public class JsonHelper {
                     long id = trackObj.getLong("id");
                     String name = trackObj.getString("name");
 
+                    JSONObject albumObj = trackObj.getJSONObject("album");
+                    String albumStr = albumObj.getString("name");
+
                     String artists = "";
                     JSONArray artistsArray = trackObj.getJSONArray("artists");
                     for (int j = 0; j < artistsArray.length(); j++) {
@@ -89,6 +92,7 @@ public class JsonHelper {
                     }
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists.trim());
+                    info.album = albumStr;
                     tracks.add(info);
                 }
             }
@@ -140,6 +144,9 @@ public class JsonHelper {
                     JSONObject hMusicObj = trackObj.getJSONObject("hMusic");
                     long dfsId = hMusicObj.getLong("dfsId");
 
+                    JSONObject albumObj = trackObj.getJSONObject("album");
+                    String albumStr = albumObj.getString("name");
+
                     String artists = "";
                     JSONArray artistsArray = trackObj.getJSONArray("artists");
                     for (int j = 0; j < artistsArray.length(); j++) {
@@ -150,6 +157,7 @@ public class JsonHelper {
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists.trim());
                     info.dfsId = dfsId;
+                    info.album = albumStr;
                     info.position = position;
                     tracks.add(info);
                 }

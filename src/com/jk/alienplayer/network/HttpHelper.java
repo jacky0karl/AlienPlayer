@@ -19,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 
 import android.util.Base64;
+import android.util.Log;
 
 public class HttpHelper {
 
@@ -131,6 +132,38 @@ public class HttpHelper {
                         handler.onSuccess(responseStr);
                     } else {
                         handler.onFail(status, responseStr);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public static void getTrack(final String trackId, final HttpResponseHandler handler) {
+        // if (handler == null) {
+        // return;
+        // }
+
+        //final String GET_TRACK_URL = "http://music.163.com/api/song/detail/";
+        final String GET_TRACK_URL = "http://music.163.com/api/song/detail/?ids=[209932]";
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HttpGet get = new HttpGet(GET_TRACK_URL);
+                    get.setHeader("Cookie", COOKIE);
+                    HttpClient httpClient = new DefaultHttpClient();
+
+                    HttpResponse response = httpClient.execute(get);
+                    int status = response.getStatusLine().getStatusCode();
+                    String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.e("dadasdsa", responseStr);
+                    if (status == 200) {
+                       // handler.onSuccess(responseStr);
+                    } else {
+                      //  handler.onFail(status, responseStr);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
