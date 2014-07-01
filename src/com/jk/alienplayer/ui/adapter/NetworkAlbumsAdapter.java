@@ -66,7 +66,6 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
         NetworkAlbumInfo info = mAlbums.get(position);
         viewHolder.name.setText(info.name);
         viewHolder.artist.setText(info.artist);
-        viewHolder.artwork.setImageResource(R.drawable.disk);
         ImageLoader.getInstance().displayImage(info.avatar, viewHolder.artwork,
                 ImageLoaderUtils.sOptions);
         return view;

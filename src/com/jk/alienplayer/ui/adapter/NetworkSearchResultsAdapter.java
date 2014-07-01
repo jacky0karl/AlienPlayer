@@ -101,7 +101,6 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkArtistInfo result = (NetworkArtistInfo) mResults.get(position);
-        viewHolder.avatar.setImageResource(R.drawable.disk);
         ImageLoader.getInstance().displayImage(result.avatar, viewHolder.avatar,
                 ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
@@ -130,7 +129,6 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkAlbumInfo result = (NetworkAlbumInfo) mResults.get(position);
-        viewHolder.artwork.setImageResource(R.drawable.disk);
         ImageLoader.getInstance().displayImage(result.avatar, viewHolder.artwork,
                 ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
