@@ -89,6 +89,10 @@ public class FileDownloadListAdapter extends BaseAdapter {
     }
 
     private String calculateProgress(FileDownloadingInfo info) {
+        if (info.size == 0) {
+            return "0%";
+        }
+
         int progress = (info.progress * 100) / info.size;
         return progress + "%";
     }
