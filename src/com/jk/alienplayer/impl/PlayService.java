@@ -9,11 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.KeyEvent;
 
 public class PlayService extends Service {
-
     public static final String BROADCAST_ACTION = "broadCast_action";
     public static final String PLAYING_COMMAND = "playing_command";
     public static final String SEEK_TIME_MSEC = "seek_time_msec";
@@ -34,27 +32,16 @@ public class PlayService extends Service {
     public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.progress_update";
     public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.track_change";
 
+    private static final int MEDIA_BUTTON_PRIORITY = 999;
     private PlayingHelper mPlayingHelper;
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Intent.ACTION_MEDIA_BUTTON)) {
+            if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
                 KeyEvent key = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-                if (key.getAction() == KeyEvent.ACTION_UP) {
-                    Log.e("onReceive", "code=" + key.getKeyCode());
-                    switch (key.getKeyCode()) {
-                    case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                        break;
-                    case KeyEvent.KEYCODE_MEDIA_NEXT:
-                        break;
-                    case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                        break;
-                    default:
-                        break;
-                    }
+                if (handleMediaButton(key)) {
+                    abortBroadcast();
                 }
-                abortBroadcast();
             }
         }
     };
@@ -69,7 +56,7 @@ public class PlayService extends Service {
         super.onCreate();
         mPlayingHelper = new PlayingHelper(this);
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
-        intentFilter.setPriority(999);
+        intentFilter.setPriority(MEDIA_BUTTON_PRIORITY);
         registerReceiver(mReceiver, intentFilter);
     }
 
@@ -80,7 +67,6 @@ public class PlayService extends Service {
         }
 
         int action = intent.getIntExtra(PLAYING_COMMAND, -1);
-        Log.e("#### PlayService", "action = " + action);
         switch (action) {
         case COMMAND_PLAY_PAUSE:
             mPlayingHelper.playOrPause();
@@ -104,6 +90,37 @@ public class PlayService extends Service {
             break;
         }
         return START_STICKY;
+    }
+
+    private boolean handleMediaButton(KeyEvent key) {
+        if (key.getAction() == KeyEvent.ACTION_UP) {
+            switch (key.getKeyCode()) {
+            case KeyEvent.KEYCODE_MEDIA_PLAY:
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                mPlayingHelper.playOrPause();
+                return true;
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                PlayingInfoHolder.getInstance().next(PlayService.this);
+                mPlayingHelper.play();
+                return true;
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                PlayingInfoHolder.getInstance().prev(PlayService.this);
+                mPlayingHelper.play();
+                return true;
+            default:
+                return false;
+            }
+        } else {
+            // Any Broadcast about those key events should be aborted
+            int code = key.getKeyCode();
+            if (code == KeyEvent.KEYCODE_MEDIA_PLAY || code == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
+                    || code == KeyEvent.KEYCODE_MEDIA_NEXT
+                    || code == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     @Override
