@@ -1,23 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="always"/>
-    <item
-        android:id="@+id/discover"
+        android:id="@+id/action_info"
         android:orderInCategory="98"
         android:showAsAction="never"
-        android:title="@string/discover"/>
+        android:title="@string/info"/>
     <item
         android:id="@+id/action_volume"
         android:orderInCategory="99"
         android:showAsAction="never"
         android:title="@string/volume"/>
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/audioEffect"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/settings"/>
+        android:title="@string/audioEffect"/>
 
 </menu>

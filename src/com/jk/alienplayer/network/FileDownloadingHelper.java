@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.jk.alienplayer.data.Mp3TagsHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
-import com.jk.alienplayer.utils.Mp3InfoUtils;
 
 import android.content.Context;
 import android.os.Environment;
@@ -192,7 +192,9 @@ public class FileDownloadingHelper {
     };
 
     private void dealDownloadFile(NetworkTrackInfo info, String filePath) {
-        Mp3InfoUtils.writeMp3Tags(info, filePath);
+        if (info.ext.equalsIgnoreCase("mp3")) {
+            Mp3TagsHelper.writeMp3Tags(info, filePath);
+        }
         MediaScanService.startScan(mContext, filePath);
     }
 

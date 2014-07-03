@@ -10,6 +10,7 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.fragment.ArtworkFragment;
 import com.jk.alienplayer.ui.fragment.CurrentListFragment;
 import com.jk.alienplayer.ui.fragment.LyricFragment;
+import com.jk.alienplayer.ui.lib.VolumeBarWindow;
 import com.jk.alienplayer.utils.PlayingTimeUtils;
 
 import android.content.BroadcastReceiver;
@@ -21,6 +22,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +49,8 @@ public class PlayingActivity extends FragmentActivity {
     private TextView mDuration;
     private TextView mSeekTime;
     private PopupWindow mPopupWindow;
+    private VolumeBarWindow mVolumeBar;
+    private ViewPager mContent;
 
     private boolean mIsTrackingTouch = false;
     private int mTimetagOffset;
@@ -93,13 +97,19 @@ public class PlayingActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.song_detail, menu);
+        getMenuInflater().inflate(R.menu.playing, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.audioEffect) {
+        if (item.getItemId() == R.id.action_info) {
+            Intent intent = new Intent(this, TrackInfoActivity.class);
+            intent.putExtra(TrackInfoActivity.TRACK_FILE_PATH, mSongInfo.path);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_volume) {
+            mVolumeBar.show(mContent, Gravity.CENTER);
+        } else if (item.getItemId() == R.id.audioEffect) {
             displayAudioEffect();
         }
         return super.onOptionsItemSelected(item);
@@ -149,6 +159,9 @@ public class PlayingActivity extends FragmentActivity {
 
         PlayService.registerReceiver(this, mReceiver);
         setupPopupWindow();
+
+        mContent = (ViewPager) findViewById(R.id.pager);
+        mVolumeBar = VolumeBarWindow.createVolumeBarWindow(this);
         syncView();
     }
 
@@ -165,6 +178,7 @@ public class PlayingActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
+        mVolumeBar.dismiss();
         unregisterReceiver(mReceiver);
         super.onDestroy();
     }

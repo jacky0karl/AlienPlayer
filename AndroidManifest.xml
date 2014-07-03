@@ -64,6 +64,13 @@
             android:theme="@style/Theme.PageIndicatorDefaults" >
         </activity>
         <activity
+            android:name=".ui.TrackInfoActivity"
+            android:label="@string/track_details"
+            android:parentActivityName=".ui.PlayingActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
             android:name=".ui.NetworkAlbumsActivity"
             android:parentActivityName=".ui.NetworkSearchActivity"
             android:screenOrientation="portrait" >
