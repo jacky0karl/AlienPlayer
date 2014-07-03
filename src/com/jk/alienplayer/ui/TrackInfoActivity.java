@@ -2,21 +2,28 @@ package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.Mp3TagsHelper;
+import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 
 public class TrackInfoActivity extends Activity {
     public static final String TRACK_FILE_PATH = "track_file_path";
 
     private TrackTagInfo mTrackTagInfo;
+    private String mTrackPath;
     private EditText mTitle;
     private EditText mArtist;
     private EditText mAlbum;
     private EditText mAlbumArtist;
     private EditText mTrack;
+    private Button mOkBtn;
+    private Button mCancelBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +33,8 @@ public class TrackInfoActivity extends Activity {
     }
 
     private void init() {
-        String trackPath = getIntent().getStringExtra(TRACK_FILE_PATH);
-        mTrackTagInfo = Mp3TagsHelper.readMp3Tags(trackPath);
+        mTrackPath = getIntent().getStringExtra(TRACK_FILE_PATH);
+        mTrackTagInfo = Mp3TagsHelper.readMp3Tags(mTrackPath);
 
         mTitle = (EditText) findViewById(R.id.title);
         mTitle.setText(mTrackTagInfo.getTitle());
@@ -39,5 +46,31 @@ public class TrackInfoActivity extends Activity {
         mAlbumArtist.setText(mTrackTagInfo.getArtistAlbum());
         mTrack = (EditText) findViewById(R.id.track);
         mTrack.setText(mTrackTagInfo.getTrack());
+
+        mOkBtn = (Button) findViewById(R.id.okBtn);
+        mOkBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                writeTrackTags();
+                MediaScanService.startScan(TrackInfoActivity.this, mTrackPath);
+                TrackInfoActivity.this.finish();
+            }
+        });
+        mCancelBtn = (Button) findViewById(R.id.cancelBtn);
+        mCancelBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TrackInfoActivity.this.finish();
+            }
+        });
+    }
+
+    private void writeTrackTags() {
+        String title = mTitle.getText().toString().trim();
+        String artists = mArtist.getText().toString().trim();
+        String album = mAlbum.getText().toString().trim();
+        String artistAlbum = mAlbumArtist.getText().toString().trim();
+        String track = mTrack.getText().toString().trim();
+        Mp3TagsHelper.writeMp3Tags(title, artists, album, artistAlbum, track, mTrackPath);
     }
 }
