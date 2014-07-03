@@ -24,13 +24,11 @@ public class MediaButtonReceiver extends BroadcastReceiver {
                     context.startService(intentPlay);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_NEXT:
-                    PlayingInfoHolder.getInstance().next(context);
                     Intent intentNext = PlayService.getPlayingCommandIntent(context,
                             PlayService.COMMAND_NEXT);
                     context.startService(intentNext);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    PlayingInfoHolder.getInstance().prev(context);
                     Intent intentPrev = PlayService.getPlayingCommandIntent(context,
                             PlayService.COMMAND_PREV);
                     context.startService(intentPrev);
