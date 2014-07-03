@@ -82,7 +82,7 @@ public class JsonHelper {
 
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
-                    String artists = getArtistsOfTrack(trackObj);
+                    String artists = getArtistsOfItem(trackObj);
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
                     info.album = albumStr;
@@ -141,10 +141,12 @@ public class JsonHelper {
 
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
-                    String artists = getArtistsOfTrack(trackObj);
+                    String artistAlbum = getArtistsOfItem(albumObj);
+                    String artists = getArtistsOfItem(trackObj);
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
                     info.dfsId = dfsId;
+                    info.artistAlbum = artistAlbum;
                     info.album = albumStr;
                     info.position = position;
                     info.ext = ext;
@@ -175,11 +177,13 @@ public class JsonHelper {
 
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
-                    String artists = getArtistsOfTrack(trackObj);
+                    String artistAlbum = getArtistsOfItem(albumObj);
+                    String artists = getArtistsOfItem(trackObj);
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
                     info.dfsId = dfsId;
                     info.album = albumStr;
+                    info.artistAlbum = artistAlbum;
                     info.position = position;
                     info.ext = ext;
                     return info;
@@ -191,19 +195,21 @@ public class JsonHelper {
         return null;
     }
 
-    private static String getArtistsOfTrack(JSONObject trackObj) {
+    private static String getArtistsOfItem(JSONObject Obj) {
         String artists = "";
         JSONArray artistsArray;
         try {
-            artistsArray = trackObj.getJSONArray("artists");
+            artistsArray = Obj.getJSONArray("artists");
             for (int j = 0; j < artistsArray.length(); j++) {
                 JSONObject artistObj = artistsArray.getJSONObject(j);
                 String artist = artistObj.getString("name");
-                artists += artist + " ";
+                artists += artist + "&";
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return artists.trim();
+
+        artists = artists.substring(0, artists.length() - 1);
+        return artists;
     }
 }

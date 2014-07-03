@@ -17,6 +17,7 @@ import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.utils.Mp3InfoUtils;
 
 import android.content.Context;
 import android.os.Environment;
@@ -119,7 +120,7 @@ public class FileDownloadingHelper {
             inputStream.close();
             info.status = FileDownloadingInfo.Status.COMPLETED;
             if (mContext != null) {
-                MediaScanService.startScan(mContext, filePath);
+                dealDownloadFile(info.trackInfo, filePath);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -189,6 +190,11 @@ public class FileDownloadingHelper {
             downloadTrack(info, url);
         }
     };
+
+    private void dealDownloadFile(NetworkTrackInfo info, String filePath) {
+        Mp3InfoUtils.writeMp3Tags(info, filePath);
+        MediaScanService.startScan(mContext, filePath);
+    }
 
     private boolean ensurePath(File file) {
         String filePath = file.getParent();
