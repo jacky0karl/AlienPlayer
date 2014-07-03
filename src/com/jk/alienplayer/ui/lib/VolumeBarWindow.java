@@ -66,7 +66,13 @@ public class VolumeBarWindow extends PopupWindow {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, seekBar.getProgress(), 0);
+                int volume = seekBar.getProgress();
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+                if (volume == 0) {
+                    mMuteBtn.setImageResource(R.drawable.mute);
+                } else {
+                    mMuteBtn.setImageResource(R.drawable.volume);
+                }
             }
         });
 

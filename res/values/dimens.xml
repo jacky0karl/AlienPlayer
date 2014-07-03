@@ -2,7 +2,7 @@
 
     <dimen name="normal_padding">8dp</dimen>
     <dimen name="playbar_height">100dp</dimen>
-    <dimen name="volumebar_width">240dp</dimen>
+    <dimen name="volumebar_width">260dp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="menu_width">180dp</dimen>
     <dimen name="menu_height">40dp</dimen>

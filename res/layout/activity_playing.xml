@@ -39,7 +39,9 @@
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/progress" />
+            android:layout_below="@id/progress"
+            android:maxHeight="@dimen/progressbar_height"
+            android:progressDrawable="@drawable/progressbar" />
 
         <include
             android:layout_width="match_parent"

@@ -53,7 +53,8 @@
         android:layout_below="@id/size"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="2dp"
+        android:progressDrawable="@drawable/progressbar" />
 
     <TextView
         android:id="@+id/progress"
