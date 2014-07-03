@@ -6,7 +6,9 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.RecentsDBHelper;
+import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
@@ -14,6 +16,8 @@ import com.jk.alienplayer.ui.lib.PlaylistSeletor;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
@@ -49,6 +53,17 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
         }
     };
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
+                List<SongInfo> recentsList = RecentsDBHelper.getRecentTracks(getActivity());
+                mAdapter.setTracks(recentsList);
+            }
+        }
+    };
+
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,6 +80,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
+        MediaScanService.registerScanReceiver(getActivity(), mReceiver);
         getActivity().getContentResolver().registerContentObserver(
                 RecentsDBHelper.getRecentsUri(getActivity()), true, mContentObserver);
         return root;
@@ -73,6 +89,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     @Override
     public void onDestroy() {
         mPopupWindow.dismiss();
+        getActivity().unregisterReceiver(mReceiver);
         getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
         super.onDestroy();
     }
