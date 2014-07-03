@@ -30,7 +30,9 @@ public class Mp3TagsHelper {
             tag.setField(FieldKey.ALBUM_ARTIST, artistAlbum);
             tag.setField(FieldKey.ALBUM, album);
             tag.setField(FieldKey.TITLE, title);
-            tag.setField(FieldKey.TRACK, track);
+            if (!TextUtils.isEmpty(track) && TextUtils.isDigitsOnly(track)) {
+                tag.setField(FieldKey.TRACK, track);
+            }
 
             mp3.setID3v2Tag(tag);
             mp3.save();
