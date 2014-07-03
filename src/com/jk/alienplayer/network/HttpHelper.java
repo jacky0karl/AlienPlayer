@@ -24,7 +24,8 @@ public class HttpHelper {
 
     private static final String COOKIE = "appver=1.7.6;os=Android";
     private static final String KEY = "3go8&$8*3*3h0k(2)2";
-    private static final String LIMIT = "20";
+    private static final String SEARCH_LIMIT = "30";
+    private static final String ALBUM_LIMIT = "100";
     private static final String SEARCH_URL = "http://music.163.com/api/search/get/";
     private static final String GET_ALBUMS_URL = "http://music.163.com/api/artist/albums/";
     private static final String GET_TRACKS_URL = "http://music.163.com/api/album/";
@@ -56,7 +57,7 @@ public class HttpHelper {
                     }
                     List<NameValuePair> params = new ArrayList<NameValuePair>();
                     params.add(new BasicNameValuePair("type", typeStr));
-                    params.add(new BasicNameValuePair("limit", LIMIT));
+                    params.add(new BasicNameValuePair("limit", SEARCH_LIMIT));
                     params.add(new BasicNameValuePair("s", key));
                     params.add(new BasicNameValuePair("offset", "0"));
                     HttpEntity httpentity = new UrlEncodedFormEntity(params, "utf-8");
@@ -92,7 +93,7 @@ public class HttpHelper {
             public void run() {
                 try {
                     HttpGet get = new HttpGet(GET_ALBUMS_URL + artistId + "?offset=0&limit="
-                            + LIMIT);
+                            + ALBUM_LIMIT);
                     get.setHeader("Cookie", COOKIE);
                     HttpClient httpClient = new DefaultHttpClient();
 

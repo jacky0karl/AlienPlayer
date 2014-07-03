@@ -10,7 +10,7 @@
         android:layout_height="30dp"
         android:background="@color/dark_bg"
         android:gravity="center_vertical|left"
-        android:paddingLeft="30dp"
+        android:paddingLeft="10dp"
         android:textColor="@android:color/white"
         android:visibility="gone" >
     </TextView>

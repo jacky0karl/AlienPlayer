@@ -35,6 +35,7 @@ public class MediaScanService extends Service {
             Intent intent = new Intent(ACTION_MEDIA_SCAN_COMPLETED);
             intent.putExtra(FILE_PATH, path);
             MediaScanService.this.sendBroadcast(intent);
+            MediaScanService.this.stopSelf();
         }
     };
 
