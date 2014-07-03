@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 
 public class PlayService extends Service {
 
@@ -34,6 +35,29 @@ public class PlayService extends Service {
     public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.track_change";
 
     private PlayingHelper mPlayingHelper;
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_MEDIA_BUTTON)) {
+                KeyEvent key = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                if (key.getAction() == KeyEvent.ACTION_UP) {
+                    Log.e("onReceive", "code=" + key.getKeyCode());
+                    switch (key.getKeyCode()) {
+                    case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_NEXT:
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                abortBroadcast();
+            }
+        }
+    };
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,8 +67,10 @@ public class PlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("#### PlayService", "onCreate");
         mPlayingHelper = new PlayingHelper(this);
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
+        intentFilter.setPriority(999);
+        registerReceiver(mReceiver, intentFilter);
     }
 
     @Override
@@ -78,6 +104,12 @@ public class PlayService extends Service {
             break;
         }
         return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
     public void sendStatusBroadCast(String action) {
