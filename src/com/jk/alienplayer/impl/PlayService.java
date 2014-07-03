@@ -1,15 +1,17 @@
 package com.jk.alienplayer.impl;
 
+import com.jk.alienplayer.MediaButtonReceiver;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
-import android.view.KeyEvent;
 
 public class PlayService extends Service {
     public static final String BROADCAST_ACTION = "broadCast_action";
@@ -32,19 +34,10 @@ public class PlayService extends Service {
     public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.progress_update";
     public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.track_change";
 
-    private static final int MEDIA_BUTTON_PRIORITY = 999;
     private PlayingHelper mPlayingHelper;
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
-                KeyEvent key = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-                if (handleMediaButton(key)) {
-                    abortBroadcast();
-                }
-            }
-        }
-    };
+    private AudioManager mAudioManager;
+    ComponentName mMediaButtonReceiver = new ComponentName(MediaButtonReceiver.class.getPackage()
+            .getName(), MediaButtonReceiver.class.getName());
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -55,9 +48,8 @@ public class PlayService extends Service {
     public void onCreate() {
         super.onCreate();
         mPlayingHelper = new PlayingHelper(this);
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
-        intentFilter.setPriority(MEDIA_BUTTON_PRIORITY);
-        registerReceiver(mReceiver, intentFilter);
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager.registerMediaButtonEventReceiver(mMediaButtonReceiver);
     }
 
     @Override
@@ -92,40 +84,9 @@ public class PlayService extends Service {
         return START_STICKY;
     }
 
-    private boolean handleMediaButton(KeyEvent key) {
-        if (key.getAction() == KeyEvent.ACTION_UP) {
-            switch (key.getKeyCode()) {
-            case KeyEvent.KEYCODE_MEDIA_PLAY:
-            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                mPlayingHelper.playOrPause();
-                return true;
-            case KeyEvent.KEYCODE_MEDIA_NEXT:
-                PlayingInfoHolder.getInstance().next(PlayService.this);
-                mPlayingHelper.play();
-                return true;
-            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                PlayingInfoHolder.getInstance().prev(PlayService.this);
-                mPlayingHelper.play();
-                return true;
-            default:
-                return false;
-            }
-        } else {
-            // Any Broadcast about those key events should be aborted
-            int code = key.getKeyCode();
-            if (code == KeyEvent.KEYCODE_MEDIA_PLAY || code == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-                    || code == KeyEvent.KEYCODE_MEDIA_NEXT
-                    || code == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
     @Override
     public void onDestroy() {
-        unregisterReceiver(mReceiver);
+        mAudioManager.unregisterMediaButtonEventReceiver(mMediaButtonReceiver);
         super.onDestroy();
     }
 
