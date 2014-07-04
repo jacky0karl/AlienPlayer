@@ -35,6 +35,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.AlbumsActivity"
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".ui.SongsActivity"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait" >

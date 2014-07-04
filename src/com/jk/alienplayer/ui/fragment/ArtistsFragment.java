@@ -5,6 +5,7 @@ import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.ArtistInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.ui.AlbumsActivity;
 import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
 
@@ -31,7 +32,7 @@ public class ArtistsFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
-                mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
+                mAdapter.setArtists(DatabaseHelper.getAlbumArtists(getActivity()));
             }
         }
     };
@@ -54,7 +55,7 @@ public class ArtistsFragment extends Fragment {
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new ArtistsAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
-        mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
+        mAdapter.setArtists(DatabaseHelper.getAlbumArtists(getActivity()));
         mListView.setOnItemClickListener(mOnItemClickListener);
     }
 
@@ -70,11 +71,10 @@ public class ArtistsFragment extends Fragment {
         }
     };
 
-    private void startSongsPage(long key, String label) {
-        Intent intent = new Intent(getActivity(), SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
-        intent.putExtra(SongsActivity.KEY, key);
-        intent.putExtra(SongsActivity.LABEL, label);
+    private void startSongsPage(long id, String label) {
+        Intent intent = new Intent(getActivity(), AlbumsActivity.class);
+        intent.putExtra(AlbumsActivity.ARTIST_ID, id);
+        intent.putExtra(AlbumsActivity.LABEL, label);
         startActivity(intent);
     }
 

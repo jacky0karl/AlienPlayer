@@ -26,6 +26,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class DatabaseHelper {
+    /** Hiding field of MediaStore.Audio.Media, may be disabled in future */
+    private static final String ALBUM_ARTIST = "album_artist";
     private static final int MIN_MUSIC_SIZE = 1024 * 1024;
     private static final String DISTINCT = "DISTINCT ";
     private static final String MEDIA_SELECTION = Media.SIZE + ">'"
@@ -52,12 +54,55 @@ public class DatabaseHelper {
         return artists;
     }
 
-    public static List<AlbumInfo> getAlbums(Context context) {
-        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.ARTIST };
+    public static List<ArtistInfo> getAlbumArtists(Context context) {
+        List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
+        String[] projection = new String[] { DISTINCT + ALBUM_ARTIST, Media.ARTIST_ID };
 
         Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-                MEDIA_SELECTION, null, Media.ARTIST);
+                MEDIA_SELECTION, null, null);
+        if (cursor != null) {
+            Log.e("#########", "Album Artists count = " + cursor.getCount());
+            if (cursor.moveToFirst()) {
+                do {
+                    long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ARTIST_ID));
+                    String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
+                    Log.e("Album Artists", "id=" + artistId + ", artist=" + artist);
+                    ArtistInfo info = new ArtistInfo(artistId, artist);
+                    artists.add(info);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return artists;
+    }
+
+    public static List<AlbumInfo> getAlbums(Context context, long artistId) {
+        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, ALBUM_ARTIST };
+        String selection = MEDIA_SELECTION;
+        selection += " and " + Media.ARTIST_ID + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(artistId) };
+
+        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
+                selection, selectionArgs, ALBUM_ARTIST);
+        if (cursor != null) {
+            Log.e("####", "Albums count = " + cursor.getCount());
+            if (cursor.moveToFirst()) {
+                do {
+                    albums.add(bulidAlbumInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return albums;
+    }
+
+    public static List<AlbumInfo> getAlbums(Context context) {
+        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, ALBUM_ARTIST };
+
+        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
+                MEDIA_SELECTION, null, ALBUM_ARTIST);
         if (cursor != null) {
             Log.e("####", "Albums count = " + cursor.getCount());
             if (cursor.moveToFirst()) {
@@ -328,7 +373,7 @@ public class DatabaseHelper {
     private static AlbumInfo bulidAlbumInfo(Cursor cursor) {
         long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ALBUM_ID));
         String album = cursor.getString(cursor.getColumnIndexOrThrow(Media.ALBUM));
-        String artist = cursor.getString(cursor.getColumnIndexOrThrow(Media.ARTIST));
+        String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
         AlbumInfo info = new AlbumInfo(albumId, album, artist);
         return info;
     }
