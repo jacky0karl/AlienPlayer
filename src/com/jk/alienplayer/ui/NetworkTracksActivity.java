@@ -16,6 +16,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -32,6 +34,7 @@ public class NetworkTracksActivity extends Activity {
     private ListView mListView;
     private NetworkTracksAdapter mAdapter;
     private long mAlbumId;
+    private List<NetworkTrackInfo> mTracks;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -48,6 +51,22 @@ public class NetworkTracksActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network_list);
         init();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.network_tracks, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_download) {
+            for (NetworkTrackInfo info : mTracks) {
+                doDownloadTrack(info);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void init() {
@@ -67,11 +86,11 @@ public class NetworkTracksActivity extends Activity {
     private HttpResponseHandler mResponseHandler = new HttpResponseHandler() {
         @Override
         public void onSuccess(String response) {
-            final List<NetworkTrackInfo> tracks = JsonHelper.parseTracks(response);
+            mTracks = JsonHelper.parseTracks(response);
             NetworkTracksActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.setTracks(tracks);
+                    mAdapter.setTracks(mTracks);
                     if (mAdapter.getCount() == 0) {
                         mNoResult.setVisibility(View.VISIBLE);
                     } else {
@@ -93,9 +112,7 @@ public class NetworkTracksActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == Dialog.BUTTON_POSITIVE) {
-                    String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId),
-                            info.ext);
-                    FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
+                    doDownloadTrack(info);
                 }
             }
         };
@@ -103,5 +120,10 @@ public class NetworkTracksActivity extends Activity {
         Dialog dialog = DialogBuilder.buildAlertDialog(this, R.string.download_track_confirm,
                 listener);
         dialog.show();
+    }
+
+    private void doDownloadTrack(NetworkTrackInfo info) {
+        String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId), info.ext);
+        FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
     }
 }

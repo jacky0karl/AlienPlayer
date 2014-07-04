@@ -9,7 +9,6 @@
     <string name="audioEffect">Audio Effect</string>
     <string name="search">Search</string>
     <string name="discover">Discover</string>
-    <string name="info">Info</string>
     <string name="track_details">Track Details</string>
     <string name="search_hint">Artists, albums, and tracks</string>
     <string name="recents">Recents</string>
@@ -39,6 +38,8 @@
     <string name="cancel">Cancel</string>
     <string name="name_hint">Enter name</string>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="download">Download</string>
+
     <!-- dialog -->
     <string name="download_track_confirm">Are you sure to download this track?</string>
     <string name="download_fail">Download failed</string>
