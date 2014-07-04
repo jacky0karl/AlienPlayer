@@ -66,7 +66,6 @@ public class DatabaseHelper {
                 do {
                     long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ARTIST_ID));
                     String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
-                    Log.e("Album Artists", "id=" + artistId + ", artist=" + artist);
                     ArtistInfo info = new ArtistInfo(artistId, artist);
                     artists.add(info);
                 } while (cursor.moveToNext());
@@ -318,7 +317,7 @@ public class DatabaseHelper {
     private static List<SearchResult> searchAlbums(Context context, String key) {
         List<SearchResult> results = new ArrayList<SearchResult>();
 
-        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.ARTIST };
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, ALBUM_ARTIST };
         String selection = MEDIA_SELECTION;
         selection += " and " + Media.ALBUM + " like ?";
         String[] selectionArgs = new String[] { "%" + key + "%" };
