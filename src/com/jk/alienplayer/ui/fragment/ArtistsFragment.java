@@ -23,22 +23,35 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class ArtistsFragment extends Fragment {
+    public static final String TYPE = "type";
+    public static final int TYPE_ARTISTS = 0;
+    public static final int TYPE_ALBUM_ARTISTS = 1;
 
+    private int mType;
     private ListView mListView;
     private ArtistsAdapter mAdapter;
+
+    public static ArtistsFragment newInstance(int type) {
+        ArtistsFragment fragment = new ArtistsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TYPE, type);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
-                mAdapter.setArtists(DatabaseHelper.getAlbumArtists(getActivity()));
+                setArtists();
             }
         }
     };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mType = getArguments().getInt(TYPE, TYPE_ARTISTS);
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
         MediaScanService.registerScanReceiver(getActivity(), mReceiver);
@@ -55,7 +68,7 @@ public class ArtistsFragment extends Fragment {
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new ArtistsAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
-        mAdapter.setArtists(DatabaseHelper.getAlbumArtists(getActivity()));
+        setArtists();
         mListView.setOnItemClickListener(mOnItemClickListener);
     }
 
@@ -66,16 +79,31 @@ public class ArtistsFragment extends Fragment {
             if (view.getId() == R.id.action) {
                 Log.e("#### onItemClick", "position = " + position);
             } else {
-                startSongsPage(info.id, info.name);
+                startSubPage(info.id, info.name);
             }
         }
     };
 
-    private void startSongsPage(long id, String label) {
-        Intent intent = new Intent(getActivity(), AlbumsActivity.class);
-        intent.putExtra(AlbumsActivity.ARTIST_ID, id);
-        intent.putExtra(AlbumsActivity.LABEL, label);
+    private void startSubPage(long key, String label) {
+        Intent intent = null;
+        if (mType == TYPE_ARTISTS) {
+            intent = new Intent(getActivity(), SongsActivity.class);
+            intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
+            intent.putExtra(SongsActivity.KEY, key);
+            intent.putExtra(SongsActivity.LABEL, label);
+        } else {
+            intent = new Intent(getActivity(), AlbumsActivity.class);
+            intent.putExtra(AlbumsActivity.ARTIST_ID, key);
+            intent.putExtra(AlbumsActivity.LABEL, label);
+        }
         startActivity(intent);
     }
 
+    private void setArtists() {
+        if (mType == TYPE_ARTISTS) {
+            mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
+        } else {
+            mAdapter.setArtists(DatabaseHelper.getAlbumArtists(getActivity()));
+        }
+    }
 }

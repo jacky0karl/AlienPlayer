@@ -26,9 +26,10 @@ public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
     private static final int FRAGMENT_PLAYLIST = 1;
     private static final int FRAGMENT_ARTISTS = 2;
-    private static final int FRAGMENT_ALBUMS = 3;
-    private static final int FRAGMENT_TRACKS = 4;
-    private static final int FRAGMENT_COUNT = 5;
+    private static final int FRAGMENT_ALBUM_ARTISTS = 3;
+    private static final int FRAGMENT_ALBUMS = 4;
+    private static final int FRAGMENT_TRACKS = 5;
+    private static final int FRAGMENT_COUNT = 6;
 
     private Playbar mPlaybar;
     private VolumeBarWindow mVolumeBar;
@@ -97,13 +98,15 @@ public class MainActivity extends FragmentActivity {
             case FRAGMENT_PLAYLIST:
                 return new PlaylistsFragment();
             case FRAGMENT_ARTISTS:
-                return new ArtistsFragment();
+                return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ARTISTS);
+            case FRAGMENT_ALBUM_ARTISTS:
+                return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ALBUM_ARTISTS);
             case FRAGMENT_ALBUMS:
                 return new AlbumsFragment();
             case FRAGMENT_TRACKS:
                 return new TracksFragment();
             default:
-                return new PlaylistsFragment();
+                return null;
             }
         }
 
@@ -116,6 +119,8 @@ public class MainActivity extends FragmentActivity {
                 return getString(R.string.playlists);
             case FRAGMENT_ARTISTS:
                 return getString(R.string.artists);
+            case FRAGMENT_ALBUM_ARTISTS:
+                return getString(R.string.album_artists);
             case FRAGMENT_ALBUMS:
                 return getString(R.string.albums);
             case FRAGMENT_TRACKS:
