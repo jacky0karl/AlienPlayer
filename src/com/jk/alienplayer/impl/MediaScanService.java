@@ -45,7 +45,7 @@ public class MediaScanService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
-            return START_STICKY;
+            return START_NOT_STICKY;
         }
 
         int action = intent.getIntExtra(SCAN_COMMAND, -1);
@@ -61,7 +61,7 @@ public class MediaScanService extends Service {
         default:
             break;
         }
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     public static void startScan(Context context, String filePath) {

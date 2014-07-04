@@ -19,5 +19,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/settings"/>
+    <item
+        android:id="@+id/action_exit"
+        android:orderInCategory="101"
+        android:showAsAction="never"
+        android:title="@string/exit"/>
 
 </menu>

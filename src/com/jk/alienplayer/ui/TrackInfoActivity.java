@@ -22,7 +22,7 @@ public class TrackInfoActivity extends Activity {
     private EditText mAlbum;
     private EditText mAlbumArtist;
     private EditText mTrack;
-    private Button mOkBtn;
+    private Button mSaveBtn;
     private Button mCancelBtn;
 
     @Override
@@ -47,8 +47,8 @@ public class TrackInfoActivity extends Activity {
         mTrack = (EditText) findViewById(R.id.track);
         mTrack.setText(mTrackTagInfo.getTrack());
 
-        mOkBtn = (Button) findViewById(R.id.okBtn);
-        mOkBtn.setOnClickListener(new OnClickListener() {
+        mSaveBtn = (Button) findViewById(R.id.saveBtn);
+        mSaveBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 writeTrackTags();

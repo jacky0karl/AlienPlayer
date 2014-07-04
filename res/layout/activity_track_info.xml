@@ -108,11 +108,11 @@
             android:text="@string/cancel" />
 
         <Button
-            android:id="@+id/okBtn"
+            android:id="@+id/saveBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="@string/ok" />
+            android:text="@string/save" />
     </RelativeLayout>
 
 </LinearLayout>

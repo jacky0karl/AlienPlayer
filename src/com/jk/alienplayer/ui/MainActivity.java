@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.ui.fragment.AlbumsFragment;
 import com.jk.alienplayer.ui.fragment.ArtistsFragment;
 import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
@@ -71,8 +72,16 @@ public class MainActivity extends FragmentActivity {
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mIndicator, Gravity.CENTER);
+        } else if (item.getItemId() == R.id.action_exit) {
+            exit();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void exit() {
+        Intent intent = new Intent(this, PlayService.class);
+        stopService(intent);
+        finish();
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

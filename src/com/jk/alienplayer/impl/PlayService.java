@@ -87,6 +87,7 @@ public class PlayService extends Service {
     @Override
     public void onDestroy() {
         mAudioManager.unregisterMediaButtonEventReceiver(mMediaButtonReceiver);
+        mPlayingHelper.release();
         super.onDestroy();
     }
 
