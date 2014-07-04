@@ -22,6 +22,7 @@ import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import android.content.Context;
 import android.os.Environment;
 import android.os.storage.StorageManager;
+import android.util.Log;
 
 public class FileDownloadingHelper {
     private static final int MAX_TASK_COUNT = 3;
@@ -122,10 +123,8 @@ public class FileDownloadingHelper {
             if (mContext != null) {
                 dealDownloadFile(info.trackInfo, filePath);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            info.status = FileDownloadingInfo.Status.FAILED;
-        } catch (IOException e) {
+        } catch (Exception e) {
+            Log.e("FileDownloadingHelper", "downloadTrack error");
             e.printStackTrace();
             info.status = FileDownloadingInfo.Status.FAILED;
         }

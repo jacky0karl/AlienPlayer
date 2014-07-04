@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class NetworkTracksActivity extends Activity {
     public static final String LABEL = "label";
@@ -34,7 +35,7 @@ public class NetworkTracksActivity extends Activity {
     private ListView mListView;
     private NetworkTracksAdapter mAdapter;
     private long mAlbumId;
-    private List<NetworkTrackInfo> mTracks;
+    private List<NetworkTrackInfo> mTracks = null;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -62,8 +63,11 @@ public class NetworkTracksActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_download) {
-            for (NetworkTrackInfo info : mTracks) {
-                doDownloadTrack(info);
+            if (mTracks != null && mTracks.size() > 0) {
+                for (NetworkTrackInfo info : mTracks) {
+                    doDownloadTrack(info);
+                }
+                makeToast();
             }
         }
         return super.onOptionsItemSelected(item);
@@ -113,6 +117,7 @@ public class NetworkTracksActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == Dialog.BUTTON_POSITIVE) {
                     doDownloadTrack(info);
+                    makeToast();
                 }
             }
         };
@@ -125,5 +130,15 @@ public class NetworkTracksActivity extends Activity {
     private void doDownloadTrack(NetworkTrackInfo info) {
         String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId), info.ext);
         FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
+    }
+
+    private void makeToast() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), R.string.download_task_added,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

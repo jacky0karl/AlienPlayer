@@ -43,5 +43,6 @@
     <!-- dialog -->
     <string name="download_track_confirm">Are you sure to download this track?</string>
     <string name="download_fail">Download failed</string>
+    <string name="download_task_added">Added to download list</string>
 
 </resources>
