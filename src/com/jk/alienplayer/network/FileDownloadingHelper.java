@@ -209,7 +209,7 @@ public class FileDownloadingHelper {
     private String buildFilePath(NetworkTrackInfo info) {
         StringBuilder sb = new StringBuilder();
         sb.append(sRootPath);
-        sb.append(info.artists);
+        sb.append(info.artistAlbum);
         sb.append(File.separator);
         sb.append(info.album);
         sb.append(File.separator);

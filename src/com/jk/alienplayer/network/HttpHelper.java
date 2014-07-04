@@ -24,7 +24,7 @@ public class HttpHelper {
 
     private static final String COOKIE = "appver=1.7.6;os=Android";
     private static final String KEY = "3go8&$8*3*3h0k(2)2";
-    private static final String SEARCH_LIMIT = "30";
+    private static final String SEARCH_LIMIT = "50";
     private static final String ALBUM_LIMIT = "100";
     private static final String SEARCH_URL = "http://music.163.com/api/search/get/";
     private static final String GET_ALBUMS_URL = "http://music.163.com/api/artist/albums/";
