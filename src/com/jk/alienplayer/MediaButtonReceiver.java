@@ -1,6 +1,5 @@
 package com.jk.alienplayer;
 
-import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
 
 import android.content.BroadcastReceiver;
@@ -9,12 +8,11 @@ import android.content.Intent;
 import android.view.KeyEvent;
 
 public class MediaButtonReceiver extends BroadcastReceiver {
-
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
             KeyEvent key = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-            if (key.getAction() == KeyEvent.ACTION_UP) {
+            if (key.getAction() == KeyEvent.ACTION_DOWN) {
                 switch (key.getKeyCode()) {
                 case KeyEvent.KEYCODE_HEADSETHOOK:
                 case KeyEvent.KEYCODE_MEDIA_PLAY:

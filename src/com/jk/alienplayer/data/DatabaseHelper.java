@@ -116,16 +116,18 @@ public class DatabaseHelper {
 
     public static List<SongInfo> getTracks(Context context, int keyType, long key) {
         List<SongInfo> songs = new ArrayList<SongInfo>();
-
         String[] projection = new String[] { Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
                 Media.ALBUM_ID, Media.ARTIST };
         String selection = MEDIA_SELECTION;
+        String order = Media.DEFAULT_SORT_ORDER;
+
         switch (keyType) {
         case CurrentlistInfo.TYPE_ARTIST:
             selection += " and " + Media.ARTIST_ID + "=?";
             break;
         case CurrentlistInfo.TYPE_ALBUM:
             selection += " and " + Media.ALBUM_ID + "=?";
+            order = Media.TRACK;
             break;
         default:
             break;
@@ -137,7 +139,7 @@ public class DatabaseHelper {
         }
 
         Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-                selection, selectionArgs, Media.DEFAULT_SORT_ORDER);
+                selection, selectionArgs, order);
         if (cursor != null) {
             Log.e("#########", "Songs count = " + cursor.getCount());
             if (cursor.moveToFirst()) {
