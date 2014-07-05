@@ -87,6 +87,16 @@ public class FileDownloadingHelper {
         return false;
     }
 
+    public void clearDone() {
+        List<FileDownloadingInfo> tmpList = new ArrayList<FileDownloadingInfo>();
+        for (FileDownloadingInfo info : mFileDownloadingList) {
+            if (info.status != Status.COMPLETED) {
+                tmpList.add(info);
+            }
+        }
+        mFileDownloadingList = tmpList;
+    }
+
     public void downloadTrack(FileDownloadingInfo info, String urlString) {
         String filePath = buildFilePath(info.trackInfo);
         File file = new File(filePath);

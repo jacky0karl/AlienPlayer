@@ -8,8 +8,11 @@ import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.adapter.FileDownloadListAdapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -28,7 +31,11 @@ public class DownloadListActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             FileDownloadingInfo info = mAdapter.getItem(position);
-
+            if (info.status == FileDownloadingInfo.Status.COMPLETED) {
+                Intent intent = new Intent(DownloadListActivity.this, SearchActivity.class);
+                intent.putExtra(SearchActivity.QUERY, info.trackInfo.name);
+                startActivity(intent);
+            }
         }
     };
 
@@ -37,6 +44,21 @@ public class DownloadListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_list);
         init();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.download_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_clear) {
+            FileDownloadingHelper.getInstance().clearDone();
+            updateView();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void init() {
@@ -63,18 +85,21 @@ public class DownloadListActivity extends Activity {
     Runnable mUpdateTask = new Runnable() {
         @Override
         public void run() {
-            List<FileDownloadingInfo> list = FileDownloadingHelper.getInstance()
-                    .getFileDownloadingList();
-            mAdapter.setInfos(list);
-            if (list.size() > 0) {
-                mNoItem.setVisibility(View.GONE);
-            } else {
-                mNoItem.setVisibility(View.VISIBLE);
-            }
-
+            updateView();
             if (FileDownloadingHelper.getInstance().isAnyTaskUpdating()) {
                 mHandler.postDelayed(mUpdateTask, UPDATE_INTERVAL);
             }
         }
     };
+
+    private void updateView() {
+        List<FileDownloadingInfo> list = FileDownloadingHelper.getInstance()
+                .getFileDownloadingList();
+        mAdapter.setInfos(list);
+        if (list.size() > 0) {
+            mNoItem.setVisibility(View.GONE);
+        } else {
+            mNoItem.setVisibility(View.VISIBLE);
+        }
+    }
 }

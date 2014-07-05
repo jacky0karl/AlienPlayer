@@ -34,6 +34,7 @@ public class MediaScanService extends Service {
         public void onScanCompleted(String path, Uri uri) {
             Intent intent = new Intent(ACTION_MEDIA_SCAN_COMPLETED);
             intent.putExtra(FILE_PATH, path);
+            mConnection.disconnect();
             MediaScanService.this.sendBroadcast(intent);
             MediaScanService.this.stopSelf();
         }

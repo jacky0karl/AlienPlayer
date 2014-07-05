@@ -12,11 +12,9 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.SearchResultsAdapter;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +25,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView.OnQueryTextListener;
 
 public class SearchActivity extends Activity implements OnItemClickListener {
+    public static final String QUERY = "query";
+
     private ListView mListView;
     private SearchResultsAdapter mAdapter;
 
@@ -66,12 +66,13 @@ public class SearchActivity extends Activity implements OnItemClickListener {
     }
 
     private void initSearchBar(MenuItem item) {
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
         SearchView searchView = (SearchView) item.getActionView();
-        searchView.setSearchableInfo(info);
-        searchView.setOnQueryTextListener(mQueryTextListener);
         searchView.setIconified(false);
+        searchView.setOnQueryTextListener(mQueryTextListener);
+        String query = getIntent().getStringExtra(QUERY);
+        if (!TextUtils.isEmpty(query)) {
+            searchView.setQuery(query, false);
+        }
     }
 
     @Override
