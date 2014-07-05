@@ -16,14 +16,13 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class AlbumsActivity extends Activity {
-    public static final String ARTIST_ID = "artist_id";
-    public static final String LABEL = "label";
+    public static final String ALBUM_ARTIST = "album_artist";
 
     private ListView mListView;
     private AlbumsAdapter mAdapter;
     private Playbar mPlaybar;
     private AlbumInfo mCurrAlbum;
-    private long mArtistId;
+    private String mAlbumArtist;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -48,13 +47,13 @@ public class AlbumsActivity extends Activity {
 
     private void init() {
         mPlaybar = (Playbar) findViewById(R.id.playbar);
-        mArtistId = getIntent().getLongExtra(ARTIST_ID, -1);
-        setTitle(getIntent().getStringExtra(LABEL));
+        mAlbumArtist = getIntent().getStringExtra(ALBUM_ARTIST);
+        setTitle(mAlbumArtist);
 
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new AlbumsAdapter(this);
         mListView.setAdapter(mAdapter);
-        mAdapter.setAlbums(DatabaseHelper.getAlbums(this, mArtistId));
+        mAdapter.setAlbums(DatabaseHelper.getAlbums(this, mAlbumArtist));
         mListView.setOnItemClickListener(mOnItemClickListener);
 
     }

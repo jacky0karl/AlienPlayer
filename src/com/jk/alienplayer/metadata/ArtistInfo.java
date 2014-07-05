@@ -5,6 +5,8 @@ import com.jk.alienplayer.metadata.SearchResult.SearchResultData;
 import android.text.TextUtils;
 
 public class ArtistInfo implements SearchResultData {
+    public static final long ALBUM_ARTIST_ID = -1;
+
     public long id;
     public String name;
 

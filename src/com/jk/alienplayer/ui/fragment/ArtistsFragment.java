@@ -93,8 +93,7 @@ public class ArtistsFragment extends Fragment {
             intent.putExtra(SongsActivity.LABEL, label);
         } else {
             intent = new Intent(getActivity(), AlbumsActivity.class);
-            intent.putExtra(AlbumsActivity.ARTIST_ID, key);
-            intent.putExtra(AlbumsActivity.LABEL, label);
+            intent.putExtra(AlbumsActivity.ALBUM_ARTIST, label);
         }
         startActivity(intent);
     }

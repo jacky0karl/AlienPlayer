@@ -129,10 +129,11 @@ public class FileDownloadingHelper {
             outputStream.flush();
             outputStream.close();
             inputStream.close();
-            info.status = FileDownloadingInfo.Status.COMPLETED;
+
             if (mContext != null) {
                 dealDownloadFile(info.trackInfo, filePath);
             }
+            info.status = FileDownloadingInfo.Status.COMPLETED;
         } catch (Exception e) {
             Log.e("FileDownloadingHelper", "downloadTrack error");
             e.printStackTrace();
