@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
+import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -68,9 +69,15 @@ public class FileDownloadListAdapter extends BaseAdapter {
         viewHolder.title.setText(info.trackInfo.name);
         viewHolder.artist.setText(info.trackInfo.artists);
         viewHolder.size.setText(calculateSize(info));
-        viewHolder.progress.setText(calculateProgress(info));
         viewHolder.progressBar.setMax(info.size);
         viewHolder.progressBar.setProgress(info.progress);
+        if (info.status == Status.COMPLETED) {
+            viewHolder.progress.setText(R.string.done);
+        } else if (info.status == Status.FAILED) {
+            viewHolder.progress.setText(R.string.failed);
+        } else {
+            viewHolder.progress.setText(calculateProgress(info));
+        }
         return view;
     }
 

@@ -29,6 +29,8 @@
     <string name="no_result">No Result</string>
     <string name="no_item">No Item</string>
     <string name="download_list">Download List</string>
+    <string name="done">Done</string>
+    <string name="failed">Failed</string>
 
     <!-- menu title -->
     <string name="delete">Delete</string>
