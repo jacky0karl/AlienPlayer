@@ -13,7 +13,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FileDownloadingHelper.getInstance().setupRootPath(this);
+        FileDownloadingHelper.getInstance().init(this);
         PlayingInfoHolder.getInstance().init(this);
         ImageLoaderUtils.initImageLoader(this);
         Intent intent = new Intent(this, PlayService.class);

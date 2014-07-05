@@ -18,16 +18,13 @@ import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.utils.FileSavingUtils;
 
 import android.content.Context;
-import android.os.Environment;
-import android.os.storage.StorageManager;
-import android.util.Log;
 
 public class FileDownloadingHelper {
     private static final int MAX_TASK_COUNT = 3;
     private static final int STEP_SIZE = 4 * 1024;
-    public static String sRootPath;
 
     private static FileDownloadingHelper sSelf = null;
     private ExecutorService mExecutor;
@@ -46,25 +43,9 @@ public class FileDownloadingHelper {
         mFileDownloadingList = new ArrayList<FileDownloadingInfo>();
     }
 
-    public void setupRootPath(Context context) {
+    public void init(Context context) {
         mContext = context;
-        StorageManager sm = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
-        String systemPath = null;
-        try {
-            String[] paths = (String[]) sm.getClass().getMethod("getVolumePaths", null)
-                    .invoke(sm, null);
-            for (int i = 0; i < paths.length; i++) {
-                String status = (String) sm.getClass().getMethod("getVolumeState", String.class)
-                        .invoke(sm, paths[i]);
-                if (status.equals(android.os.Environment.MEDIA_MOUNTED)) {
-                    systemPath = paths[i];
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            systemPath = Environment.getExternalStorageDirectory().getPath();
-        }
-        sRootPath = systemPath + File.separator + "AlienPlayer" + File.separator;
+        FileSavingUtils.setupRootPath(mContext);
     }
 
     public void requstDownloadTrack(NetworkTrackInfo trackInfo, String url) {
@@ -100,7 +81,7 @@ public class FileDownloadingHelper {
     public void downloadTrack(FileDownloadingInfo info, String urlString) {
         String filePath = buildFilePath(info.trackInfo);
         File file = new File(filePath);
-        if (!ensurePath(file)) {
+        if (!FileSavingUtils.ensurePath(file)) {
             info.status = FileDownloadingInfo.Status.FAILED;
             return;
         }
@@ -115,6 +96,7 @@ public class FileDownloadingHelper {
         } catch (Exception e) {
             e.printStackTrace();
             info.status = FileDownloadingInfo.Status.FAILED;
+            FileSavingUtils.logThrowable(e);
             return;
         }
 
@@ -135,8 +117,8 @@ public class FileDownloadingHelper {
             }
             info.status = FileDownloadingInfo.Status.COMPLETED;
         } catch (Exception e) {
-            Log.e("FileDownloadingHelper", "downloadTrack error");
             e.printStackTrace();
+            FileSavingUtils.logThrowable(e);
             info.status = FileDownloadingInfo.Status.FAILED;
         }
     }
@@ -165,7 +147,7 @@ public class FileDownloadingHelper {
         }
 
         File file = new File(filePath);
-        ensurePath(file);
+        FileSavingUtils.ensurePath(file);
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
             byte[] buffer = new byte[STEP_SIZE];
@@ -208,18 +190,9 @@ public class FileDownloadingHelper {
         MediaScanService.startScan(mContext, filePath);
     }
 
-    private boolean ensurePath(File file) {
-        String filePath = file.getParent();
-        File dir = new File(filePath);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        return dir.exists();
-    }
-
     private String buildFilePath(NetworkTrackInfo info) {
         StringBuilder sb = new StringBuilder();
-        sb.append(sRootPath);
+        sb.append(FileSavingUtils.sRootPath);
         sb.append(info.artistAlbum);
         sb.append(File.separator);
         sb.append(info.album);
