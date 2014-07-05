@@ -19,6 +19,7 @@ public class ImageLoaderUtils {
     }
 
     public static DisplayImageOptions sOptions = new DisplayImageOptions.Builder()
-            .cacheOnDisk(true).cacheInMemory(true).showImageOnLoading(R.drawable.disk)
+            .cacheOnDisk(true).cacheInMemory(true).showImageForEmptyUri(R.drawable.disk)
+            .showImageOnFail(R.drawable.disk).showImageOnLoading(R.drawable.disk)
             .bitmapConfig(Bitmap.Config.RGB_565).build();
 }

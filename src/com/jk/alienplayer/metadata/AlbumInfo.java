@@ -8,6 +8,7 @@ public class AlbumInfo implements SearchResultData {
     public long id;
     public String name;
     public String artist;
+    public String artwork;
 
     public AlbumInfo(long id, String name, String artist) {
         this.id = id;

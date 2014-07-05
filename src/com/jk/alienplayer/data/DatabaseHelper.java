@@ -217,22 +217,22 @@ public class DatabaseHelper {
         return bmp;
     }
 
-    public static void getAlbumArtwork(Context context, long albumId) {
+    public static String getAlbumArtwork(Context context, long albumId) {
         String[] projection = new String[] { Albums.ALBUM_ART };
         String selection = Albums._ID + "=?";
         String[] selectionArgs = new String[] { String.valueOf(albumId) };
 
         Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
                 selection, selectionArgs, null);
-        String artwork = "";
+        String artwork = "file://";
         if (cursor != null) {
             Log.e("####", "Album Artwork count = " + cursor.getCount());
             if (cursor.moveToFirst()) {
-                artwork = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
+                artwork += cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
             }
             cursor.close();
-
         }
+        return artwork;
     }
 
     public static List<PlaylistInfo> getPlaylists(Context context) {

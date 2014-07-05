@@ -1,5 +1,7 @@
 package com.jk.alienplayer.ui;
 
+import java.util.List;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.AlbumInfo;
@@ -23,6 +25,7 @@ public class AlbumsActivity extends Activity {
     private Playbar mPlaybar;
     private AlbumInfo mCurrAlbum;
     private String mAlbumArtist;
+    private List<AlbumInfo> mAlbums;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -53,9 +56,29 @@ public class AlbumsActivity extends Activity {
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new AlbumsAdapter(this);
         mListView.setAdapter(mAdapter);
-        mAdapter.setAlbums(DatabaseHelper.getAlbums(this, mAlbumArtist));
+        mAlbums = DatabaseHelper.getAlbums(this, mAlbumArtist);
+        mAdapter.setAlbums(mAlbums);
         mListView.setOnItemClickListener(mOnItemClickListener);
+        getAlbumArtworks();
+    }
 
+    private void getAlbumArtworks() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (AlbumInfo info : mAlbums) {
+                    info.artwork = DatabaseHelper.getAlbumArtwork(AlbumsActivity.this, info.id);
+                }
+
+                AlbumsActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.setAlbums(mAlbums);
+                    }
+                });
+            }
+        });
+        thread.start();
     }
 
     private void onAlbumClick(AlbumInfo info) {
