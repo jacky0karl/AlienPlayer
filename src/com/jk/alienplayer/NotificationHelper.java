@@ -26,7 +26,8 @@ public class NotificationHelper extends BroadcastReceiver {
 
     public void sendNotification(Context context, Intent intent) {
         Notification n = new Notification.Builder(context).setSmallIcon(R.drawable.app_icon)
-                .setContent(mViews).setPriority(Notification.PRIORITY_MAX).setOngoing(true).build();
+                .setPriority(Notification.PRIORITY_MAX)//
+                .setContent(mViews).setOngoing(true).build();
         n.bigContentView = updateBigView(context, intent);
 
         NotificationManager mNotificationManager = (NotificationManager) context
@@ -42,7 +43,8 @@ public class NotificationHelper extends BroadcastReceiver {
         } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
             String song = intent.getStringExtra(PlayService.SONG_NAME);
             String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
-            // syncSongInfo(views, song, artist);
+            views.setTextViewText(R.id.song, song);
+            views.setTextViewText(R.id.artist, artist);
         } else if (action.equals(PlayService.ACTION_PAUSE)) {
             views.setImageViewResource(R.id.play, R.drawable.play);
         } else if (action.equals(PlayService.ACTION_STOP)) {
@@ -56,7 +58,7 @@ public class NotificationHelper extends BroadcastReceiver {
             return null;
         }
 
-        // setOnClickEvents(context, views);
+        setOnMainClickEvents(context, views);
         return views;
     }
 
@@ -75,7 +77,7 @@ public class NotificationHelper extends BroadcastReceiver {
             views.setImageViewResource(R.id.play, R.drawable.play);
         }
 
-        setOnClickEvents(context, views);
+        setOnAllClickEvents(context, views);
         return views;
     }
 
@@ -90,9 +92,13 @@ public class NotificationHelper extends BroadcastReceiver {
         }
     }
 
-    private void setOnClickEvents(Context context, RemoteViews views) {
-        views.setOnClickPendingIntent(R.id.artwork, PendingIntentUtils.getArtworkIntent(context));
+    private void setOnMainClickEvents(Context context, RemoteViews views) {
+        views.setOnClickPendingIntent(R.id.root, PendingIntentUtils.getArtworkIntent(context));
         views.setOnClickPendingIntent(R.id.play, PendingIntentUtils.getPlayIntent(context));
+    }
+
+    private void setOnAllClickEvents(Context context, RemoteViews views) {
+        setOnMainClickEvents(context, views);
         views.setOnClickPendingIntent(R.id.prev, PendingIntentUtils.getPrevIntent(context));
         views.setOnClickPendingIntent(R.id.next, PendingIntentUtils.getNextIntent(context));
         views.setOnClickPendingIntent(R.id.exit, PendingIntentUtils.getExitIntent(context));

@@ -1,26 +1,53 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
-    android:background="@color/dark_bg"
-    android:padding="2dp" >
+    android:layout_height="match_parent" >
 
     <ImageView
         android:id="@+id/artwork"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:padding="8dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/disk" />
+        android:src="@drawable/app_icon" />
 
-    <include
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/song"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp"
         android:layout_toRightOf="@id/artwork"
-        layout="@layout/playbtnbar" />
+        android:ellipsize="end"
+        android:maxWidth="180dp"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/song"
+        android:layout_below="@id/song"
+        android:ellipsize="end"
+        android:maxWidth="180dp"
+        android:singleLine="true"
+        android:textColor="#999"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/play"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/play" />
 
 </RelativeLayout>
