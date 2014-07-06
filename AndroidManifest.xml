@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -94,6 +94,15 @@
         <receiver android:name="MediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="NotificationHelper" >
+            <intent-filter>
+                <action android:name="com.jk.alienplayer.start" />
+                <action android:name="com.jk.alienplayer.track_change" />
+                <action android:name="com.jk.alienplayer.pause" />
+                <action android:name="com.jk.alienplayer.stop" />
+                <action android:name="com.jk.alienplayer.EXIT" />
             </intent-filter>
         </receiver>
         <receiver

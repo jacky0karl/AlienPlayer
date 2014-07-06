@@ -27,10 +27,12 @@ public class PlayService extends Service {
     public static final int COMMAND_SEEK = 2;
     public static final int COMMAND_PREV = 3;
     public static final int COMMAND_NEXT = 4;
+    public static final int COMMAND_EXIT = 5;
 
     public static final String ACTION_START = "com.jk.alienplayer.start";
     public static final String ACTION_PAUSE = "com.jk.alienplayer.pause";
     public static final String ACTION_STOP = "com.jk.alienplayer.stop";
+    public static final String ACTION_EXIT = "com.jk.alienplayer.EXIT";
     public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.progress_update";
     public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.track_change";
 
@@ -78,6 +80,9 @@ public class PlayService extends Service {
             PlayingInfoHolder.getInstance().next(this);
             mPlayingHelper.play();
             break;
+        case COMMAND_EXIT:
+            stopSelf();
+            break;
         default:
             break;
         }
@@ -88,6 +93,7 @@ public class PlayService extends Service {
     public void onDestroy() {
         mAudioManager.unregisterMediaButtonEventReceiver(mMediaButtonReceiver);
         mPlayingHelper.release();
+        sendStatusBroadCast(ACTION_EXIT);
         super.onDestroy();
     }
 

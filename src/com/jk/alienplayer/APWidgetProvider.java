@@ -6,9 +6,8 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.MainActivity;
+import com.jk.alienplayer.utils.PendingIntentUtils;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -103,35 +102,9 @@ public class APWidgetProvider extends AppWidgetProvider {
     }
 
     private void setOnClickEvents(Context context, RemoteViews views) {
-        views.setOnClickPendingIntent(R.id.artwork, getArtworkIntent(context));
-        views.setOnClickPendingIntent(R.id.play, getPlayIntent(context));
-        views.setOnClickPendingIntent(R.id.prev, getPrevIntent(context));
-        views.setOnClickPendingIntent(R.id.next, getNextIntent(context));
-    }
-
-    private PendingIntent getArtworkIntent(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setAction(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        return PendingIntent.getActivity(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private PendingIntent getPlayIntent(Context context) {
-        Intent intent = PlayService
-                .getPlayingCommandIntent(context, PlayService.COMMAND_PLAY_PAUSE);
-        return PendingIntent.getService(context, PlayService.COMMAND_PLAY_PAUSE, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private PendingIntent getPrevIntent(Context context) {
-        Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_PREV);
-        return PendingIntent.getService(context, PlayService.COMMAND_PREV, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private PendingIntent getNextIntent(Context context) {
-        Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_NEXT);
-        return PendingIntent.getService(context, PlayService.COMMAND_NEXT, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.artwork, PendingIntentUtils.getArtworkIntent(context));
+        views.setOnClickPendingIntent(R.id.play, PendingIntentUtils.getPlayIntent(context));
+        views.setOnClickPendingIntent(R.id.prev, PendingIntentUtils.getPrevIntent(context));
+        views.setOnClickPendingIntent(R.id.next, PendingIntentUtils.getNextIntent(context));
     }
 }
