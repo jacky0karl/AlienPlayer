@@ -15,18 +15,26 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class VolumeBarWindow extends PopupWindow {
-
-    private Context nContext;
+    private Context mContext;
     private AudioManager mAudioManager = null;
 
     private SeekBar mSeekBar;
     private ImageView mMuteBtn;
+    private int mLatestVolume;
 
     public static VolumeBarWindow createVolumeBarWindow(Context context) {
         LinearLayout volumeBar = (LinearLayout) LayoutInflater.from(context).inflate(
                 R.layout.volumebar, null);
         int width = context.getResources().getDimensionPixelOffset(R.dimen.volumebar_width);
         return new VolumeBarWindow(volumeBar, width, LayoutParams.WRAP_CONTENT, true);
+    }
+
+    private VolumeBarWindow(View contentView, int width, int height, boolean focusable) {
+        super(contentView, width, height, focusable);
+        mContext = contentView.getContext();
+        setOutsideTouchable(true);
+        setBackgroundDrawable(mContext.getResources().getDrawable(android.R.color.transparent));
+        setupVolumeBar(contentView);
     }
 
     public void show(View parent, int gravity) {
@@ -41,17 +49,10 @@ public class VolumeBarWindow extends PopupWindow {
         showAtLocation(parent, gravity, 0, 0);
     }
 
-    private VolumeBarWindow(View contentView, int width, int height, boolean focusable) {
-        super(contentView, width, height, focusable);
-        nContext = contentView.getContext();
-        setOutsideTouchable(true);
-        setBackgroundDrawable(nContext.getResources().getDrawable(android.R.color.transparent));
-        setupVolumeBar(contentView);
-    }
-
     private void setupVolumeBar(View contentView) {
-        mAudioManager = (AudioManager) nContext.getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        mLatestVolume = maxVolume / 5;
 
         mSeekBar = (SeekBar) contentView.findViewById(R.id.seekBar);
         mSeekBar.setMax(maxVolume);
@@ -81,11 +82,14 @@ public class VolumeBarWindow extends PopupWindow {
             @Override
             public void onClick(View v) {
                 if (isMuted()) {
-                    mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mLatestVolume, 0);
                     mMuteBtn.setImageResource(R.drawable.volume);
+                    mSeekBar.setProgress(mLatestVolume);
                 } else {
-                    mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                    mLatestVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
                     mMuteBtn.setImageResource(R.drawable.mute);
+                    mSeekBar.setProgress(0);
                 }
                 update();
             }
@@ -96,5 +100,4 @@ public class VolumeBarWindow extends PopupWindow {
         int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         return volume > 0 ? false : true;
     }
-
 }
