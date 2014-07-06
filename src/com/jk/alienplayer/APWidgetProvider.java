@@ -102,7 +102,7 @@ public class APWidgetProvider extends AppWidgetProvider {
     }
 
     private void setOnClickEvents(Context context, RemoteViews views) {
-        views.setOnClickPendingIntent(R.id.artwork, PendingIntentUtils.getArtworkIntent(context));
+        views.setOnClickPendingIntent(R.id.artwork, PendingIntentUtils.getLaunchIntent(context));
         views.setOnClickPendingIntent(R.id.play, PendingIntentUtils.getPlayIntent(context));
         views.setOnClickPendingIntent(R.id.prev, PendingIntentUtils.getPrevIntent(context));
         views.setOnClickPendingIntent(R.id.next, PendingIntentUtils.getNextIntent(context));

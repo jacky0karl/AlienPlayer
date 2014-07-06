@@ -8,12 +8,14 @@ import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.ui.MainActivity;
 
 public class PendingIntentUtils {
+    private static final int LAUNCH_INTENT_ID = 100;
 
-    public static PendingIntent getArtworkIntent(Context context) {
+    public static PendingIntent getLaunchIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        return PendingIntent.getActivity(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(context, LAUNCH_INTENT_ID, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public static PendingIntent getPlayIntent(Context context) {
@@ -34,7 +36,7 @@ public class PendingIntentUtils {
         return PendingIntent.getService(context, PlayService.COMMAND_NEXT, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
-    
+
     public static PendingIntent getExitIntent(Context context) {
         Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_EXIT);
         return PendingIntent.getService(context, PlayService.COMMAND_EXIT, intent,

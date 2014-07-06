@@ -29,12 +29,12 @@ public class PlayService extends Service {
     public static final int COMMAND_NEXT = 4;
     public static final int COMMAND_EXIT = 5;
 
-    public static final String ACTION_START = "com.jk.alienplayer.start";
-    public static final String ACTION_PAUSE = "com.jk.alienplayer.pause";
-    public static final String ACTION_STOP = "com.jk.alienplayer.stop";
-    public static final String ACTION_EXIT = "com.jk.alienplayer.EXIT";
-    public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.progress_update";
-    public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.track_change";
+    public static final String ACTION_START = "com.jk.alienplayer.action.START";
+    public static final String ACTION_PAUSE = "com.jk.alienplayer.action.PAUSE";
+    public static final String ACTION_STOP = "com.jk.alienplayer.action.STOP";
+    public static final String ACTION_EXIT = "com.jk.alienplayer.action.EXIT";
+    public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.action.PROGRESS_UPDATE";
+    public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.action.TRACK_CHANGE";
 
     private PlayingHelper mPlayingHelper;
     private AudioManager mAudioManager;

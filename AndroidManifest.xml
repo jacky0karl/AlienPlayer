@@ -96,13 +96,15 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-        <receiver android:name="NotificationHelper" >
+        <receiver
+            android:name="NotificationHelper"
+            android:exported="false" >
             <intent-filter>
-                <action android:name="com.jk.alienplayer.start" />
-                <action android:name="com.jk.alienplayer.track_change" />
-                <action android:name="com.jk.alienplayer.pause" />
-                <action android:name="com.jk.alienplayer.stop" />
-                <action android:name="com.jk.alienplayer.EXIT" />
+                <action android:name="com.jk.alienplayer.action.START" />
+                <action android:name="com.jk.alienplayer.action.TRACK_CHANGE" />
+                <action android:name="com.jk.alienplayer.action.PAUSE" />
+                <action android:name="com.jk.alienplayer.action.STOP" />
+                <action android:name="com.jk.alienplayer.action.EXIT" />
             </intent-filter>
         </receiver>
         <receiver
@@ -110,11 +112,11 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.jk.alienplayer.start" />
-                <action android:name="com.jk.alienplayer.track_change" />
-                <action android:name="com.jk.alienplayer.pause" />
-                <action android:name="com.jk.alienplayer.stop" />
-                <action android:name="com.jk.alienplayer.progress_update" />
+                <action android:name="com.jk.alienplayer.action.START" />
+                <action android:name="com.jk.alienplayer.action.TRACK_CHANGE" />
+                <action android:name="com.jk.alienplayer.action.PAUSE" />
+                <action android:name="com.jk.alienplayer.action.STOP" />
+                <action android:name="com.jk.alienplayer.action.PROGRESS_UPDATE" />
             </intent-filter>
 
             <meta-data

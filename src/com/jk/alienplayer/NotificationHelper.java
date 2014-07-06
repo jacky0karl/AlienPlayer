@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.widget.RemoteViews;
 
 public class NotificationHelper extends BroadcastReceiver {
+    private static final int NOTIFICATION_ID = 1;
     private RemoteViews mViews;
 
     @Override
@@ -30,9 +31,9 @@ public class NotificationHelper extends BroadcastReceiver {
                 .setContent(mViews).setOngoing(true).build();
         n.bigContentView = updateBigView(context, intent);
 
-        NotificationManager mNotificationManager = (NotificationManager) context
+        NotificationManager manager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, n);
+        manager.notify(NOTIFICATION_ID, n);
     }
 
     private RemoteViews updateView(Context context, Intent intent) {
@@ -50,9 +51,9 @@ public class NotificationHelper extends BroadcastReceiver {
         } else if (action.equals(PlayService.ACTION_STOP)) {
             views.setImageViewResource(R.id.play, R.drawable.play);
         } else if (action.equals(PlayService.ACTION_EXIT)) {
-            NotificationManager mNotificationManager = (NotificationManager) context
+            NotificationManager manager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(0);
+            manager.cancel(NOTIFICATION_ID);
             return null;
         } else {
             return null;
@@ -93,7 +94,7 @@ public class NotificationHelper extends BroadcastReceiver {
     }
 
     private void setOnMainClickEvents(Context context, RemoteViews views) {
-        views.setOnClickPendingIntent(R.id.root, PendingIntentUtils.getArtworkIntent(context));
+        views.setOnClickPendingIntent(R.id.root, PendingIntentUtils.getLaunchIntent(context));
         views.setOnClickPendingIntent(R.id.play, PendingIntentUtils.getPlayIntent(context));
     }
 
