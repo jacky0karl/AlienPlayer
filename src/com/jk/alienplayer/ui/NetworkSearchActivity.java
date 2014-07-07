@@ -14,6 +14,7 @@ import com.jk.alienplayer.ui.lib.DialogBuilder;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
@@ -22,6 +23,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -33,6 +35,7 @@ import android.widget.Toast;
 
 public class NetworkSearchActivity extends Activity implements OnItemClickListener {
 
+    private InputMethodManager mIMManager;
     private TextView mNoResult;
     private ProgressBar mLoading;
     private ListView mListView;
@@ -49,6 +52,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
             mQueryKey = query;
             mLoading.setVisibility(View.VISIBLE);
             HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
+            mIMManager.hideSoftInputFromWindow(mListView.getWindowToken(), 0);
             return true;
         }
 
@@ -128,6 +132,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     }
 
     private void init() {
+        mIMManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mNoResult = (TextView) findViewById(R.id.no_result);
         mLoading = (ProgressBar) findViewById(R.id.loading);
         mListView = (ListView) findViewById(R.id.list);
