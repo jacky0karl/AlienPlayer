@@ -70,7 +70,12 @@ public class FileSavingUtils {
     }
 
     public static void logThrowable(Throwable t) {
-        logToFile("Exception: " + t.getMessage());
+        if (t == null) {
+            return;
+        }
+
+        logToFile("Exception: " + t.getClass().getName());
+        logToFile("Message: " + t.getMessage());
         StackTraceElement[] array = t.getStackTrace();
         for (StackTraceElement ste : array) {
             logToFile("  " + ste.getClassName() + "." + ste.getMethodName() + "("
@@ -78,10 +83,7 @@ public class FileSavingUtils {
         }
 
         // recursive call if it has cause
-        Throwable cause = t.getCause();
-        if (cause != null) {
-            logThrowable(cause);
-        }
+        logThrowable(t.getCause());
     }
 
     public static boolean ensurePath(File file) {
