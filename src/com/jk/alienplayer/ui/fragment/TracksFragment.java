@@ -1,7 +1,5 @@
 package com.jk.alienplayer.ui.fragment;
 
-import java.io.File;
-
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
@@ -13,7 +11,7 @@ import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper;
-import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackHandler;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -128,22 +126,13 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     };
 
     private void deleteTrack() {
-        OnDeleteTrackHandler handler = new OnDeleteTrackHandler() {
+        OnDeleteTrackListener listener = new OnDeleteTrackListener() {
             @Override
-            public void onDelete(boolean deleteFile) {
-                if (DatabaseHelper.deleteTrack(getActivity(), mCurrTrack.id)) {
-                    if (deleteFile) {
-                        File file = new File(mCurrTrack.path);
-                        if (file.exists()) {
-                            file.delete();
-                        }
-                    }
-                    mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(),
-                            CurrentlistInfo.TYPE_ALL, -1));
-                }
+            public void onComplete() {
+                mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(),
+                        CurrentlistInfo.TYPE_ALL, -1));
             }
         };
-
-        TrackOperationHelper.buildDeleteConfirmDialog(getActivity(), handler).show();
+        TrackOperationHelper.deleteTrack(getActivity(), mCurrTrack, listener);
     }
 }

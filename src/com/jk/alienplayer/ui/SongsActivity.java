@@ -13,6 +13,7 @@ import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.Playbar;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -112,9 +113,14 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
     public void onClick(int menuId) {
         mPopupWindow.dismiss();
         if (ListMenu.MEMU_DELETE == menuId) {
-            // DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
+            if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+                //
+            } else {
+                deleteTrack();
+            }
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(this, mPlaylistSeletorListener);
+            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(this,
+                    mPlaylistSeletorListener);
             mPlaylistSeletor.show();
         }
     }
@@ -126,4 +132,15 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
             DatabaseHelper.addMemberToPlaylist(SongsActivity.this, id, mCurrTrack.id);
         }
     };
+
+    private void deleteTrack() {
+        OnDeleteTrackListener listener = new OnDeleteTrackListener() {
+            @Override
+            public void onComplete() {
+                mSongList = DatabaseHelper.getTracks(SongsActivity.this, mKeyType, mKey);
+                mAdapter.setTracks(mSongList);
+            }
+        };
+        TrackOperationHelper.deleteTrack(this, mCurrTrack, listener);
+    }
 }
