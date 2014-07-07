@@ -154,7 +154,7 @@ public class DatabaseHelper {
         return songs;
     }
 
-    public static SongInfo getSong(Context context, long id) {
+    public static SongInfo getTrack(Context context, long id) {
         SongInfo info = null;
         String[] projection = new String[] { Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
                 Media.ALBUM_ID, Media.ARTIST };
@@ -171,6 +171,14 @@ public class DatabaseHelper {
             cursor.close();
         }
         return info;
+    }
+
+    public static boolean deleteTrack(Context context, long id) {
+        String selection = Media._ID + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(id) };
+        int ret = context.getContentResolver().delete(Media.EXTERNAL_CONTENT_URI, selection,
+                selectionArgs);
+        return ret > 0 ? true : false;
     }
 
     private static final Uri AlbumArtUri = Uri.parse("content://media/external/audio/albumart");

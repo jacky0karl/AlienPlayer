@@ -11,7 +11,7 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.Playbar;
-import com.jk.alienplayer.ui.lib.PlaylistSeletor;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
 import android.app.Activity;
@@ -114,7 +114,7 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
         if (ListMenu.MEMU_DELETE == menuId) {
             // DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = PlaylistSeletor.buildPlaylistSeletor(this, mPlaylistSeletorListener);
+            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(this, mPlaylistSeletorListener);
             mPlaylistSeletor.show();
         }
     }

@@ -45,6 +45,8 @@
 
     <!-- dialog -->
     <string name="download_track_confirm">Are you sure to download this track?</string>
+    <string name="delete_track_confirm">Are you sure to delete this track?</string>
+    <string name="delete_file_aswell">Delete file as well</string>
     <string name="download_fail">Download failed</string>
     <string name="download_task_added">Added to download list</string>
 

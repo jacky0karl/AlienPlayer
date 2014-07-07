@@ -1,5 +1,7 @@
 package com.jk.alienplayer.ui.fragment;
 
+import java.io.File;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
@@ -10,7 +12,8 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
-import com.jk.alienplayer.ui.lib.PlaylistSeletor;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackHandler;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -51,10 +54,12 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mCurrTrack = mAdapter.getItem(position);
-            if (view.getId() == R.id.action) {
-                mPopupWindow.showAsDropDown(view);
-            } else {
-                onSongClick(mCurrTrack);
+            if (mCurrTrack != null) {
+                if (view.getId() == R.id.action) {
+                    mPopupWindow.showAsDropDown(view);
+                } else {
+                    onSongClick(mCurrTrack);
+                }
             }
         }
     };
@@ -106,9 +111,9 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     public void onClick(int menuId) {
         mPopupWindow.dismiss();
         if (ListMenu.MEMU_DELETE == menuId) {
-            // DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
+            deleteTrack();
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = PlaylistSeletor.buildPlaylistSeletor(getActivity(),
+            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(getActivity(),
                     mPlaylistSeletorClickListener);
             mPlaylistSeletor.show();
         }
@@ -121,4 +126,24 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
             DatabaseHelper.addMemberToPlaylist(getActivity(), id, mCurrTrack.id);
         }
     };
+
+    private void deleteTrack() {
+        OnDeleteTrackHandler handler = new OnDeleteTrackHandler() {
+            @Override
+            public void onDelete(boolean deleteFile) {
+                if (DatabaseHelper.deleteTrack(getActivity(), mCurrTrack.id)) {
+                    if (deleteFile) {
+                        File file = new File(mCurrTrack.path);
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                    }
+                    mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(),
+                            CurrentlistInfo.TYPE_ALL, -1));
+                }
+            }
+        };
+
+        TrackOperationHelper.buildDeleteConfirmDialog(getActivity(), handler).show();
+    }
 }

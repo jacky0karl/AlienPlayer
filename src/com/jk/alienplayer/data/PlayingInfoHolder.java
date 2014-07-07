@@ -46,7 +46,7 @@ public class PlayingInfoHolder {
         long songId = sp.getLong(PreferencesHelper.CURRENT_SONG_ID, -1);
         SongInfo currentSong = null;
         if (songId != -1) {
-            SongInfo info = DatabaseHelper.getSong(context, songId);
+            SongInfo info = DatabaseHelper.getTrack(context, songId);
             if (info != null) {
                 currentSong = info;
                 mPlaybarArtwork = DatabaseHelper.getArtwork(context, currentSong.id,

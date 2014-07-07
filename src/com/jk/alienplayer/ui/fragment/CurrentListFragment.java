@@ -8,7 +8,7 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
-import com.jk.alienplayer.ui.lib.PlaylistSeletor;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -111,7 +111,7 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
         if (ListMenu.MEMU_DELETE == menuId) {
             // DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = PlaylistSeletor.buildPlaylistSeletor(getActivity(),
+            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(getActivity(),
                     mPlaylistSeletorClickListener);
             mPlaylistSeletor.show();
         }

@@ -12,7 +12,7 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
-import com.jk.alienplayer.ui.lib.PlaylistSeletor;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
 import android.app.Dialog;
@@ -128,7 +128,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
         if (ListMenu.MEMU_DELETE == menuId) {
             // DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = PlaylistSeletor.buildPlaylistSeletor(getActivity(),
+            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(getActivity(),
                     mPlaylistSeletorListener);
             mPlaylistSeletor.show();
         }
