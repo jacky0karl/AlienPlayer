@@ -10,9 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ListMenu extends LinearLayout {
-
-    public static final int MEMU_DELETE = 0;
-    public static final int MEMU_ADD_TO_PLAYLIST = 1;
+    public static final int MEMU_ADD_TO_PLAYLIST = 0;
+    public static final int MEMU_DELETE = 1;
+    public static final int MEMU_REMOVE = 2;
 
     public interface OnMenuItemClickListener {
         void onClick(int menuId);

@@ -2,6 +2,7 @@ package com.jk.alienplayer.ui.fragment;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.PlaylistInfo;
 import com.jk.alienplayer.ui.SongsActivity;
@@ -47,7 +48,7 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.setPlaylists(DatabaseHelper.getPlaylists(getActivity()));
+                    mAdapter.setPlaylists(PlaylistHelper.getPlaylists(getActivity()));
                 }
             });
         }
@@ -86,7 +87,7 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
     public void onClick(int menuId) {
         mPopupWindow.dismiss();
         if (ListMenu.MEMU_DELETE == menuId) {
-            DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
+            PlaylistHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
         }
     }
 
@@ -98,7 +99,7 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new PlaylistsAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
-        mAdapter.setPlaylists(DatabaseHelper.getPlaylists(getActivity()));
+        mAdapter.setPlaylists(PlaylistHelper.getPlaylists(getActivity()));
         mListView.setOnItemClickListener(mOnItemClickListener);
         setupPopupWindow();
     }
@@ -142,7 +143,7 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
             public void onClick(DialogInterface dialog, int which) {
                 if (which == Dialog.BUTTON_POSITIVE) {
                     String name = edit.getText().toString().trim();
-                    DatabaseHelper.addPlaylist(getActivity(), name);
+                    PlaylistHelper.addPlaylist(getActivity(), name);
                 }
             }
         };

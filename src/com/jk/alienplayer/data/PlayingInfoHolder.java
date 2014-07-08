@@ -64,7 +64,7 @@ public class PlayingInfoHolder {
         List<SongInfo> currentSongList = null;
         if (songListId != -1 && songListType != -1) {
             if (songListType == CurrentlistInfo.TYPE_PLAYLIST) {
-                currentSongList = DatabaseHelper.getPlaylistMembers(context, songListId);
+                currentSongList = PlaylistHelper.getPlaylistMembers(context, songListId);
             } else if (songListType == CurrentlistInfo.TYPE_RECENT) {
                 currentSongList = mRecentsList;
             } else {

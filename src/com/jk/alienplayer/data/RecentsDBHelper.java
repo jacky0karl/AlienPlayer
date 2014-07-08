@@ -28,7 +28,7 @@ public class RecentsDBHelper {
     }
 
     public static List<SongInfo> getRecentTracks(Context context) {
-        return DatabaseHelper.getPlaylistMembers(context, sRecentsId);
+        return PlaylistHelper.getPlaylistMembers(context, sRecentsId);
     }
 
     public static void addToRecents(Context context, long audioId, boolean isUpdate) {

@@ -3,6 +3,7 @@ package com.jk.alienplayer.ui.fragment;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
@@ -121,7 +122,7 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mPlaylistSeletor.dismiss();
-            DatabaseHelper.addMemberToPlaylist(getActivity(), id, mCurrTrack.id);
+            PlaylistHelper.addMemberToPlaylist(getActivity(), id, mCurrTrack.id);
         }
     };
 }

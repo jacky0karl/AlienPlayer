@@ -5,6 +5,7 @@ import java.util.List;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
@@ -27,7 +28,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
 
 public class SongsActivity extends Activity implements OnMenuItemClickListener {
-
     public static final String KEY_TYPE = "key_type";
     public static final String KEY = "key";
     public static final String LABEL = "label";
@@ -78,13 +78,7 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new TracksAdapter(this, mOnItemClickListener);
         mListView.setAdapter(mAdapter);
-
-        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
-            mSongList = DatabaseHelper.getPlaylistMembers(this, mKey);
-        } else {
-            mSongList = DatabaseHelper.getTracks(this, mKeyType, mKey);
-        }
-        mAdapter.setTracks(mSongList);
+        updateList();
         mListView.setOnItemClickListener(mOnItemClickListener);
         setupPopupWindow();
     }
@@ -92,8 +86,13 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
     private void setupPopupWindow() {
         mListMenu = new ListMenu(this);
         mListMenu.setMenuItemClickListener(this);
-        mListMenu.addMenu(ListMenu.MEMU_ADD_TO_PLAYLIST, R.string.add_to_playlist);
-        mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
+        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
+        } else {
+            mListMenu.addMenu(ListMenu.MEMU_ADD_TO_PLAYLIST, R.string.add_to_playlist);
+            mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
+        }
+
         mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT, false);
         mPopupWindow.setOutsideTouchable(true);
@@ -112,12 +111,10 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
     @Override
     public void onClick(int menuId) {
         mPopupWindow.dismiss();
-        if (ListMenu.MEMU_DELETE == menuId) {
-            if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
-                //
-            } else {
-                deleteTrack();
-            }
+        if (ListMenu.MEMU_REMOVE == menuId) {
+            reomveTrack();
+        } else if (ListMenu.MEMU_DELETE == menuId) {
+            deleteTrack();
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
             mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(this,
                     mPlaylistSeletorListener);
@@ -129,18 +126,31 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mPlaylistSeletor.dismiss();
-            DatabaseHelper.addMemberToPlaylist(SongsActivity.this, id, mCurrTrack.id);
+            PlaylistHelper.addMemberToPlaylist(SongsActivity.this, id, mCurrTrack.id);
         }
     };
+
+    private void reomveTrack() {
+        PlaylistHelper.removeMemberFromPlaylist(this, mKey, mCurrTrack.id);
+        updateList();
+    }
 
     private void deleteTrack() {
         OnDeleteTrackListener listener = new OnDeleteTrackListener() {
             @Override
             public void onComplete() {
-                mSongList = DatabaseHelper.getTracks(SongsActivity.this, mKeyType, mKey);
-                mAdapter.setTracks(mSongList);
+                updateList();
             }
         };
         TrackOperationHelper.deleteTrack(this, mCurrTrack, listener);
+    }
+
+    private void updateList() {
+        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+            mSongList = PlaylistHelper.getPlaylistMembers(this, mKey);
+        } else {
+            mSongList = DatabaseHelper.getTracks(this, mKeyType, mKey);
+        }
+        mAdapter.setTracks(mSongList);
     }
 }

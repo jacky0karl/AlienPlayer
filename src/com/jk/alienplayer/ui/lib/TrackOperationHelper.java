@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.PlaylistsSeletorAdapter;
 
@@ -47,7 +48,7 @@ public class TrackOperationHelper {
 
     public static Dialog buildPlaylistSeletor(Context context, OnItemClickListener listener) {
         PlaylistsSeletorAdapter adapter = new PlaylistsSeletorAdapter(context);
-        adapter.setPlaylists(DatabaseHelper.getPlaylists(context));
+        adapter.setPlaylists(PlaylistHelper.getPlaylists(context));
         ListView list = new ListView(context);
         list.setAdapter(adapter);
         list.setOnItemClickListener(listener);

@@ -3,6 +3,7 @@
 
     <color name="dark_bg">#333</color>
     <color name="menu_bg">#444</color>
+    <color name="menu_bg_press">#09c</color>
     <color name="half_transparent">#77ffffff</color>
     <color name="grey">#777</color>
 </resources>
