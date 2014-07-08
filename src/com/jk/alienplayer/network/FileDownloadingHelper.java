@@ -1,8 +1,10 @@
 package com.jk.alienplayer.network;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,16 +15,20 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.jk.alienplayer.data.JsonHelper;
 import com.jk.alienplayer.data.Mp3TagsHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.utils.FileSavingUtils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 public class FileDownloadingHelper {
+    public static final String LYRIC_EXT = "lyr";
     private static final int MAX_TASK_COUNT = 3;
     private static final int STEP_SIZE = 4 * 1024;
 
@@ -76,51 +82,6 @@ public class FileDownloadingHelper {
             }
         }
         mFileDownloadingList = tmpList;
-    }
-
-    public void downloadTrack(FileDownloadingInfo info, String urlString) {
-        String filePath = buildFilePath(info.trackInfo);
-        File file = new File(filePath);
-        if (!FileSavingUtils.ensurePath(file)) {
-            info.status = FileDownloadingInfo.Status.FAILED;
-            return;
-        }
-
-        info.status = FileDownloadingInfo.Status.DOWALOADING;
-        InputStream inputStream = null;
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            inputStream = urlConnection.getInputStream();
-            info.size = urlConnection.getContentLength();
-        } catch (Exception e) {
-            e.printStackTrace();
-            info.status = FileDownloadingInfo.Status.FAILED;
-            FileSavingUtils.logThrowable(e);
-            return;
-        }
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[STEP_SIZE];
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, len);
-                info.progress += len;
-            }
-            outputStream.flush();
-            outputStream.close();
-            inputStream.close();
-
-            if (mContext != null) {
-                dealDownloadFile(info.trackInfo, filePath);
-            }
-            info.status = FileDownloadingInfo.Status.COMPLETED;
-        } catch (Exception e) {
-            e.printStackTrace();
-            FileSavingUtils.logThrowable(e);
-            info.status = FileDownloadingInfo.Status.FAILED;
-        }
     }
 
     public InputStream getInputStream(String urlString) {
@@ -180,8 +141,91 @@ public class FileDownloadingHelper {
         @Override
         public void run() {
             downloadTrack(info, url);
+            downloadLyric(info.trackInfo);
         }
     };
+
+    private void downloadLyric(final NetworkTrackInfo info) {
+        HttpResponseHandler handler = new HttpResponseHandler() {
+            @Override
+            public void onSuccess(String response) {
+                String lyric = JsonHelper.parseLyric(response);
+                if (!TextUtils.isEmpty(lyric)) {
+                    saveLyric(info, lyric);
+                }
+            }
+
+            @Override
+            public void onFail(int status, String response) {
+            }
+        };
+        HttpHelper.getLyric(String.valueOf(info.id), handler);
+    }
+
+    private void saveLyric(NetworkTrackInfo info, String lyric) {
+        String filePath = buildLyricPath(info);
+        try {
+            File file = new File(filePath);
+            if (FileSavingUtils.ensurePath(file)) {
+                file.createNewFile();
+            } else {
+                return;
+            }
+
+            FileWriter filerWriter = new FileWriter(file, false);
+            BufferedWriter bufWriter = new BufferedWriter(filerWriter);
+            bufWriter.write(lyric.toCharArray());
+            bufWriter.close();
+            filerWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void downloadTrack(FileDownloadingInfo info, String urlString) {
+        String filePath = buildFilePath(info.trackInfo);
+        File file = new File(filePath);
+        if (!FileSavingUtils.ensurePath(file)) {
+            info.status = FileDownloadingInfo.Status.FAILED;
+            return;
+        }
+
+        info.status = FileDownloadingInfo.Status.DOWALOADING;
+        InputStream inputStream = null;
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            inputStream = urlConnection.getInputStream();
+            info.size = urlConnection.getContentLength();
+        } catch (Exception e) {
+            e.printStackTrace();
+            info.status = FileDownloadingInfo.Status.FAILED;
+            FileSavingUtils.logThrowable(e);
+            return;
+        }
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[STEP_SIZE];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, len);
+                info.progress += len;
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+            if (mContext != null) {
+                dealDownloadFile(info.trackInfo, filePath);
+            }
+            info.status = FileDownloadingInfo.Status.COMPLETED;
+        } catch (Exception e) {
+            e.printStackTrace();
+            FileSavingUtils.logThrowable(e);
+            info.status = FileDownloadingInfo.Status.FAILED;
+        }
+    }
 
     private void dealDownloadFile(NetworkTrackInfo info, String filePath) {
         if (info.ext.equalsIgnoreCase("mp3")) {
@@ -191,6 +235,14 @@ public class FileDownloadingHelper {
     }
 
     private String buildFilePath(NetworkTrackInfo info) {
+        return buildPath(info) + info.ext;
+    }
+
+    private String buildLyricPath(NetworkTrackInfo info) {
+        return buildPath(info) + LYRIC_EXT;
+    }
+
+    private String buildPath(NetworkTrackInfo info) {
         StringBuilder sb = new StringBuilder();
         sb.append(FileSavingUtils.sRootPath);
         sb.append(info.artistAlbum);
@@ -199,7 +251,6 @@ public class FileDownloadingHelper {
         sb.append(File.separator);
         sb.append(info.name);
         sb.append(".");
-        sb.append(info.ext);
         return sb.toString();
     }
 }

@@ -12,6 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -31,6 +32,7 @@ public class HttpHelper {
     private static final String GET_TRACKS_URL = "http://music.163.com/api/album/";
     private static final String GET_TRACK_URL = "http://music.163.com/api/song/detail/";
     private static final String TRACK_DOWANLOAD_URL = "http://m1.music.126.net/";
+    private static final String GET_LYRIC_URL = "http://music.163.com/api/song/lyric?id=";
 
     public interface HttpResponseHandler {
         void onSuccess(String response);
@@ -63,17 +65,7 @@ public class HttpHelper {
                     HttpEntity httpentity = new UrlEncodedFormEntity(params, "utf-8");
                     HttpPost post = new HttpPost(SEARCH_URL);
                     post.setEntity(httpentity);
-                    post.setHeader("Cookie", COOKIE);
-                    HttpClient httpClient = new DefaultHttpClient();
-
-                    HttpResponse response = httpClient.execute(post);
-                    int status = response.getStatusLine().getStatusCode();
-                    String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
-                    if (status == 200) {
-                        handler.onSuccess(responseStr);
-                    } else {
-                        handler.onFail(status, responseStr);
-                    }
+                    handleRequest(post, handler);
                 } catch (Exception e) {
                     e.printStackTrace();
                     handler.onFail(-1, e.getMessage());
@@ -91,24 +83,9 @@ public class HttpHelper {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    HttpGet get = new HttpGet(GET_ALBUMS_URL + artistId + "?offset=0&limit="
-                            + ALBUM_LIMIT);
-                    get.setHeader("Cookie", COOKIE);
-                    HttpClient httpClient = new DefaultHttpClient();
-
-                    HttpResponse response = httpClient.execute(get);
-                    int status = response.getStatusLine().getStatusCode();
-                    String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
-                    if (status == 200) {
-                        handler.onSuccess(responseStr);
-                    } else {
-                        handler.onFail(status, responseStr);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    handler.onFail(-1, e.getMessage());
-                }
+                HttpGet get = new HttpGet(GET_ALBUMS_URL + artistId + "?offset=0&limit="
+                        + ALBUM_LIMIT);
+                handleRequest(get, handler);
             }
         });
         thread.start();
@@ -122,23 +99,8 @@ public class HttpHelper {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    HttpGet get = new HttpGet(GET_TRACKS_URL + albumId);
-                    get.setHeader("Cookie", COOKIE);
-                    HttpClient httpClient = new DefaultHttpClient();
-
-                    HttpResponse response = httpClient.execute(get);
-                    int status = response.getStatusLine().getStatusCode();
-                    String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
-                    if (status == 200) {
-                        handler.onSuccess(responseStr);
-                    } else {
-                        handler.onFail(status, responseStr);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    handler.onFail(-1, e.getMessage());
-                }
+                HttpGet get = new HttpGet(GET_TRACKS_URL + albumId);
+                handleRequest(get, handler);
             }
         });
         thread.start();
@@ -152,24 +114,9 @@ public class HttpHelper {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    String url = GET_TRACK_URL + "?ids=[" + trackId + "]";
-                    HttpGet get = new HttpGet(url);
-                    get.setHeader("Cookie", COOKIE);
-                    HttpClient httpClient = new DefaultHttpClient();
-
-                    HttpResponse response = httpClient.execute(get);
-                    int status = response.getStatusLine().getStatusCode();
-                    String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
-                    if (status == 200) {
-                        handler.onSuccess(responseStr);
-                    } else {
-                        handler.onFail(status, responseStr);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    handler.onFail(-1, e.getMessage());
-                }
+                String url = GET_TRACK_URL + "?ids=[" + trackId + "]";
+                HttpGet get = new HttpGet(url);
+                handleRequest(get, handler);
             }
         });
         thread.start();
@@ -178,6 +125,40 @@ public class HttpHelper {
     public static String getDownloadTrackUrl(String dfsId, String ext) {
         String encryptedId = encrypt(dfsId);
         return TRACK_DOWANLOAD_URL + encryptedId + "/" + dfsId + "." + ext;
+    }
+
+    public static void getLyric(final String trackId, final HttpResponseHandler handler) {
+        if (handler == null) {
+            return;
+        }
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = GET_LYRIC_URL + trackId + "&lv=-1";
+                HttpGet get = new HttpGet(url);
+                handleRequest(get, handler);
+            }
+        });
+        thread.start();
+    }
+
+    private static void handleRequest(HttpUriRequest request, HttpResponseHandler handler) {
+        try {
+            request.setHeader("Cookie", COOKIE);
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = httpClient.execute(request);
+            int status = response.getStatusLine().getStatusCode();
+            String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
+            if (status == 200) {
+                handler.onSuccess(responseStr);
+            } else {
+                handler.onFail(status, responseStr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            handler.onFail(-1, e.getMessage());
+        }
     }
 
     private static String encrypt(String str) {
@@ -202,4 +183,5 @@ public class HttpHelper {
         }
         return null;
     }
+
 }

@@ -195,6 +195,20 @@ public class JsonHelper {
         return null;
     }
 
+    public static String parseLyric(String jsonStr) {
+        try {
+            JSONObject json = new JSONObject(jsonStr);
+            int status = json.getInt(STATUS);
+            if (status == STATUS_OK) {
+                JSONObject lrc = json.getJSONObject("lrc");
+                return lrc.getString("lyric");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static String getArtistsOfItem(JSONObject Obj) {
         String artists = "";
         JSONArray artistsArray;

@@ -6,4 +6,7 @@
     <color name="menu_bg_press">#09c</color>
     <color name="half_transparent">#77ffffff</color>
     <color name="grey">#777</color>
-</resources>
+    <color name="lyric_hl">#09c</color>
+    <color name="lyric">#999</color>
+
+</resources>

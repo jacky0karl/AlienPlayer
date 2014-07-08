@@ -41,6 +41,7 @@ public class PlayingActivity extends FragmentActivity {
     private static final int FRAGMENT_LYRIC = 2;
 
     private SongInfo mSongInfo;
+
     private SeekBar mSeekBar;
     private ImageButton mPlayBtn;
     private ImageButton mNextBtn;

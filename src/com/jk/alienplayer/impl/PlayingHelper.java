@@ -15,6 +15,7 @@ import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.metadata.SongInfo;
 
 public class PlayingHelper {
+    public static final int PROGRESS_UPDATE_INTERVAL = 200;
 
     public static class PlayingInfo {
         public PlayStatus status = PlayStatus.Idle;
@@ -229,7 +230,7 @@ public class PlayingHelper {
         @Override
         public void run() {
             notifyProgressUpdate();
-            mHandler.postDelayed(mUpdateTask, 500);
+            mHandler.postDelayed(mUpdateTask, PROGRESS_UPDATE_INTERVAL);
         }
     };
 
