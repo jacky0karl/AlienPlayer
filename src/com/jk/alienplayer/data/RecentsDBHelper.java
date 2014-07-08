@@ -46,6 +46,10 @@ public class RecentsDBHelper {
         }
     }
 
+    public static boolean removeFromRecents(Context context, long trackId) {
+        return PlaylistHelper.removeMemberFromPlaylist(context, sRecentsId, trackId);
+    }
+
     private static void deleteRedundantRecents(Context context) {
         long lastMember = 0;
         String[] projection = new String[] { Playlists.Members._ID, Playlists.Members.PLAY_ORDER };

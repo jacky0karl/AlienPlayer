@@ -36,12 +36,4 @@
         android:textColor="#999"
         android:textSize="14sp" />
 
-    <ImageView
-        android:id="@+id/action"
-        android:layout_width="@dimen/button_size"
-        android:layout_height="@dimen/button_size"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_menu_more" />
-
 </RelativeLayout>

@@ -1,7 +1,6 @@
 package com.jk.alienplayer.ui.fragment;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.PlaylistInfo;

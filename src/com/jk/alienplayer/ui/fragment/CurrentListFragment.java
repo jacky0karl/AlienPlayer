@@ -1,7 +1,6 @@
 package com.jk.alienplayer.ui.fragment;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.PlayService;
@@ -91,7 +90,6 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
         mListMenu = new ListMenu(getActivity());
         mListMenu.setMenuItemClickListener(this);
         mListMenu.addMenu(ListMenu.MEMU_ADD_TO_PLAYLIST, R.string.add_to_playlist);
-        mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
         mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT, false);
         mPopupWindow.setOutsideTouchable(true);
@@ -109,9 +107,7 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
     @Override
     public void onClick(int menuId) {
         mPopupWindow.dismiss();
-        if (ListMenu.MEMU_DELETE == menuId) {
-            // DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
-        } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
+        if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
             mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(getActivity(),
                     mPlaylistSeletorClickListener);
             mPlaylistSeletor.show();

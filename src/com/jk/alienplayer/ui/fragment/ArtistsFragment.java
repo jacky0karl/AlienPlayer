@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,7 @@ public class ArtistsFragment extends Fragment {
 
     private void init(View root) {
         mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new ArtistsAdapter(getActivity(), mOnItemClickListener);
+        mAdapter = new ArtistsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
         setArtists();
         mListView.setOnItemClickListener(mOnItemClickListener);
@@ -76,9 +75,7 @@ public class ArtistsFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ArtistInfo info = mAdapter.getItem(position);
-            if (view.getId() == R.id.action) {
-                Log.e("#### onItemClick", "position = " + position);
-            } else {
+            if (info != null) {
                 startSubPage(info.id, info.name);
             }
         }

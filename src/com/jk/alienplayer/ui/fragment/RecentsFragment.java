@@ -106,7 +106,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
         mListMenu = new ListMenu(getActivity());
         mListMenu.setMenuItemClickListener(this);
         mListMenu.addMenu(ListMenu.MEMU_ADD_TO_PLAYLIST, R.string.add_to_playlist);
-        mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
+        mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
         mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT, false);
         mPopupWindow.setOutsideTouchable(true);
@@ -124,8 +124,8 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     @Override
     public void onClick(int menuId) {
         mPopupWindow.dismiss();
-        if (ListMenu.MEMU_DELETE == menuId) {
-            // DatabaseHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
+        if (ListMenu.MEMU_REMOVE == menuId) {
+            reomveTrack();
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
             mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(getActivity(),
                     mPlaylistSeletorListener);
@@ -140,4 +140,9 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
             PlaylistHelper.addMemberToPlaylist(getActivity(), id, mCurrTrack.id);
         }
     };
+
+    private void reomveTrack() {
+        RecentsDBHelper.removeFromRecents(getActivity(), mCurrTrack.id);
+        mAdapter.setTracks(RecentsDBHelper.getRecentTracks(getActivity()));
+    }
 }
