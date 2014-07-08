@@ -98,7 +98,7 @@ public class Playbar extends FrameLayout {
                 getContext().startService(intent);
             }
         });
-        
+
         mPrevBtn = (ImageButton) mContentView.findViewById(R.id.prev);
         mPrevBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -108,7 +108,7 @@ public class Playbar extends FrameLayout {
                 getContext().startService(intent);
             }
         });
-        
+
         mArtwork = (ImageView) mContentView.findViewById(R.id.artwork);
         mArtwork.setOnClickListener(new OnClickListener() {
             @Override
@@ -145,9 +145,12 @@ public class Playbar extends FrameLayout {
     public void syncTrackInfo() {
         SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
         if (info != null) {
+            setVisibility(View.VISIBLE);
             mSongLabel.setText(info.title);
             mArtistLabel.setText(info.artist);
             setArtwork();
+        } else {
+            setVisibility(View.GONE);
         }
     }
 
