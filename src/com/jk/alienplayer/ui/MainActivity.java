@@ -25,8 +25,8 @@ import android.view.MenuItem;
 public class MainActivity extends FragmentActivity {
     private static final int FRAGMENT_RECENTS = 0;
     private static final int FRAGMENT_PLAYLIST = 1;
-    private static final int FRAGMENT_ARTISTS = 2;
-    private static final int FRAGMENT_ALBUM_ARTISTS = 3;
+    private static final int FRAGMENT_ALBUM_ARTISTS = 2;
+    private static final int FRAGMENT_ARTISTS = 3;
     private static final int FRAGMENT_ALBUMS = 4;
     private static final int FRAGMENT_TRACKS = 5;
     private static final int FRAGMENT_COUNT = 6;
