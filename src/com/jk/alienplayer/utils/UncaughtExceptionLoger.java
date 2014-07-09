@@ -23,6 +23,7 @@ public final class UncaughtExceptionLoger implements UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable t) {
+        FileSavingUtils.logToFile("uncaught Exception:");
         FileSavingUtils.logThrowable(t);
         mDefaultHandler.uncaughtException(thread, t);
     }

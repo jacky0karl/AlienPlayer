@@ -107,7 +107,12 @@ public class NetworkTracksActivity extends Activity {
 
         @Override
         public void onFail(int status, String response) {
-            mLoading.setVisibility(View.GONE);
+            NetworkTracksActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoading.setVisibility(View.GONE);
+                }
+            });
         }
     };
 

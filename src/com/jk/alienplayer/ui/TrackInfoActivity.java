@@ -2,7 +2,9 @@ package com.jk.alienplayer.ui;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.Mp3TagsHelper;
+import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.MediaScanService;
+import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 
 import android.app.Activity;
@@ -13,8 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class TrackInfoActivity extends Activity {
-    public static final String TRACK_FILE_PATH = "track_file_path";
-
     private TrackTagInfo mTrackTagInfo;
     private String mTrackPath;
     private EditText mTitle;
@@ -33,7 +33,8 @@ public class TrackInfoActivity extends Activity {
     }
 
     private void init() {
-        mTrackPath = getIntent().getStringExtra(TRACK_FILE_PATH);
+        SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
+        mTrackPath = song.path;
         mTrackTagInfo = Mp3TagsHelper.readMp3Tags(mTrackPath);
 
         mTitle = (EditText) findViewById(R.id.title);

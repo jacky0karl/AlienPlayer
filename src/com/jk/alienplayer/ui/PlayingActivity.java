@@ -35,12 +35,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class PlayingActivity extends FragmentActivity {
-
     private static final int FRAGMENT_ARTWORK = 0;
-    private static final int FRAGMENT_CURR_LIST = 1;
-    private static final int FRAGMENT_LYRIC = 2;
-
-    private SongInfo mSongInfo;
+    private static final int FRAGMENT_LYRIC = 1;
+    private static final int FRAGMENT_CURR_LIST = 2;
+    private static final int FRAGMENT_COUNT = 3;
 
     private SeekBar mSeekBar;
     private ImageButton mPlayBtn;
@@ -106,7 +104,6 @@ public class PlayingActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_info) {
             Intent intent = new Intent(this, TrackInfoActivity.class);
-            intent.putExtra(TrackInfoActivity.TRACK_FILE_PATH, mSongInfo.path);
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mContent, Gravity.CENTER);
@@ -117,13 +114,13 @@ public class PlayingActivity extends FragmentActivity {
     }
 
     private void init() {
-        mSongInfo = PlayingInfoHolder.getInstance().getCurrentSong();
-        setTitle(mSongInfo.title);
-        getActionBar().setSubtitle(mSongInfo.artist);
+        SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
+        setTitle(song.title);
+        getActionBar().setSubtitle(song.artist);
         mProgress = (TextView) findViewById(R.id.progress);
         mDuration = (TextView) findViewById(R.id.duration);
         mProgress.setText(PlayingTimeUtils.toDisplayTime(0));
-        mDuration.setText(PlayingTimeUtils.toDisplayTime(mSongInfo.duration));
+        mDuration.setText(PlayingTimeUtils.toDisplayTime(song.duration));
 
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mSeekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
@@ -252,7 +249,7 @@ public class PlayingActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return FRAGMENT_COUNT;
         }
     }
 }
