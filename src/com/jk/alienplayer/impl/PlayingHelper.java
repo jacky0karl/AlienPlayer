@@ -15,7 +15,7 @@ import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.metadata.SongInfo;
 
 public class PlayingHelper {
-    public static final int PROGRESS_UPDATE_INTERVAL = 200;
+    public static final int PROGRESS_UPDATE_INTERVAL = 500;
 
     public static class PlayingInfo {
         public PlayStatus status = PlayStatus.Idle;

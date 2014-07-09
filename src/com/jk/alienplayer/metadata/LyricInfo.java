@@ -2,6 +2,8 @@ package com.jk.alienplayer.metadata;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.apache.http.util.EncodingUtils;
 
@@ -41,16 +43,35 @@ public class LyricInfo {
         }
     }
 
+    class SentenceComparator implements Comparator<Sentence> {
+        @Override
+        public int compare(Sentence lhs, Sentence rhs) {
+            return lhs.startTime - rhs.startTime;
+        }
+    }
+
     private void parseFile(String filePath) {
         String content = readFile(filePath);
         if (!TextUtils.isEmpty(content)) {
             String[] lines = content.split("\n");
             for (String line : lines) {
-                int index = line.indexOf(']');
-                String time = line.substring(1, index);
-                String text = line.substring(index + 1, line.length());
-                mSentences.add(new Sentence(stringToMsec(time), text));
+                parseLine(line);
             }
+            Collections.sort(mSentences, new SentenceComparator());
+        }
+    }
+
+    private void parseLine(String line) {
+        String[] parts = line.split("]");
+        int len = parts.length;
+        if (len < 1) {
+            return;
+        }
+
+        String text = parts[len - 1];
+        for (int i = 0; i < len - 1; i++) {
+            String time = parts[i].substring(1);
+            mSentences.add(new Sentence(stringToMsec(time), text));
         }
     }
 
