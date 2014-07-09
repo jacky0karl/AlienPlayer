@@ -186,6 +186,7 @@ public class FileDownloadingHelper {
         String filePath = buildFilePath(info.trackInfo);
         File file = new File(filePath);
         if (!FileSavingUtils.ensurePath(file)) {
+            FileSavingUtils.logToFile("ensurePath fail");
             info.status = FileDownloadingInfo.Status.FAILED;
             return;
         }
@@ -199,8 +200,8 @@ public class FileDownloadingHelper {
             info.size = urlConnection.getContentLength();
         } catch (Exception e) {
             e.printStackTrace();
-            info.status = FileDownloadingInfo.Status.FAILED;
             FileSavingUtils.logThrowable(e);
+            info.status = FileDownloadingInfo.Status.FAILED;
             return;
         }
 

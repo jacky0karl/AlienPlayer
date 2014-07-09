@@ -72,8 +72,7 @@ public class LyricFragment extends Fragment {
     private void updateLyricInfo() {
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         if (songInfo != null) {
-            String filePath = songInfo.path.split("\\.")[0] + "." + FileDownloadingHelper.LYRIC_EXT;
-            mLyricInfo = new LyricInfo(filePath);
+            mLyricInfo = new LyricInfo(getLyricPath(songInfo.path));
         } else {
             mLyricInfo = new LyricInfo("");
         }
@@ -84,6 +83,11 @@ public class LyricFragment extends Fragment {
         } else {
             mNoLyric.setVisibility(View.VISIBLE);
         }
+    }
+
+    private String getLyricPath(String songPath) {
+        int index = songPath.lastIndexOf('.');
+        return songPath.substring(0, index + 1) + FileDownloadingHelper.LYRIC_EXT;
     }
 
     private void updateHighlightPos(int progress) {
