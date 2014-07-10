@@ -7,6 +7,7 @@ public class NetworkTrackInfo extends NetworkSearchResult {
     public String album;
     public long dfsId = 0;
     public int position = 0;
+    public int year = 0;
     public String ext;
 
     public NetworkTrackInfo(long id, String name, String artists) {

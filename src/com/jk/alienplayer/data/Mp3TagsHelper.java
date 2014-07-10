@@ -16,11 +16,11 @@ public class Mp3TagsHelper {
 
     public static void writeMp3Tags(NetworkTrackInfo info, String filePath) {
         writeMp3Tags(info.name, info.artists, info.album, info.artistAlbum,
-                String.valueOf(info.position), filePath);
+                String.valueOf(info.position), String.valueOf(info.year), filePath);
     }
 
     public static void writeMp3Tags(String title, String artists, String album, String artistAlbum,
-            String track, String filePath) {
+            String track, String year, String filePath) {
         File file = new File(filePath);
         try {
             MP3File mp3 = (MP3File) AudioFileIO.read(file);
@@ -32,6 +32,9 @@ public class Mp3TagsHelper {
             tag.setField(FieldKey.TITLE, title);
             if (!TextUtils.isEmpty(track) && TextUtils.isDigitsOnly(track)) {
                 tag.setField(FieldKey.TRACK, track);
+            }
+            if (!TextUtils.isEmpty(year) && TextUtils.isDigitsOnly(year)) {
+                tag.setField(FieldKey.YEAR, year);
             }
 
             mp3.setID3v2Tag(tag);
@@ -57,6 +60,7 @@ public class Mp3TagsHelper {
             info.setAlbum(tag.getFirst(FieldKey.ALBUM));
             info.setArtistAlbum(tag.getFirst(FieldKey.ALBUM_ARTIST));
             info.setTrack(tag.getFirst(FieldKey.TRACK));
+            info.setYear(tag.getFirst(FieldKey.YEAR));
         } catch (Exception e) {
             e.printStackTrace();
         }

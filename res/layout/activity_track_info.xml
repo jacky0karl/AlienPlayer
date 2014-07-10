@@ -91,6 +91,23 @@
                 android:id="@+id/track"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:ems="3"
+                android:inputType="number" >
+            </EditText>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="@string/year"
+                android:textColor="#999"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:ems="4"
                 android:inputType="number" >
             </EditText>

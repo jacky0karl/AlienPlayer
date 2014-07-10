@@ -22,6 +22,7 @@ public class TrackInfoActivity extends Activity {
     private EditText mAlbum;
     private EditText mAlbumArtist;
     private EditText mTrack;
+    private EditText mYear;
     private Button mSaveBtn;
     private Button mCancelBtn;
 
@@ -47,6 +48,8 @@ public class TrackInfoActivity extends Activity {
         mAlbumArtist.setText(mTrackTagInfo.getArtistAlbum());
         mTrack = (EditText) findViewById(R.id.track);
         mTrack.setText(mTrackTagInfo.getTrack());
+        mYear = (EditText) findViewById(R.id.year);
+        mYear.setText(mTrackTagInfo.getYear());
 
         mSaveBtn = (Button) findViewById(R.id.saveBtn);
         mSaveBtn.setOnClickListener(new OnClickListener() {
@@ -72,6 +75,7 @@ public class TrackInfoActivity extends Activity {
         String album = mAlbum.getText().toString().trim();
         String artistAlbum = mAlbumArtist.getText().toString().trim();
         String track = mTrack.getText().toString().trim();
-        Mp3TagsHelper.writeMp3Tags(title, artists, album, artistAlbum, track, mTrackPath);
+        String year = mYear.getText().toString().trim();
+        Mp3TagsHelper.writeMp3Tags(title, artists, album, artistAlbum, track, year, mTrackPath);
     }
 }

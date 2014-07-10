@@ -8,6 +8,7 @@ public class TrackTagInfo {
     private String album;
     private String artistAlbum;
     private String track;
+    private String year;
 
     public String getTitle() {
         return title;
@@ -66,6 +67,18 @@ public class TrackTagInfo {
             this.track = "";
         } else {
             this.track = track;
+        }
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        if (TextUtils.isEmpty(year)) {
+            this.year = "";
+        } else {
+            this.year = year;
         }
     }
 }
