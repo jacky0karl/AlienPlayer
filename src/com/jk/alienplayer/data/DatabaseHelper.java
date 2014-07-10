@@ -76,7 +76,8 @@ public class DatabaseHelper {
 
     public static List<AlbumInfo> getAlbums(Context context, String albumArtist) {
         List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, ALBUM_ARTIST };
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
+                ALBUM_ARTIST };
         String selection = MEDIA_SELECTION;
         selection += " and " + ALBUM_ARTIST + "=?";
         String[] selectionArgs = new String[] { albumArtist };
@@ -97,7 +98,8 @@ public class DatabaseHelper {
 
     public static List<AlbumInfo> getAlbums(Context context) {
         List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, ALBUM_ARTIST };
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
+                ALBUM_ARTIST };
 
         Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
                 MEDIA_SELECTION, null, ALBUM_ARTIST);
@@ -334,8 +336,10 @@ public class DatabaseHelper {
     private static AlbumInfo bulidAlbumInfo(Cursor cursor) {
         long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ALBUM_ID));
         String album = cursor.getString(cursor.getColumnIndexOrThrow(Media.ALBUM));
+        int year = cursor.getInt(cursor.getColumnIndexOrThrow(Media.YEAR));
         String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
         AlbumInfo info = new AlbumInfo(albumId, album, artist);
+        info.year = year;
         return info;
     }
 

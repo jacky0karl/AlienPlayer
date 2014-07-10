@@ -9,6 +9,7 @@ public class AlbumInfo implements SearchResultData {
     public String name;
     public String artist;
     public String artwork;
+    public int year = 0;
 
     public AlbumInfo(long id, String name, String artist) {
         this.id = id;

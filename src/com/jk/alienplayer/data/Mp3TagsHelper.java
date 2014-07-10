@@ -5,6 +5,7 @@ import java.io.File;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.ID3v23Tag;
 
@@ -24,7 +25,11 @@ public class Mp3TagsHelper {
             String track, String year, String filePath) {
         File file = new File(filePath);
         try {
+            MP3File mp3 = (MP3File) AudioFileIO.read(file);
+            TagField cover = mp3.getID3v2Tag().getFirstField(FieldKey.COVER_ART);
+
             ID3v23Tag tag = new ID3v23Tag();
+            tag.setField(cover);
             tag.setField(FieldKey.ARTIST, artists);
             tag.setField(FieldKey.ALBUM_ARTIST, artistAlbum);
             tag.setField(FieldKey.ALBUM, album);
@@ -36,7 +41,6 @@ public class Mp3TagsHelper {
                 tag.setField(FieldKey.YEAR, year);
             }
 
-            MP3File mp3 = (MP3File) AudioFileIO.read(file);
             mp3.setID3v2Tag(tag);
             mp3.save();
         } catch (Exception e) {
