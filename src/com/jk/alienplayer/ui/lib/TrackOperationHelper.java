@@ -6,6 +6,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.adapter.PlaylistsSeletorAdapter;
 
 import android.app.AlertDialog;
@@ -64,6 +65,16 @@ public class TrackOperationHelper {
             if (file.exists()) {
                 file.delete();
             }
+
+            File lyric = new File(getLyricPath(info.path));
+            if (lyric.exists()) {
+                lyric.delete();
+            }
         }
+    }
+
+    public static String getLyricPath(String songPath) {
+        int index = songPath.lastIndexOf('.');
+        return songPath.substring(0, index + 1) + FileDownloadingHelper.LYRIC_EXT;
     }
 }

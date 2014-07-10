@@ -5,7 +5,8 @@ import java.io.File;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.id3.ID3v24Tag;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.id3.ID3v23Tag;
 
 import android.text.TextUtils;
 
@@ -23,9 +24,7 @@ public class Mp3TagsHelper {
             String track, String year, String filePath) {
         File file = new File(filePath);
         try {
-            MP3File mp3 = (MP3File) AudioFileIO.read(file);
-            ID3v24Tag tag = mp3.getID3v2TagAsv24();
-
+            ID3v23Tag tag = new ID3v23Tag();
             tag.setField(FieldKey.ARTIST, artists);
             tag.setField(FieldKey.ALBUM_ARTIST, artistAlbum);
             tag.setField(FieldKey.ALBUM, album);
@@ -37,6 +36,7 @@ public class Mp3TagsHelper {
                 tag.setField(FieldKey.YEAR, year);
             }
 
+            MP3File mp3 = (MP3File) AudioFileIO.read(file);
             mp3.setID3v2Tag(tag);
             mp3.save();
         } catch (Exception e) {
@@ -53,7 +53,7 @@ public class Mp3TagsHelper {
         File file = new File(filePath);
         try {
             MP3File mp3 = (MP3File) AudioFileIO.read(file);
-            ID3v24Tag tag = mp3.getID3v2TagAsv24();
+            AbstractID3v2Tag tag = mp3.getID3v2Tag();
 
             info.setTitle(tag.getFirst(FieldKey.TITLE));
             info.setArtists(tag.getFirst(FieldKey.ARTIST));

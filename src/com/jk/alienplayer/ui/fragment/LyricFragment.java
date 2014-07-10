@@ -9,8 +9,8 @@ import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.LyricInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.LyricInfo.Sentence;
-import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.adapter.LyricAdapter;
+import com.jk.alienplayer.ui.lib.TrackOperationHelper;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -72,7 +72,7 @@ public class LyricFragment extends Fragment {
     private void updateLyricInfo() {
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         if (songInfo != null) {
-            mLyricInfo = new LyricInfo(getLyricPath(songInfo.path));
+            mLyricInfo = new LyricInfo(TrackOperationHelper.getLyricPath(songInfo.path));
         } else {
             mLyricInfo = new LyricInfo("");
         }
@@ -83,11 +83,6 @@ public class LyricFragment extends Fragment {
         } else {
             mNoLyric.setVisibility(View.VISIBLE);
         }
-    }
-
-    private String getLyricPath(String songPath) {
-        int index = songPath.lastIndexOf('.');
-        return songPath.substring(0, index + 1) + FileDownloadingHelper.LYRIC_EXT;
     }
 
     private void updateHighlightPos(int progress) {
