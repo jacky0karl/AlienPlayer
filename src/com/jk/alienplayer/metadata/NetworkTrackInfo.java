@@ -1,7 +1,8 @@
 package com.jk.alienplayer.metadata;
 
-public class NetworkTrackInfo extends NetworkSearchResult {
+import java.util.Calendar;
 
+public class NetworkTrackInfo extends NetworkSearchResult {
     public String artists;
     public String artistAlbum;
     public String album;
@@ -15,4 +16,9 @@ public class NetworkTrackInfo extends NetworkSearchResult {
         this.artists = artists;
     }
 
+    public void setYear(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        year = calendar.get(Calendar.YEAR);
+    }
 }

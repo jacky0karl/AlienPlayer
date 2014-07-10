@@ -141,6 +141,7 @@ public class JsonHelper {
 
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
+                    long publishTime = albumObj.getLong("publishTime");
                     String artistAlbum = getArtistsOfItem(albumObj);
                     String artists = getArtistsOfItem(trackObj);
 
@@ -150,6 +151,7 @@ public class JsonHelper {
                     info.album = albumStr;
                     info.position = position;
                     info.ext = ext;
+                    info.setYear(publishTime);
                     tracks.add(info);
                 }
             }
@@ -177,6 +179,7 @@ public class JsonHelper {
 
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
+                    long publishTime = albumObj.getLong("publishTime");
                     String artistAlbum = getArtistsOfItem(albumObj);
                     String artists = getArtistsOfItem(trackObj);
 
@@ -186,6 +189,7 @@ public class JsonHelper {
                     info.artistAlbum = artistAlbum;
                     info.position = position;
                     info.ext = ext;
+                    info.setYear(publishTime);
                     return info;
                 }
             }
