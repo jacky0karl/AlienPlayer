@@ -50,6 +50,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
             }
 
             mQueryKey = query;
+            mNoResult.setVisibility(View.GONE);
             mLoading.setVisibility(View.VISIBLE);
             HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
             mIMManager.hideSoftInputFromWindow(mListView.getWindowToken(), 0);

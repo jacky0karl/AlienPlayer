@@ -84,6 +84,7 @@ public class NetworkTracksActivity extends Activity {
         mListView.setOnItemClickListener(mOnItemClickListener);
 
         mLoading.setVisibility(View.VISIBLE);
+        mNoResult.setVisibility(View.GONE);
         HttpHelper.getTracks(String.valueOf(mAlbumId), mResponseHandler);
     }
 

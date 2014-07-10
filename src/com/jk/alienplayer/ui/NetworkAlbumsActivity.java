@@ -58,6 +58,7 @@ public class NetworkAlbumsActivity extends Activity {
         mListView.setOnItemClickListener(mOnItemClickListener);
 
         mLoading.setVisibility(View.VISIBLE);
+        mNoResult.setVisibility(View.GONE);
         HttpHelper.getAlbums(String.valueOf(mArtistId), mResponseHandler);
     }
 
