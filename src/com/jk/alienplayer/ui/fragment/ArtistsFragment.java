@@ -1,5 +1,8 @@
 package com.jk.alienplayer.ui.fragment;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
@@ -8,6 +11,7 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.AlbumsActivity;
 import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
+import com.jk.alienplayer.utils.PinyinUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +33,7 @@ public class ArtistsFragment extends Fragment {
     private int mType;
     private ListView mListView;
     private ArtistsAdapter mAdapter;
+    List<ArtistInfo> mArtists;
 
     public static ArtistsFragment newInstance(int type) {
         ArtistsFragment fragment = new ArtistsFragment();
@@ -96,10 +101,36 @@ public class ArtistsFragment extends Fragment {
     }
 
     private void setArtists() {
-        if (mType == TYPE_ARTISTS) {
-            mAdapter.setArtists(DatabaseHelper.getArtists(getActivity()));
-        } else {
-            mAdapter.setArtists(DatabaseHelper.getAlbumArtists(getActivity()));
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mType == TYPE_ARTISTS) {
+                    mArtists = DatabaseHelper.getArtists(getActivity());
+                } else {
+                    mArtists = DatabaseHelper.getAlbumArtists(getActivity());
+                }
+                sortList();
+                updateList();
+            }
+        });
+        thread.start();
+    }
+
+    private void sortList() {
+        PinyinUtils pu = new PinyinUtils();
+        for (ArtistInfo info : mArtists) {
+            info.sortKey = pu.getPinyinString(info.name);
         }
+        Collections.sort(mArtists, new ArtistInfo.ArtistComparator());
+        updateList();
+    }
+
+    private void updateList() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.setArtists(mArtists);
+            }
+        });
     }
 }
