@@ -281,7 +281,8 @@ public class DatabaseHelper {
     private static List<SearchResult> searchAlbums(Context context, String key) {
         List<SearchResult> results = new ArrayList<SearchResult>();
 
-        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, ALBUM_ARTIST };
+        String[] projection = new String[] { DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
+                ALBUM_ARTIST };
         String selection = MEDIA_SELECTION;
         selection += " and " + Media.ALBUM + " like ?";
         String[] selectionArgs = new String[] { "%" + key + "%" };
