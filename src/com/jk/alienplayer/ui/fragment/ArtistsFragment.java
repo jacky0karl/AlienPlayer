@@ -11,6 +11,8 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.AlbumsActivity;
 import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
+import com.jk.alienplayer.ui.lib.ListSeekBar;
+import com.jk.alienplayer.ui.lib.ListSeekBar.OnIndicatorChangedListener;
 import com.jk.alienplayer.utils.PinyinUtils;
 
 import android.content.BroadcastReceiver;
@@ -24,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class ArtistsFragment extends Fragment {
     public static final String TYPE = "type";
@@ -33,7 +36,9 @@ public class ArtistsFragment extends Fragment {
     private int mType;
     private ListView mListView;
     private ArtistsAdapter mAdapter;
-    List<ArtistInfo> mArtists;
+    private ListSeekBar mListSeekBar;
+    private TextView mIndicator;
+    private List<ArtistInfo> mArtists;
 
     public static ArtistsFragment newInstance(int type) {
         ArtistsFragment fragment = new ArtistsFragment();
@@ -56,7 +61,7 @@ public class ArtistsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mType = getArguments().getInt(TYPE, TYPE_ARTISTS);
-        View root = inflater.inflate(R.layout.fragment_list, container, false);
+        View root = inflater.inflate(R.layout.fragment_list_seekbar, container, false);
         init(root);
         MediaScanService.registerScanReceiver(getActivity(), mReceiver);
         return root;
@@ -69,12 +74,47 @@ public class ArtistsFragment extends Fragment {
     }
 
     private void init(View root) {
+        mListSeekBar = (ListSeekBar) root.findViewById(R.id.listSeekBar);
+        mIndicator = (TextView) root.findViewById(R.id.indicator);
+        mListSeekBar.setOnIndicatorChangedListener(mIndicatorChangedListener);
+
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new ArtistsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
         setArtists();
         mListView.setOnItemClickListener(mOnItemClickListener);
     }
+
+    private OnIndicatorChangedListener mIndicatorChangedListener = new OnIndicatorChangedListener() {
+        @Override
+        public void onIndicatorShow() {
+            mIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onIndicatorDismiss() {
+            mIndicator.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onIndicatorChange(String indicator) {
+            mIndicator.setText(indicator);
+
+            char indiChar = indicator.toLowerCase().charAt(0);
+            if (indiChar < 'a' || indiChar > 'z') {
+                mListView.setSelection(0);
+                return;
+            }
+
+            for (int i = 0; i < mArtists.size(); i++) {
+                char ch = mArtists.get(i).sortKey.charAt(0);
+                if (indiChar == ch) {
+                    mListView.setSelection(i);
+                    return;
+                }
+            }
+        }
+    };
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
