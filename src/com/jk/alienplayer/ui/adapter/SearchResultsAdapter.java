@@ -12,12 +12,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class SearchResultsAdapter extends BaseAdapter {
-
+    private OnItemClickListener mItemClickListener = null;
     private Context mContext;
     private LayoutInflater mInflater;
     private List<SearchResult> mResults;
@@ -29,8 +31,8 @@ public class SearchResultsAdapter extends BaseAdapter {
         }
     }
 
-    public SearchResultsAdapter(Context context) {
-        super();
+    public SearchResultsAdapter(Context context, OnItemClickListener listener) {
+        mItemClickListener = listener;
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mResults = new ArrayList<SearchResult>();
@@ -114,7 +116,7 @@ public class SearchResultsAdapter extends BaseAdapter {
         return view;
     }
 
-    private View getTrackView(int position, View view) {
+    private View getTrackView(final int position, View view) {
         TrackViewHolder viewHolder = null;
         if (view == null) {
             viewHolder = new TrackViewHolder();
@@ -132,6 +134,12 @@ public class SearchResultsAdapter extends BaseAdapter {
         viewHolder.content.setText(result.data.getDisplayName());
         viewHolder.artists.setText(((SongInfo) result.data).artist);
         showTitle(viewHolder.title, position, result.type);
+        viewHolder.action.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mItemClickListener.onItemClick(null, v, position, getItemId(position));
+            }
+        });
         return view;
     }
 
