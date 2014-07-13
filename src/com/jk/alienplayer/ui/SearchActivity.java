@@ -5,7 +5,6 @@ import java.util.List;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SearchResult;
@@ -17,7 +16,6 @@ import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -41,7 +39,6 @@ public class SearchActivity extends Activity implements OnItemClickListener {
     private SearchResult mCurrResult = null;
     private ListMenu mListMenu;
     private PopupWindow mPopupWindow;
-    private Dialog mPlaylistSeletor = null;
 
     private OnQueryTextListener mQueryTextListener = new OnQueryTextListener() {
         @Override
@@ -151,18 +148,8 @@ public class SearchActivity extends Activity implements OnItemClickListener {
             if (ListMenu.MEMU_DELETE == menuId) {
                 deleteTrack();
             } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-                mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(SearchActivity.this,
-                        mPlaylistSeletorClickListener);
-                mPlaylistSeletor.show();
+                TrackOperationHelper.addToPlaylist(SearchActivity.this, mCurrResult.data.getId());
             }
-        }
-    };
-
-    private OnItemClickListener mPlaylistSeletorClickListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mPlaylistSeletor.dismiss();
-            PlaylistHelper.addMemberToPlaylist(SearchActivity.this, id, mCurrResult.data.getId());
         }
     };
 

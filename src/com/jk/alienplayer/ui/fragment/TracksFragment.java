@@ -3,7 +3,6 @@ package com.jk.alienplayer.ui.fragment;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
@@ -14,7 +13,6 @@ import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,13 +28,11 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 public class TracksFragment extends Fragment implements OnMenuItemClickListener {
-
     private ListView mListView;
     private TracksAdapter mAdapter;
     private ListMenu mListMenu;
     private PopupWindow mPopupWindow;
     private SongInfo mCurrTrack;
-    private Dialog mPlaylistSeletor = null;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -112,19 +108,9 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
         if (ListMenu.MEMU_DELETE == menuId) {
             deleteTrack();
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(getActivity(),
-                    mPlaylistSeletorClickListener);
-            mPlaylistSeletor.show();
+            TrackOperationHelper.addToPlaylist(getActivity(), mCurrTrack.id);
         }
     }
-
-    OnItemClickListener mPlaylistSeletorClickListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mPlaylistSeletor.dismiss();
-            PlaylistHelper.addMemberToPlaylist(getActivity(), id, mCurrTrack.id);
-        }
-    };
 
     private void deleteTrack() {
         OnDeleteTrackListener listener = new OnDeleteTrackListener() {

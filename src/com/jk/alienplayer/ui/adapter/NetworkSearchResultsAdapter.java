@@ -104,13 +104,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(result.avatar, viewHolder.avatar,
                 ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
-        if (position == 0) {
-            showTitle(viewHolder.title, result.type);
-        } else if (mResults.get(position - 1).type != result.type) {
-            showTitle(viewHolder.title, result.type);
-        } else {
-            viewHolder.title.setVisibility(View.GONE);
-        }
+        showTitle(viewHolder.title, position, result.type);
         return view;
     }
 
@@ -133,13 +127,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
                 ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
         viewHolder.artist.setText(result.artist);
-        if (position == 0) {
-            showTitle(viewHolder.title, result.type);
-        } else if (mResults.get(position - 1).type != result.type) {
-            showTitle(viewHolder.title, result.type);
-        } else {
-            viewHolder.title.setVisibility(View.GONE);
-        }
+        showTitle(viewHolder.title, position, result.type);
         return view;
     }
 
@@ -159,13 +147,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         NetworkTrackInfo result = (NetworkTrackInfo) mResults.get(position);
         viewHolder.content.setText(result.name);
         viewHolder.artists.setText(result.artists);
-        if (position == 0) {
-            showTitle(viewHolder.title, result.type);
-        } else if (mResults.get(position - 1).type != result.type) {
-            showTitle(viewHolder.title, result.type);
-        } else {
-            viewHolder.title.setVisibility(View.GONE);
-        }
+        showTitle(viewHolder.title, position, result.type);
         return view;
     }
 
@@ -189,7 +171,17 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         TextView artists;
     }
 
-    private void showTitle(TextView view, int type) {
+    private void showTitle(TextView titleView, int position, int type) {
+        if (position == 0) {
+            doShowTitle(titleView, type);
+        } else if (mResults.get(position - 1).type != type) {
+            doShowTitle(titleView, type);
+        } else {
+            titleView.setVisibility(View.GONE);
+        }
+    }
+
+    private void doShowTitle(TextView view, int type) {
         String title = null;
         switch (type) {
         case SearchResult.TYPE_ARTISTS:

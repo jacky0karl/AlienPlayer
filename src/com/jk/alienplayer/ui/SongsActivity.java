@@ -17,7 +17,6 @@ import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -40,7 +39,6 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
     private ListMenu mListMenu;
     private PopupWindow mPopupWindow;
     private SongInfo mCurrTrack;
-    private Dialog mPlaylistSeletor = null;
     private List<SongInfo> mSongList = null;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
@@ -116,19 +114,9 @@ public class SongsActivity extends Activity implements OnMenuItemClickListener {
         } else if (ListMenu.MEMU_DELETE == menuId) {
             deleteTrack();
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(this,
-                    mPlaylistSeletorListener);
-            mPlaylistSeletor.show();
+            TrackOperationHelper.addToPlaylist(SongsActivity.this, mCurrTrack.id);
         }
     }
-
-    private OnItemClickListener mPlaylistSeletorListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mPlaylistSeletor.dismiss();
-            PlaylistHelper.addMemberToPlaylist(SongsActivity.this, id, mCurrTrack.id);
-        }
-    };
 
     private void reomveTrack() {
         PlaylistHelper.removeMemberFromPlaylist(this, mKey, mCurrTrack.id);

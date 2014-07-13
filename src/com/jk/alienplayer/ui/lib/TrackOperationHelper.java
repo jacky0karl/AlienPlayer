@@ -17,11 +17,20 @@ import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 
 public class TrackOperationHelper {
 
+    public static String getLyricPath(String songPath) {
+        int index = songPath.lastIndexOf('.');
+        return songPath.substring(0, index + 1) + FileDownloadingHelper.LYRIC_EXT;
+    }
+
+    /**
+     * Delete
+     */
     public interface OnDeleteTrackListener {
         void onComplete();
     }
@@ -47,18 +56,6 @@ public class TrackOperationHelper {
         dialog.show();
     }
 
-    public static Dialog buildPlaylistSeletor(Context context, OnItemClickListener listener) {
-        PlaylistsSeletorAdapter adapter = new PlaylistsSeletorAdapter(context);
-        adapter.setPlaylists(PlaylistHelper.getPlaylists(context));
-        ListView list = new ListView(context);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(listener);
-
-        Dialog dialog = new AlertDialog.Builder(context).setView(list)
-                .setNegativeButton(R.string.cancel, null).create();
-        return dialog;
-    }
-
     private static void dodeleteTrack(Context context, SongInfo info, boolean deleteFile) {
         if (DatabaseHelper.deleteTrack(context, info.id) && deleteFile) {
             File file = new File(info.path);
@@ -73,8 +70,34 @@ public class TrackOperationHelper {
         }
     }
 
-    public static String getLyricPath(String songPath) {
-        int index = songPath.lastIndexOf('.');
-        return songPath.substring(0, index + 1) + FileDownloadingHelper.LYRIC_EXT;
+    /**
+     * Add To Playlist
+     */
+    private static Dialog mPlaylistSeletor = null;
+
+    public static void addToPlaylist(final Context context, final long trackId) {
+        OnItemClickListener listener = new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mPlaylistSeletor.dismiss();
+                PlaylistHelper.addMemberToPlaylist(context, id, trackId);
+            }
+        };
+
+        mPlaylistSeletor = buildPlaylistSeletor(context, listener);
+        mPlaylistSeletor.show();
     }
+
+    private static Dialog buildPlaylistSeletor(Context context, OnItemClickListener listener) {
+        PlaylistsSeletorAdapter adapter = new PlaylistsSeletorAdapter(context);
+        adapter.setPlaylists(PlaylistHelper.getPlaylists(context));
+        ListView list = new ListView(context);
+        list.setAdapter(adapter);
+        list.setOnItemClickListener(listener);
+
+        Dialog dialog = new AlertDialog.Builder(context).setView(list)
+                .setNegativeButton(R.string.cancel, null).create();
+        return dialog;
+    }
+
 }

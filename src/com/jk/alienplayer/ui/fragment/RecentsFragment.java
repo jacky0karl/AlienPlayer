@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.PlaylistHelper;
+
 import com.jk.alienplayer.data.RecentsDBHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.impl.PlayService;
@@ -14,7 +14,6 @@ import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,13 +30,11 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 public class RecentsFragment extends Fragment implements OnMenuItemClickListener {
-
     private ListView mListView;
     private TracksAdapter mAdapter;
     private ListMenu mListMenu;
     private PopupWindow mPopupWindow;
     private SongInfo mCurrTrack;
-    private Dialog mPlaylistSeletor = null;
 
     private ContentObserver mContentObserver = new ContentObserver(null) {
         @Override
@@ -127,19 +124,9 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
         if (ListMenu.MEMU_REMOVE == menuId) {
             reomveTrack();
         } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            mPlaylistSeletor = TrackOperationHelper.buildPlaylistSeletor(getActivity(),
-                    mPlaylistSeletorListener);
-            mPlaylistSeletor.show();
+            TrackOperationHelper.addToPlaylist(getActivity(), mCurrTrack.id);
         }
     }
-
-    private OnItemClickListener mPlaylistSeletorListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mPlaylistSeletor.dismiss();
-            PlaylistHelper.addMemberToPlaylist(getActivity(), id, mCurrTrack.id);
-        }
-    };
 
     private void reomveTrack() {
         RecentsDBHelper.removeFromRecents(getActivity(), mCurrTrack.id);
