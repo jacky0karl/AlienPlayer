@@ -84,7 +84,10 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
 
     @Override
     public void onDestroy() {
-        mPopupWindow.dismiss();
+        if (mPopupWindow != null) {
+            mPopupWindow.dismiss();
+        }
+
         getActivity().unregisterReceiver(mReceiver);
         getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
         super.onDestroy();
