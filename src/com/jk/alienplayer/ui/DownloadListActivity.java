@@ -138,17 +138,14 @@ public class DownloadListActivity extends Activity {
 
     private void updateListMenu() {
         mListMenu.clearMenu();
-        if (mCurrInfo.status == FileDownloadingInfo.Status.PENDING) {
-            mListMenu.addMenu(ListMenu.MEMU_ABORT, R.string.abort);
-        } else if (mCurrInfo.status == FileDownloadingInfo.Status.DOWALOADING) {
+        if (mCurrInfo.status == FileDownloadingInfo.Status.PENDING
+                || mCurrInfo.status == FileDownloadingInfo.Status.DOWALOADING) {
             mListMenu.addMenu(ListMenu.MEMU_ABORT, R.string.abort);
         } else if (mCurrInfo.status == FileDownloadingInfo.Status.COMPLETED) {
             mListMenu.addMenu(ListMenu.MEMU_VIEW, R.string.view);
             mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
-        } else if (mCurrInfo.status == FileDownloadingInfo.Status.FAILED) {
-            mListMenu.addMenu(ListMenu.MEMU_RETRY, R.string.retry);
-            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
-        } else if (mCurrInfo.status == FileDownloadingInfo.Status.CANCELED) {
+        } else if (mCurrInfo.status == FileDownloadingInfo.Status.FAILED
+                || mCurrInfo.status == FileDownloadingInfo.Status.CANCELED) {
             mListMenu.addMenu(ListMenu.MEMU_RETRY, R.string.retry);
             mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
         }
