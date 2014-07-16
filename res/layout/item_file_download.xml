@@ -11,7 +11,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="4dp"
         android:ellipsize="end"
-        android:gravity="center"
+        android:gravity="center_vertical|left"
         android:maxWidth="@dimen/max_text_width"
         android:singleLine="true"
         android:textSize="18sp" />
@@ -23,7 +23,7 @@
         android:layout_below="@id/title"
         android:layout_marginLeft="20dp"
         android:ellipsize="end"
-        android:gravity="center"
+        android:gravity="center_vertical|left"
         android:maxWidth="@dimen/max_text_width"
         android:singleLine="true"
         android:textColor="#999"
