@@ -10,9 +10,21 @@
         <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
     </style>
 
+    <style name="Theme.Search" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
+    </style>
+
     <style name="TextAppearance.TabPageIndicator" parent="Widget">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/vpi__light_theme</item>
+    </style>
+
+    <style name="NoAnimation">
+        <item name="@android:activityOpenEnterAnimation">@null</item>
+        <item name="@android:activityOpenExitAnimation">@null</item>
+        <item name="@android:activityCloseEnterAnimation">@null</item>
+        <item name="@android:activityCloseExitAnimation">@null</item>
     </style>
 
 </resources>
