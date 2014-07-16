@@ -80,6 +80,8 @@ public class FileDownloadListAdapter extends BaseAdapter {
             viewHolder.progress.setText(R.string.done);
         } else if (info.status == Status.FAILED) {
             viewHolder.progress.setText(R.string.failed);
+        } else if (info.status == Status.CANCELED) {
+            viewHolder.progress.setText(R.string.aborted);
         } else {
             viewHolder.progress.setText(calculateProgress(info));
         }

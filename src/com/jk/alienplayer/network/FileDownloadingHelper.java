@@ -55,6 +55,10 @@ public class FileDownloadingHelper {
     }
 
     public void requstDownloadTrack(NetworkTrackInfo trackInfo, String url) {
+        if (trackInfo == null || TextUtils.isEmpty(url)) {
+            return;
+        }
+
         FileDownloadingInfo info = new FileDownloadingInfo(trackInfo);
         info.url = url;
         mFileDownloadingList.add(info);
@@ -63,11 +67,21 @@ public class FileDownloadingHelper {
     }
 
     public void retryDownloadTrack(FileDownloadingInfo info) {
+        if (info == null) {
+            return;
+        }
+
         info.status = Status.PENDING;
         info.progress = 0;
-
         DownloadTask task = new DownloadTask(info);
         mExecutor.execute(task);
+    }
+
+    public void abortDownloadTrack(FileDownloadingInfo info) {
+        if (info == null) {
+            return;
+        }
+        info.status = Status.CANCELED;
     }
 
     public List<FileDownloadingInfo> getFileDownloadingList() {
@@ -97,51 +111,6 @@ public class FileDownloadingHelper {
         mFileDownloadingList.remove(info);
     }
 
-    public InputStream getInputStream(String urlString) {
-        InputStream inputStream = null;
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            inputStream = urlConnection.getInputStream();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return inputStream;
-    }
-
-    public boolean saveFile(String filePath, InputStream is) {
-        if (is == null) {
-            return false;
-        }
-        if (!android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED)) {
-            return false;
-        }
-
-        File file = new File(filePath);
-        FileSavingUtils.ensurePath(file);
-        try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[STEP_SIZE];
-            int len;
-            while ((len = is.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, len);
-            }
-            outputStream.flush();
-            outputStream.close();
-            is.close();
-            return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     private class DownloadTask implements Runnable {
         private FileDownloadingInfo info;
 
@@ -151,18 +120,30 @@ public class FileDownloadingHelper {
 
         @Override
         public void run() {
+            if (info.status == Status.CANCELED) {
+                return;
+            }
+
             downloadTrack(info);
-            downloadLyric(info.trackInfo);
+            downloadLyric(info);
         }
     };
 
-    private void downloadLyric(final NetworkTrackInfo info) {
+    private void downloadLyric(final FileDownloadingInfo info) {
+        if (info.status == Status.CANCELED) {
+            return;
+        }
+
         HttpResponseHandler handler = new HttpResponseHandler() {
             @Override
             public void onSuccess(String response) {
+                if (info.status == Status.CANCELED) {
+                    return;
+                }
+
                 String lyric = JsonHelper.parseLyric(response);
                 if (!TextUtils.isEmpty(lyric)) {
-                    saveLyric(info, lyric);
+                    saveLyric(info.trackInfo, lyric);
                 }
             }
 
@@ -170,7 +151,7 @@ public class FileDownloadingHelper {
             public void onFail(int status, String response) {
             }
         };
-        HttpHelper.getLyric(String.valueOf(info.id), handler);
+        HttpHelper.getLyric(String.valueOf(info.trackInfo.id), handler);
     }
 
     private void saveLyric(NetworkTrackInfo info, String lyric) {
@@ -216,30 +197,41 @@ public class FileDownloadingHelper {
             return;
         }
 
+        FileOutputStream outputStream = null;
         try {
-            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream = new FileOutputStream(file);
             byte[] buffer = new byte[STEP_SIZE];
             int len;
             while ((len = inputStream.read(buffer)) != -1) {
+                if (info.status == Status.CANCELED) {
+                    file.delete();
+                    return;
+                }
                 outputStream.write(buffer, 0, len);
                 info.progress += len;
             }
             outputStream.flush();
-            outputStream.close();
-            inputStream.close();
 
             if (mContext != null) {
-                dealDownloadFile(info.trackInfo, filePath);
+                processDownloadFile(info.trackInfo, filePath);
             }
             info.status = FileDownloadingInfo.Status.COMPLETED;
         } catch (Exception e) {
             e.printStackTrace();
             FileSavingUtils.logThrowable(e);
             info.status = FileDownloadingInfo.Status.FAILED;
+        } finally {
+            try {
+                outputStream.close();
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileSavingUtils.logThrowable(e);
+            }
         }
     }
 
-    private void dealDownloadFile(NetworkTrackInfo info, String filePath) {
+    private void processDownloadFile(NetworkTrackInfo info, String filePath) {
         if (info.ext.equalsIgnoreCase("mp3")) {
             Mp3TagsHelper.writeMp3Tags(info, filePath);
         }

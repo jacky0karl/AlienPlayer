@@ -32,6 +32,7 @@
     <string name="download_list">Download List</string>
     <string name="done">Done</string>
     <string name="failed">Failed</string>
+    <string name="aborted">Aborted</string>
 
     <!-- menu title -->
     <string name="delete">Delete</string>

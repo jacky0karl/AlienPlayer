@@ -148,6 +148,9 @@ public class DownloadListActivity extends Activity {
         } else if (mCurrInfo.status == FileDownloadingInfo.Status.FAILED) {
             mListMenu.addMenu(ListMenu.MEMU_RETRY, R.string.retry);
             mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
+        } else if (mCurrInfo.status == FileDownloadingInfo.Status.CANCELED) {
+            mListMenu.addMenu(ListMenu.MEMU_RETRY, R.string.retry);
+            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
         }
         mPopupWindow.setContentView(mListMenu);
     }
@@ -167,9 +170,10 @@ public class DownloadListActivity extends Activity {
                 return;
             } else if (ListMenu.MEMU_RETRY == menuId) {
                 FileDownloadingHelper.getInstance().retryDownloadTrack(mCurrInfo);
-
             } else if (ListMenu.MEMU_REMOVE == menuId) {
                 FileDownloadingHelper.getInstance().removeRecord(mCurrInfo);
+            } else if (ListMenu.MEMU_ABORT == menuId) {
+                FileDownloadingHelper.getInstance().abortDownloadTrack(mCurrInfo);
             }
             updateView();
         }

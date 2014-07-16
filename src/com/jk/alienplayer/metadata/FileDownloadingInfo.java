@@ -3,7 +3,7 @@ package com.jk.alienplayer.metadata;
 public class FileDownloadingInfo {
 
     public enum Status {
-        PENDING, DOWALOADING, FAILED, COMPLETED
+        PENDING, DOWALOADING, FAILED, COMPLETED, CANCELED
     }
 
     public NetworkTrackInfo trackInfo;
