@@ -13,6 +13,9 @@ public class ListMenu extends LinearLayout {
     public static final int MEMU_ADD_TO_PLAYLIST = 0;
     public static final int MEMU_DELETE = 1;
     public static final int MEMU_REMOVE = 2;
+    public static final int MEMU_VIEW = 3;
+    public static final int MEMU_RETRY = 4;
+    public static final int MEMU_ABORT = 5;
 
     public interface OnMenuItemClickListener {
         void onClick(int menuId);
@@ -65,5 +68,9 @@ public class ListMenu extends LinearLayout {
             }
         });
         addView(item, mChildLp);
+    }
+
+    public void clearMenu() {
+        removeAllViews();
     }
 }

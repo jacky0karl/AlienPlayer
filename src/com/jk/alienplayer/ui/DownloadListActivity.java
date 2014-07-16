@@ -6,6 +6,8 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.adapter.FileDownloadListAdapter;
+import com.jk.alienplayer.ui.lib.ListMenu;
+import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,8 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout.LayoutParams;
 
 public class DownloadListActivity extends Activity {
     private static final int UPDATE_INTERVAL = 500;
@@ -25,16 +29,22 @@ public class DownloadListActivity extends Activity {
     private TextView mNoItem;
     private ListView mListView;
     private FileDownloadListAdapter mAdapter;
+    private FileDownloadingInfo mCurrInfo = null;
     private Handler mHandler;
+    private ListMenu mListMenu;
+    private PopupWindow mPopupWindow;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            FileDownloadingInfo info = mAdapter.getItem(position);
-            if (info.status == FileDownloadingInfo.Status.COMPLETED) {
-                Intent intent = new Intent(DownloadListActivity.this, SearchActivity.class);
-                intent.putExtra(SearchActivity.QUERY, info.trackInfo.name);
-                startActivity(intent);
+            mCurrInfo = mAdapter.getItem(position);
+            if (mCurrInfo != null) {
+                if (view.getId() == R.id.action) {
+                    updateListMenu();
+                    mPopupWindow.showAsDropDown(view);
+                } else {
+                    onFileClick();
+                }
             }
         }
     };
@@ -64,10 +74,21 @@ public class DownloadListActivity extends Activity {
     private void init() {
         mNoItem = (TextView) findViewById(R.id.no_item);
         mListView = (ListView) findViewById(R.id.list);
-        mAdapter = new FileDownloadListAdapter(this);
+        mAdapter = new FileDownloadListAdapter(this, mOnItemClickListener);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mOnItemClickListener);
         mHandler = new Handler();
+        setupPopupWindow();
+    }
+
+    private void setupPopupWindow() {
+        mListMenu = new ListMenu(this);
+        mListMenu.setMenuItemClickListener(mOnMenuItemClickListener);
+        mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT, false);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
     }
 
     @Override
@@ -80,6 +101,12 @@ public class DownloadListActivity extends Activity {
     protected void onPause() {
         mHandler.removeCallbacks(mUpdateTask);
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPopupWindow.dismiss();
+        super.onDestroy();
     }
 
     Runnable mUpdateTask = new Runnable() {
@@ -102,4 +129,49 @@ public class DownloadListActivity extends Activity {
             mNoItem.setVisibility(View.VISIBLE);
         }
     }
+
+    private void onFileClick() {
+        if (mCurrInfo.status == FileDownloadingInfo.Status.COMPLETED) {
+            viewTrack();
+        }
+    }
+
+    private void updateListMenu() {
+        mListMenu.clearMenu();
+        if (mCurrInfo.status == FileDownloadingInfo.Status.PENDING) {
+            mListMenu.addMenu(ListMenu.MEMU_ABORT, R.string.abort);
+        } else if (mCurrInfo.status == FileDownloadingInfo.Status.DOWALOADING) {
+            mListMenu.addMenu(ListMenu.MEMU_ABORT, R.string.abort);
+        } else if (mCurrInfo.status == FileDownloadingInfo.Status.COMPLETED) {
+            mListMenu.addMenu(ListMenu.MEMU_VIEW, R.string.view);
+            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
+        } else if (mCurrInfo.status == FileDownloadingInfo.Status.FAILED) {
+            mListMenu.addMenu(ListMenu.MEMU_RETRY, R.string.retry);
+            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
+        }
+        mPopupWindow.setContentView(mListMenu);
+    }
+
+    private void viewTrack() {
+        Intent intent = new Intent(DownloadListActivity.this, SearchActivity.class);
+        intent.putExtra(SearchActivity.QUERY, mCurrInfo.trackInfo.name);
+        startActivity(intent);
+    }
+
+    private OnMenuItemClickListener mOnMenuItemClickListener = new OnMenuItemClickListener() {
+        @Override
+        public void onClick(int menuId) {
+            mPopupWindow.dismiss();
+            if (ListMenu.MEMU_VIEW == menuId) {
+                viewTrack();
+                return;
+            } else if (ListMenu.MEMU_RETRY == menuId) {
+                FileDownloadingHelper.getInstance().retryDownloadTrack(mCurrInfo);
+
+            } else if (ListMenu.MEMU_REMOVE == menuId) {
+                FileDownloadingHelper.getInstance().removeRecord(mCurrInfo);
+            }
+            updateView();
+        }
+    };
 }

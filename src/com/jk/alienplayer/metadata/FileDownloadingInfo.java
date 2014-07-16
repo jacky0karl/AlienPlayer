@@ -8,6 +8,7 @@ public class FileDownloadingInfo {
 
     public NetworkTrackInfo trackInfo;
     public Status status = Status.PENDING;
+    public String url;
 
     /** Byte */
     public int size = 0;

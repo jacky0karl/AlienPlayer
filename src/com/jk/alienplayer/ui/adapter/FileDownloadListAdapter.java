@@ -12,14 +12,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class FileDownloadListAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private List<FileDownloadingInfo> mInfos;
+    private OnItemClickListener mItemClickListener = null;
 
     public void setInfos(List<FileDownloadingInfo> infos) {
         if (infos != null) {
@@ -28,8 +32,8 @@ public class FileDownloadListAdapter extends BaseAdapter {
         }
     }
 
-    public FileDownloadListAdapter(Context context) {
-        super();
+    public FileDownloadListAdapter(Context context, OnItemClickListener listener) {
+        mItemClickListener = listener;
         mInflater = LayoutInflater.from(context);
         mInfos = new ArrayList<FileDownloadingInfo>();
     }
@@ -50,7 +54,7 @@ public class FileDownloadListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, ViewGroup parent) {
         ViewHolder viewHolder = null;
         if (view == null) {
             viewHolder = new ViewHolder();
@@ -60,6 +64,7 @@ public class FileDownloadListAdapter extends BaseAdapter {
             viewHolder.size = (TextView) view.findViewById(R.id.size);
             viewHolder.progress = (TextView) view.findViewById(R.id.progress);
             viewHolder.progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+            viewHolder.action = (ImageView) view.findViewById(R.id.action);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -78,6 +83,13 @@ public class FileDownloadListAdapter extends BaseAdapter {
         } else {
             viewHolder.progress.setText(calculateProgress(info));
         }
+
+        viewHolder.action.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mItemClickListener.onItemClick(null, v, position, getItemId(position));
+            }
+        });
         return view;
     }
 
@@ -87,6 +99,7 @@ public class FileDownloadListAdapter extends BaseAdapter {
         TextView size;
         TextView progress;
         ProgressBar progressBar;
+        ImageView action;
     }
 
     private String calculateSize(FileDownloadingInfo info) {

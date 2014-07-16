@@ -56,8 +56,17 @@ public class FileDownloadingHelper {
 
     public void requstDownloadTrack(NetworkTrackInfo trackInfo, String url) {
         FileDownloadingInfo info = new FileDownloadingInfo(trackInfo);
+        info.url = url;
         mFileDownloadingList.add(info);
-        DownloadTask task = new DownloadTask(info, url);
+        DownloadTask task = new DownloadTask(info);
+        mExecutor.execute(task);
+    }
+
+    public void retryDownloadTrack(FileDownloadingInfo info) {
+        info.status = Status.PENDING;
+        info.progress = 0;
+
+        DownloadTask task = new DownloadTask(info);
         mExecutor.execute(task);
     }
 
@@ -82,6 +91,10 @@ public class FileDownloadingHelper {
             }
         }
         mFileDownloadingList = tmpList;
+    }
+
+    public void removeRecord(FileDownloadingInfo info) {
+        mFileDownloadingList.remove(info);
     }
 
     public InputStream getInputStream(String urlString) {
@@ -131,16 +144,14 @@ public class FileDownloadingHelper {
 
     private class DownloadTask implements Runnable {
         private FileDownloadingInfo info;
-        private String url;
 
-        public DownloadTask(FileDownloadingInfo info, String url) {
+        public DownloadTask(FileDownloadingInfo info) {
             this.info = info;
-            this.url = url;
         }
 
         @Override
         public void run() {
-            downloadTrack(info, url);
+            downloadTrack(info);
             downloadLyric(info.trackInfo);
         }
     };
@@ -182,7 +193,7 @@ public class FileDownloadingHelper {
         }
     }
 
-    private void downloadTrack(FileDownloadingInfo info, String urlString) {
+    private void downloadTrack(FileDownloadingInfo info) {
         String filePath = buildFilePath(info.trackInfo);
         File file = new File(filePath);
         if (!FileSavingUtils.ensurePath(file)) {
@@ -194,7 +205,7 @@ public class FileDownloadingHelper {
         info.status = FileDownloadingInfo.Status.DOWALOADING;
         InputStream inputStream = null;
         try {
-            URL url = new URL(urlString);
+            URL url = new URL(info.url);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             inputStream = urlConnection.getInputStream();
             info.size = urlConnection.getContentLength();
