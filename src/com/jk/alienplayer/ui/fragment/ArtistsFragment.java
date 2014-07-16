@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class ArtistsFragment extends Fragment {
@@ -38,6 +39,7 @@ public class ArtistsFragment extends Fragment {
     private ArtistsAdapter mAdapter;
     private ListSeekBar mListSeekBar;
     private TextView mIndicator;
+    private ProgressBar mLoading;
     private List<ArtistInfo> mArtists;
 
     public static ArtistsFragment newInstance(int type) {
@@ -53,7 +55,7 @@ public class ArtistsFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
-                setArtists();
+                updateArtists();
             }
         }
     };
@@ -78,10 +80,11 @@ public class ArtistsFragment extends Fragment {
         mIndicator = (TextView) root.findViewById(R.id.indicator);
         mListSeekBar.setOnIndicatorChangedListener(mIndicatorChangedListener);
 
+        mLoading = (ProgressBar) root.findViewById(R.id.loading);
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new ArtistsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-        setArtists();
+        updateArtists();
         mListView.setOnItemClickListener(mOnItemClickListener);
     }
 
@@ -140,7 +143,8 @@ public class ArtistsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void setArtists() {
+    private void updateArtists() {
+        mLoading.setVisibility(View.VISIBLE);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -170,6 +174,7 @@ public class ArtistsFragment extends Fragment {
             @Override
             public void run() {
                 mAdapter.setArtists(mArtists);
+                mLoading.setVisibility(View.GONE);
             }
         });
     }

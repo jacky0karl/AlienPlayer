@@ -98,6 +98,7 @@ public class ListSeekBar extends View {
             onActionDown();
             break;
         case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
             onActionUp();
             break;
         default:
