@@ -8,17 +8,16 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 
+import android.net.http.AndroidHttpClient;
 import android.util.Base64;
 
 public class HttpHelper {
@@ -144,9 +143,9 @@ public class HttpHelper {
     }
 
     private static void handleRequest(HttpUriRequest request, HttpResponseHandler handler) {
+        AndroidHttpClient httpClient = AndroidHttpClient.newInstance("alien");
         try {
             request.setHeader("Cookie", COOKIE);
-            HttpClient httpClient = new DefaultHttpClient();
             HttpResponse response = httpClient.execute(request);
             int status = response.getStatusLine().getStatusCode();
             String responseStr = EntityUtils.toString(response.getEntity(), "utf-8");
@@ -158,6 +157,8 @@ public class HttpHelper {
         } catch (Exception e) {
             e.printStackTrace();
             handler.onFail(-1, e.getMessage());
+        } finally {
+            httpClient.close();
         }
     }
 
