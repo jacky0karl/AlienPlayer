@@ -122,12 +122,18 @@ public class DownloadListActivity extends Activity {
     private void updateView() {
         List<FileDownloadingInfo> list = FileDownloadingHelper.getInstance()
                 .getFileDownloadingList();
-        mAdapter.setInfos(list);
+
         if (list.size() > 0) {
             mNoItem.setVisibility(View.GONE);
         } else {
             mNoItem.setVisibility(View.VISIBLE);
         }
+        mAdapter.setInfos(list);
+    }
+
+    private void startListUpdate() {
+        mHandler.removeCallbacks(mUpdateTask);
+        mHandler.post(mUpdateTask);
     }
 
     private void onFileClick() {
@@ -172,7 +178,7 @@ public class DownloadListActivity extends Activity {
             } else if (ListMenu.MEMU_ABORT == menuId) {
                 FileDownloadingHelper.getInstance().abortDownloadTrack(mCurrInfo);
             }
-            updateView();
+            startListUpdate();
         }
     };
 }

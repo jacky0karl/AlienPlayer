@@ -2,13 +2,11 @@ package com.jk.alienplayer.network;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,17 +69,22 @@ public class FileDownloadingHelper {
             return;
         }
 
-        info.status = Status.PENDING;
-        info.progress = 0;
-        DownloadTask task = new DownloadTask(info);
-        mExecutor.execute(task);
+        if (info.status == Status.CANCELED || info.status == Status.FAILED) {
+            info.status = Status.PENDING;
+            info.progress = 0;
+            DownloadTask task = new DownloadTask(info);
+            mExecutor.execute(task);
+        }
     }
 
     public void abortDownloadTrack(FileDownloadingInfo info) {
         if (info == null) {
             return;
         }
-        info.status = Status.CANCELED;
+
+        if (info.status == Status.PENDING || info.status == Status.DOWALOADING) {
+            info.status = Status.CANCELED;
+        }
     }
 
     public List<FileDownloadingInfo> getFileDownloadingList() {
@@ -185,11 +188,17 @@ public class FileDownloadingHelper {
 
         info.status = FileDownloadingInfo.Status.DOWALOADING;
         InputStream inputStream = null;
+        HttpURLConnection connection = null;
         try {
             URL url = new URL(info.url);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            inputStream = urlConnection.getInputStream();
-            info.size = urlConnection.getContentLength();
+            connection = (HttpURLConnection) url.openConnection();
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                inputStream = connection.getInputStream();
+                info.size = connection.getContentLength();
+            } else {
+                info.status = FileDownloadingInfo.Status.FAILED;
+                return;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             FileSavingUtils.logThrowable(e);
@@ -221,6 +230,7 @@ public class FileDownloadingHelper {
             FileSavingUtils.logThrowable(e);
             info.status = FileDownloadingInfo.Status.FAILED;
         } finally {
+            connection.disconnect();
             try {
                 outputStream.close();
                 inputStream.close();
