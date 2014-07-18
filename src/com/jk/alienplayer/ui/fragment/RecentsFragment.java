@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,9 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.setTracks(recentsList);
+                    if (mAdapter != null) {
+                        mAdapter.setTracks(recentsList);
+                    }
                 }
             });
         }
@@ -55,7 +58,9 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
             String action = intent.getAction();
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
                 List<SongInfo> recentsList = RecentsDBHelper.getRecentTracks(getActivity());
-                mAdapter.setTracks(recentsList);
+                if (mAdapter != null) {
+                    mAdapter.setTracks(recentsList);
+                }
             }
         }
     };
@@ -73,21 +78,26 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_list, container, false);
-        init(root);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e("RecentsFragment", "onCreate");
         MediaScanService.registerScanReceiver(getActivity(), mReceiver);
         getActivity().getContentResolver().registerContentObserver(
                 RecentsDBHelper.getRecentsUri(getActivity()), true, mContentObserver);
+        setupPopupWindow();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_list, container, false);
+        init(root);
         return root;
     }
 
     @Override
     public void onDestroy() {
-        if (mPopupWindow != null) {
-            mPopupWindow.dismiss();
-        }
-
+        Log.e("RecentsFragment", "onDestroy");
+        mPopupWindow.dismiss();
         getActivity().unregisterReceiver(mReceiver);
         getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
         super.onDestroy();
@@ -99,7 +109,6 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
         mListView.setAdapter(mAdapter);
         mAdapter.setTracks(RecentsDBHelper.getRecentTracks(getActivity()));
         mListView.setOnItemClickListener(mOnItemClickListener);
-        setupPopupWindow();
     }
 
     private void setupPopupWindow() {

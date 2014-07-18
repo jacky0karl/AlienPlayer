@@ -101,6 +101,9 @@ public class ArtistsFragment extends Fragment {
 
         @Override
         public void onIndicatorChange(String indicator) {
+            if (mArtists == null) {
+                return;
+            }
             mIndicator.setText(indicator);
 
             char indiChar = indicator.toLowerCase().charAt(0);
