@@ -68,10 +68,10 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         mPopupWindow.dismiss();
         getActivity().unregisterReceiver(mReceiver);
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     private void init(View root) {

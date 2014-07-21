@@ -67,10 +67,10 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         mPopupWindow.dismiss();
         getActivity().unregisterReceiver(mReceiver);
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     private void init(View root) {

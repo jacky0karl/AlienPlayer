@@ -63,10 +63,10 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         mPopupWindow.dismiss();
         getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     @Override

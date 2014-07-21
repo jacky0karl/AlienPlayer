@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +43,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mAdapter != null) {
-                        mAdapter.setTracks(recentsList);
-                    }
+                    mAdapter.setTracks(recentsList);
                 }
             });
         }
@@ -58,9 +55,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
             String action = intent.getAction();
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
                 List<SongInfo> recentsList = RecentsDBHelper.getRecentTracks(getActivity());
-                if (mAdapter != null) {
-                    mAdapter.setTracks(recentsList);
-                }
+                mAdapter.setTracks(recentsList);
             }
         }
     };
@@ -78,29 +73,21 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.e("RecentsFragment", "onCreate");
-        MediaScanService.registerScanReceiver(getActivity(), mReceiver);
-        getActivity().getContentResolver().registerContentObserver(
-                RecentsDBHelper.getRecentsUri(getActivity()), true, mContentObserver);
-        setupPopupWindow();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
+        MediaScanService.registerScanReceiver(getActivity(), mReceiver);
+        getActivity().getContentResolver().registerContentObserver(
+                RecentsDBHelper.getRecentsUri(getActivity()), true, mContentObserver);
         return root;
     }
 
     @Override
-    public void onDestroy() {
-        Log.e("RecentsFragment", "onDestroy");
+    public void onDestroyView() {
         mPopupWindow.dismiss();
         getActivity().unregisterReceiver(mReceiver);
         getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     private void init(View root) {
@@ -109,6 +96,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
         mListView.setAdapter(mAdapter);
         mAdapter.setTracks(RecentsDBHelper.getRecentTracks(getActivity()));
         mListView.setOnItemClickListener(mOnItemClickListener);
+        setupPopupWindow();
     }
 
     private void setupPopupWindow() {

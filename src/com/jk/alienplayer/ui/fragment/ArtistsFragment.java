@@ -70,9 +70,9 @@ public class ArtistsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         getActivity().unregisterReceiver(mReceiver);
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     private void init(View root) {

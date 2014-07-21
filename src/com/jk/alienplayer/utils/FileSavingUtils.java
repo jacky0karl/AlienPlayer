@@ -86,7 +86,7 @@ public class FileSavingUtils {
         logThrowable(t.getCause());
     }
 
-    public static boolean ensurePath(File file) {
+    public static synchronized boolean ensurePath(File file) {
         String filePath = file.getParent();
         File dir = new File(filePath);
         if (!dir.exists()) {
