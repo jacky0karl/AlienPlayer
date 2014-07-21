@@ -20,6 +20,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -31,6 +34,7 @@ public class LyricFragment extends Fragment {
     private LyricAdapter mLyricAdapter;
     private LyricInfo mLyricInfo;
     private int mOffset;
+    private boolean mIsRolling = true;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -61,12 +65,36 @@ public class LyricFragment extends Fragment {
     }
 
     private void init(View root) {
+        setHasOptionsMenu(true);
         mNoLyric = (TextView) root.findViewById(R.id.no_lyric);
         mListView = (ListView) root.findViewById(R.id.list);
         mLyricAdapter = new LyricAdapter(getActivity());
         mListView.setAdapter(mLyricAdapter);
         mOffset = getActivity().getResources().getDimensionPixelOffset(R.dimen.lyric_offset);
         updateLyricInfo();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.lyric, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_rolling);
+        if (mIsRolling) {
+            item.setTitle(R.string.stop_rolling);
+        } else {
+            item.setTitle(R.string.start_rolling);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_rolling) {
+            mIsRolling = !mIsRolling;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateLyricInfo() {
@@ -91,7 +119,9 @@ public class LyricFragment extends Fragment {
             if (progress > list.get(i).startTime) {
                 if (mLyricAdapter.getHighlightPos() != i) {
                     mLyricAdapter.setHighlightPos(i);
-                    mListView.setSelectionFromTop(i, mOffset);
+                    if (mIsRolling) {
+                        mListView.setSelectionFromTop(i, mOffset);
+                    }
                 }
                 return;
             }
