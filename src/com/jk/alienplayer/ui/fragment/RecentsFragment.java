@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,7 @@ public class RecentsFragment extends Fragment implements OnMenuItemClickListener
     @Override
     public void onDestroyView() {
         mPopupWindow.dismiss();
-        getActivity().unregisterReceiver(mReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
         getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
         super.onDestroyView();
     }

@@ -9,6 +9,7 @@ import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class MediaScanService extends Service {
@@ -19,29 +20,13 @@ public class MediaScanService extends Service {
     public static final String ACTION_MEDIA_SCAN_COMPLETED = "com.jk.alienplayer.MEDIA_SCAN_COMPLETED";
     public static final String FILE_PATH = "file_path";
 
+    private String mFilePath = null;
+    private MediaScannerConnection mConnection = null;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-    private MediaScannerConnectionClient mMediaScannerConnectionClient = new MediaScannerConnectionClient() {
-        @Override
-        public void onMediaScannerConnected() {
-            mConnection.scanFile(mFilePath, "audio/mpeg");
-        }
-
-        @Override
-        public void onScanCompleted(String path, Uri uri) {
-            Intent intent = new Intent(ACTION_MEDIA_SCAN_COMPLETED);
-            intent.putExtra(FILE_PATH, path);
-            mConnection.disconnect();
-            MediaScanService.this.sendBroadcast(intent);
-            MediaScanService.this.stopSelf();
-        }
-    };
-
-    private String mFilePath = null;
-    private MediaScannerConnection mConnection = null;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -65,6 +50,22 @@ public class MediaScanService extends Service {
         return START_NOT_STICKY;
     }
 
+    private MediaScannerConnectionClient mMediaScannerConnectionClient = new MediaScannerConnectionClient() {
+        @Override
+        public void onMediaScannerConnected() {
+            mConnection.scanFile(mFilePath, "audio/mpeg");
+        }
+
+        @Override
+        public void onScanCompleted(String path, Uri uri) {
+            mConnection.disconnect();
+            Intent intent = new Intent(ACTION_MEDIA_SCAN_COMPLETED);
+            intent.putExtra(FILE_PATH, path);
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+            stopSelf();
+        }
+    };
+
     public static void startScan(Context context, String filePath) {
         Intent intent = new Intent(context, MediaScanService.class);
         intent.putExtra(MediaScanService.SCAN_COMMAND, MediaScanService.SCAN_FILE);
@@ -74,6 +75,6 @@ public class MediaScanService extends Service {
 
     public static void registerScanReceiver(Context context, BroadcastReceiver receiver) {
         IntentFilter intentFilter = new IntentFilter(ACTION_MEDIA_SCAN_COMPLETED);
-        context.registerReceiver(receiver, intentFilter);
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter);
     }
 }
