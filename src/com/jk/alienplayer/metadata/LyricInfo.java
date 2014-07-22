@@ -91,10 +91,19 @@ public class LyricInfo {
     }
 
     private int stringToMsec(String str) {
-        String msec = str.split("\\.")[1];
-        String rest = str.split("\\.")[0];
-        String min = rest.split(":")[0];
-        String sec = rest.split(":")[1];
+        String[] arrayMsec = str.split("\\.");
+        if (arrayMsec.length < 2) {
+            return 0;
+        }
+        String msec = arrayMsec[1];
+        String rest = arrayMsec[0];
+
+        String[] arrayMin = rest.split(":");
+        if (arrayMin.length < 2) {
+            return 0;
+        }
+        String min = arrayMin[0];
+        String sec = arrayMin[1];
 
         return Integer.parseInt(min) * 60 * 1000 + Integer.parseInt(sec) * 1000
                 + Integer.parseInt(msec);
