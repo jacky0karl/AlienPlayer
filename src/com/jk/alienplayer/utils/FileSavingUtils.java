@@ -94,4 +94,19 @@ public class FileSavingUtils {
         }
         return dir.exists();
     }
+
+    public static synchronized String removeIllegalChar(String name) {
+        String path = name;
+        char nullChar = ' ';
+        path = path.replace('*', nullChar);
+        path = path.replace('/', nullChar);
+        path = path.replace('\\', nullChar);
+        path = path.replace('"', nullChar);
+        path = path.replace(':', nullChar);
+        path = path.replace('?', nullChar);
+        path = path.replace('|', nullChar);
+        path = path.replace('<', nullChar);
+        path = path.replace('>', nullChar);
+        return path;
+    }
 }

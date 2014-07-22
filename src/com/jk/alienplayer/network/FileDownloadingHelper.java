@@ -259,11 +259,11 @@ public class FileDownloadingHelper {
     private String buildPath(NetworkTrackInfo info) {
         StringBuilder sb = new StringBuilder();
         sb.append(FileSavingUtils.sRootPath);
-        sb.append(info.artistAlbum);
+        sb.append(FileSavingUtils.removeIllegalChar(info.artistAlbum));
         sb.append(File.separator);
-        sb.append(info.album);
+        sb.append(FileSavingUtils.removeIllegalChar(info.album));
         sb.append(File.separator);
-        sb.append(info.name);
+        sb.append(FileSavingUtils.removeIllegalChar(info.name));
         sb.append(".");
         return sb.toString();
     }

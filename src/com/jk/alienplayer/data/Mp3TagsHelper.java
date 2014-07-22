@@ -29,7 +29,9 @@ public class Mp3TagsHelper {
             TagField cover = mp3.getID3v2Tag().getFirstField(FieldKey.COVER_ART);
 
             ID3v23Tag tag = new ID3v23Tag();
-            tag.setField(cover);
+            if (cover != null) {
+                tag.setField(cover);
+            }
             tag.setField(FieldKey.ARTIST, artists);
             tag.setField(FieldKey.ALBUM_ARTIST, artistAlbum);
             tag.setField(FieldKey.ALBUM, album);
