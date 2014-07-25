@@ -32,10 +32,11 @@ public class PlayingHelper {
 
     private MediaPlayer mMediaPlayer;
     private boolean mIsProcessing = false;
+
     private WeakReference<PlayService> mPlayServiceWr = null;
     private Handler mHandler = new Handler();
 
-    OnErrorListener mOnErrorListener = new OnErrorListener() {
+    private OnErrorListener mOnErrorListener = new OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
             Log.e("#### OnErrorListener", "error = " + what);
@@ -43,7 +44,7 @@ public class PlayingHelper {
         }
     };
 
-    OnCompletionListener mOnCompletionListener = new OnCompletionListener() {
+    private OnCompletionListener mOnCompletionListener = new OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
             sPlayingInfo.status = PlayStatus.Stoped;
@@ -60,7 +61,6 @@ public class PlayingHelper {
 
         sAudioSessionId = mMediaPlayer.getAudioSessionId();
         sPlayingInfo.status = PlayStatus.Idle;
-
         mPlayServiceWr = new WeakReference<PlayService>(service);
         openAudioEffect(service);
     }
@@ -143,6 +143,14 @@ public class PlayingHelper {
             return false;
         } finally {
             mIsProcessing = false;
+        }
+    }
+
+    public void pause() {
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
+            sPlayingInfo.status = PlayStatus.Paused;
+            notifyPause();
         }
     }
 

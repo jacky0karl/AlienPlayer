@@ -38,20 +38,37 @@ public class PlayService extends Service {
 
     private PlayingHelper mPlayingHelper;
     private AudioManager mAudioManager;
-    ComponentName mMediaButtonReceiver = new ComponentName(MediaButtonReceiver.class.getPackage()
-            .getName(), MediaButtonReceiver.class.getName());
+    private AudioFocusChangeListener mAudioFocusChangeListener;
+    private RemoteControlHelper mRemoteControlHelper;
+    private ComponentName mMediaButtonReceiver = new ComponentName(MediaButtonReceiver.class
+            .getPackage().getName(), MediaButtonReceiver.class.getName());
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(PlayService.ACTION_START)) {
+                mAudioManager.requestAudioFocus(mAudioFocusChangeListener,
+                        AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            }
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
         mPlayingHelper = new PlayingHelper(this);
+        mAudioFocusChangeListener = new AudioFocusChangeListener(mPlayingHelper);
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mAudioManager.registerMediaButtonEventReceiver(mMediaButtonReceiver);
+        mRemoteControlHelper = new RemoteControlHelper(this, mMediaButtonReceiver);
+
+        IntentFilter intentFilter = new IntentFilter(PlayService.ACTION_START);
+        registerReceiver(mReceiver, intentFilter);
     }
 
     @Override
@@ -91,6 +108,8 @@ public class PlayService extends Service {
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(mReceiver);
+        mRemoteControlHelper.finish();
         mAudioManager.unregisterMediaButtonEventReceiver(mMediaButtonReceiver);
         mPlayingHelper.release();
         sendStatusBroadCast(ACTION_EXIT);

@@ -16,6 +16,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
                 switch (key.getKeyCode()) {
                 case KeyEvent.KEYCODE_HEADSETHOOK:
                 case KeyEvent.KEYCODE_MEDIA_PLAY:
+                case KeyEvent.KEYCODE_MEDIA_PAUSE:
                 case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                     Intent intentPlay = PlayService.getPlayingCommandIntent(context,
                             PlayService.COMMAND_PLAY_PAUSE);
