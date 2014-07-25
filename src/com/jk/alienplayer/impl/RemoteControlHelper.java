@@ -1,14 +1,18 @@
 package com.jk.alienplayer.impl;
 
+import com.jk.alienplayer.data.PlayingInfoHolder;
+
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
+import android.media.RemoteControlClient.MetadataEditor;
 
 public class RemoteControlHelper {
     private Context mContext;
@@ -72,8 +76,10 @@ public class RemoteControlHelper {
     }
 
     private void setContent(String title, String artist) {
+        Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         mRemoteControlClient.editMetadata(true)
+                .putBitmap(MetadataEditor.BITMAP_KEY_ARTWORK, artwork)
                 .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, artist).apply();
+                .putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, artist).apply();
     }
 }
