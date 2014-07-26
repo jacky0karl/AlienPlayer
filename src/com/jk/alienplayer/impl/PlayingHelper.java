@@ -89,7 +89,7 @@ public class PlayingHelper {
 
     public boolean playOrPause() {
         if (mIsProcessing) {
-            return mMediaPlayer.isPlaying();
+            return isPlaying();
         }
         mIsProcessing = true;
 
@@ -97,12 +97,12 @@ public class PlayingHelper {
         if (sPlayingInfo.status != PlayStatus.Playing && sPlayingInfo.status != PlayStatus.Paused) {
             mIsProcessing = false;
             play();
-            return mMediaPlayer.isPlaying();
+            return isPlaying();
         }
 
         // switch play and pause
         try {
-            if (mMediaPlayer.isPlaying()) {
+            if (isPlaying()) {
                 mMediaPlayer.pause();
                 sPlayingInfo.status = PlayStatus.Paused;
                 notifyPause();
@@ -116,7 +116,7 @@ public class PlayingHelper {
         } finally {
             mIsProcessing = false;
         }
-        return mMediaPlayer.isPlaying();
+        return isPlaying();
     }
 
     public boolean play() {
@@ -133,6 +133,7 @@ public class PlayingHelper {
         try {
             mMediaPlayer.setDataSource(info.path);
             mMediaPlayer.prepare();
+            sPlayingInfo.status = PlayStatus.Prepared;
             notifyTrackChange();
             mMediaPlayer.start();
             sPlayingInfo.status = PlayStatus.Playing;
@@ -147,10 +148,21 @@ public class PlayingHelper {
     }
 
     public void pause() {
-        if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.pause();
-            sPlayingInfo.status = PlayStatus.Paused;
-            notifyPause();
+        if (mIsProcessing) {
+            return;
+        }
+        mIsProcessing = true;
+
+        try {
+            if (isPlaying()) {
+                mMediaPlayer.pause();
+                sPlayingInfo.status = PlayStatus.Paused;
+                notifyPause();
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } finally {
+            mIsProcessing = false;
         }
     }
 
@@ -186,6 +198,15 @@ public class PlayingHelper {
             mMediaPlayer.release();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean isPlaying() {
+        try {
+            return mMediaPlayer.isPlaying();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
