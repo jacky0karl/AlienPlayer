@@ -110,6 +110,7 @@ public class PlayService extends Service {
     public void onDestroy() {
         unregisterReceiver(mReceiver);
         mRemoteControlHelper.finish();
+        mAudioManager.abandonAudioFocus(mAudioFocusChangeListener);
         mAudioManager.unregisterMediaButtonEventReceiver(mMediaButtonReceiver);
         mPlayingHelper.release();
         sendStatusBroadCast(ACTION_EXIT);
