@@ -64,8 +64,13 @@ public class LyricInfo {
     private void parseLine(String line) {
         String[] parts = line.split("]");
         int len = parts.length;
-        if (len < 2) {
+        if (len < 1) {
             mSentences.add(new Sentence(0, line));
+            return;
+        } else if (len == 1) {
+            if (!parts[0].startsWith("[")) {
+                mSentences.add(new Sentence(0, line));
+            }
             return;
         }
 
