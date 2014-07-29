@@ -1,7 +1,6 @@
 package com.jk.alienplayer.data;
 
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,43 +182,26 @@ public class DatabaseHelper {
     private static final Uri AlbumArtUri = Uri.parse("content://media/external/audio/albumart");
 
     public static Bitmap getArtwork(Context context, long songId, long albumId, int targetSize) {
-        Bitmap bmp = null;
         if (albumId < 0 && songId < 0) {
             return null;
         }
 
-        FileDescriptor fd = null;
+        Bitmap bmp = null;
         try {
+            ParcelFileDescriptor pfd = null;
             if (albumId < 0) {
                 Uri uri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
-                ParcelFileDescriptor pfd = context.getContentResolver()
-                        .openFileDescriptor(uri, "r");
-                if (pfd != null) {
-                    fd = pfd.getFileDescriptor();
-                    pfd.close();
-                }
+                pfd = context.getContentResolver().openFileDescriptor(uri, "r");
             } else {
                 Uri uri = ContentUris.withAppendedId(AlbumArtUri, albumId);
-                ParcelFileDescriptor pfd = context.getContentResolver()
-                        .openFileDescriptor(uri, "r");
-                if (pfd != null) {
-                    fd = pfd.getFileDescriptor();
-                    pfd.close();
-                }
+                pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+            }
+            if (pfd == null) {
+                return null;
             }
 
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 1;
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFileDescriptor(fd, null, options);
-
-            int ratioW = options.outWidth / targetSize;
-            int ratioH = options.outHeight / targetSize;
-            options.inSampleSize = ratioW > ratioH ? ratioW : ratioH;
-
-            options.inJustDecodeBounds = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            bmp = BitmapFactory.decodeFileDescriptor(fd, null, options);
+            bmp = decodeImage(pfd.getFileDescriptor(), targetSize);
+            pfd.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -360,4 +342,18 @@ public class DatabaseHelper {
         return info;
     }
 
+    private static Bitmap decodeImage(FileDescriptor fd, int targetSize) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 1;
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFileDescriptor(fd, null, options);
+
+        int ratioW = options.outWidth / targetSize;
+        int ratioH = options.outHeight / targetSize;
+        options.inSampleSize = ratioW > ratioH ? ratioW : ratioH;
+
+        options.inJustDecodeBounds = false;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        return BitmapFactory.decodeFileDescriptor(fd, null, options);
+    }
 }
