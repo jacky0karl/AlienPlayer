@@ -1,5 +1,7 @@
 package com.jk.alienplayer.ui.fragment;
 
+import java.util.List;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -33,6 +36,8 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     private TracksAdapter mAdapter;
     private ListMenu mListMenu;
     private PopupWindow mPopupWindow;
+    private ProgressBar mLoading;
+    private List<SongInfo> mTracks;
     private SongInfo mCurrTrack;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -40,8 +45,7 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
-                mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(),
-                        CurrentlistInfo.TYPE_ALL, -1));
+                updateTracks();
             }
         }
     };
@@ -76,12 +80,13 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     }
 
     private void init(View root) {
+        mLoading = (ProgressBar) root.findViewById(R.id.loading);
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new TracksAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
-        mAdapter.setTracks(DatabaseHelper.getTracks(getActivity(), CurrentlistInfo.TYPE_ALL, -1));
         mListView.setOnItemClickListener(mOnItemClickListener);
         setupPopupWindow();
+        updateTracks();
     }
 
     private void setupPopupWindow() {
@@ -94,6 +99,28 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.setFocusable(true);
         mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
+    }
+
+    private void updateTracks() {
+        mLoading.setVisibility(View.VISIBLE);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mTracks = DatabaseHelper.getTracks(getActivity(), CurrentlistInfo.TYPE_ALL, -1);
+                updateList();
+            }
+        });
+        thread.start();
+    }
+
+    private void updateList() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.setTracks(mTracks);
+                mLoading.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void onSongClick(SongInfo song) {

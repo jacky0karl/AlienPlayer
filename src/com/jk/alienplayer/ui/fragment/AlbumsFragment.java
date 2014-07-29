@@ -1,5 +1,7 @@
 package com.jk.alienplayer.ui.fragment;
 
+import java.util.List;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
@@ -18,20 +20,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class AlbumsFragment extends Fragment {
-
     private ListView mListView;
     private AlbumsAdapter mAdapter;
+    private List<AlbumInfo> mAlbums;
+    private ProgressBar mLoading;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
-                mAdapter.setAlbums(DatabaseHelper.getAlbums(getActivity()));
+                updateAlbums();
             }
         }
     };
@@ -45,10 +49,10 @@ public class AlbumsFragment extends Fragment {
     }
 
     private void init(View root) {
+        mLoading = (ProgressBar) root.findViewById(R.id.loading);
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new AlbumsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-        mAdapter.setAlbums(DatabaseHelper.getAlbums(getActivity()));
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -56,6 +60,7 @@ public class AlbumsFragment extends Fragment {
                 startSongsPage(info.id, info.name);
             }
         });
+        updateAlbums();
     }
 
     @Override
@@ -72,4 +77,25 @@ public class AlbumsFragment extends Fragment {
         startActivity(intent);
     }
 
+    private void updateAlbums() {
+        mLoading.setVisibility(View.VISIBLE);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mAlbums = DatabaseHelper.getAlbums(getActivity());
+                updateList();
+            }
+        });
+        thread.start();
+    }
+
+    private void updateList() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.setAlbums(mAlbums);
+                mLoading.setVisibility(View.GONE);
+            }
+        });
+    }
 }

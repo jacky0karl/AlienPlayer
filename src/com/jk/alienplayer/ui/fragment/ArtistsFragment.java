@@ -165,12 +165,10 @@ public class ArtistsFragment extends Fragment {
     }
 
     private void sortList() {
-        PinyinUtils pu = new PinyinUtils();
         for (ArtistInfo info : mArtists) {
-            info.sortKey = pu.getPinyinString(info.name);
+            info.sortKey = PinyinUtils.getPinyinString(info.name);
         }
         Collections.sort(mArtists, new ArtistInfo.ArtistComparator());
-        updateList();
     }
 
     private void updateList() {
