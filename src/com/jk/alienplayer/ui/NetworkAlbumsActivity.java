@@ -71,6 +71,7 @@ public class NetworkAlbumsActivity extends Activity {
                 public void run() {
                     mAdapter.setAlbums(albums);
                     if (mAdapter.getCount() == 0) {
+                        mNoResult.setText(R.string.no_result);
                         mNoResult.setVisibility(View.VISIBLE);
                     } else {
                         mNoResult.setVisibility(View.GONE);
@@ -82,7 +83,14 @@ public class NetworkAlbumsActivity extends Activity {
 
         @Override
         public void onFail(int status, String response) {
-            mLoading.setVisibility(View.GONE);
+            NetworkAlbumsActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mNoResult.setText(R.string.network_error);
+                    mNoResult.setVisibility(View.VISIBLE);
+                    mLoading.setVisibility(View.GONE);
+                }
+            });
         }
     };
 }

@@ -33,6 +33,7 @@
     <string name="done">Done</string>
     <string name="failed">Failed</string>
     <string name="aborted">Aborted</string>
+    <string name="network_error">Network Error</string>
 
     <!-- menu title -->
     <string name="delete">Delete</string>

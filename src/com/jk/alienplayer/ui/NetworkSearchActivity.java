@@ -78,7 +78,14 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
 
         @Override
         public void onFail(int status, String response) {
-            mLoading.setVisibility(View.GONE);
+            NetworkSearchActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoading.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), R.string.network_error,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     };
 
@@ -97,7 +104,14 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
 
         @Override
         public void onFail(int status, String response) {
-            mLoading.setVisibility(View.GONE);
+            NetworkSearchActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoading.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), R.string.network_error,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     };
 
@@ -121,7 +135,14 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
 
         @Override
         public void onFail(int status, String response) {
-            mLoading.setVisibility(View.GONE);
+            NetworkSearchActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoading.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), R.string.network_error,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     };
 

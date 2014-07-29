@@ -97,6 +97,7 @@ public class NetworkTracksActivity extends Activity {
                 public void run() {
                     mAdapter.setTracks(mTracks);
                     if (mAdapter.getCount() == 0) {
+                        mNoResult.setText(R.string.no_result);
                         mNoResult.setVisibility(View.VISIBLE);
                     } else {
                         mNoResult.setVisibility(View.GONE);
@@ -111,6 +112,8 @@ public class NetworkTracksActivity extends Activity {
             NetworkTracksActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mNoResult.setText(R.string.network_error);
+                    mNoResult.setVisibility(View.VISIBLE);
                     mLoading.setVisibility(View.GONE);
                 }
             });
