@@ -8,11 +8,13 @@ import com.jk.alienplayer.utils.UncaughtExceptionLoger;
 
 import android.app.Application;
 import android.content.Intent;
+import android.os.StrictMode;
 
 public class MainApplication extends Application {
 
     @Override
     public void onCreate() {
+        setDetection();
         super.onCreate();
         FileDownloadingHelper.getInstance().init(this);
         UncaughtExceptionLoger.getInstance().init();
@@ -22,4 +24,12 @@ public class MainApplication extends Application {
         startService(intent);
     }
 
+    private void setDetection() {
+        if (true) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll()
+                    .penaltyLog().build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
+        }
+    }
 }

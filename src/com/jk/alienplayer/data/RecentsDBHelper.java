@@ -73,6 +73,7 @@ public class RecentsDBHelper {
     }
 
     private static boolean hasRecentsList(Context context) {
+        boolean ret = false;
         String[] projection = new String[] { Playlists._ID };
         String selection = Playlists.NAME + "=?";
         String[] selectionArgs = new String[] { RECENTS_LIST_NAME };
@@ -81,11 +82,11 @@ public class RecentsDBHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 sRecentsId = cursor.getLong(cursor.getColumnIndexOrThrow(Playlists._ID));
-                return true;
+                ret = true;
             }
             cursor.close();
         }
-        return false;
+        return ret;
     }
 
     private static void createRecents(Context context) {

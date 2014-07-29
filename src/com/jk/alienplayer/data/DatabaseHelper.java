@@ -188,14 +188,15 @@ public class DatabaseHelper {
             return null;
         }
 
+        FileDescriptor fd = null;
         try {
-            FileDescriptor fd = null;
             if (albumId < 0) {
                 Uri uri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
                 ParcelFileDescriptor pfd = context.getContentResolver()
                         .openFileDescriptor(uri, "r");
                 if (pfd != null) {
                     fd = pfd.getFileDescriptor();
+                    pfd.close();
                 }
             } else {
                 Uri uri = ContentUris.withAppendedId(AlbumArtUri, albumId);
@@ -203,6 +204,7 @@ public class DatabaseHelper {
                         .openFileDescriptor(uri, "r");
                 if (pfd != null) {
                     fd = pfd.getFileDescriptor();
+                    pfd.close();
                 }
             }
 
@@ -218,7 +220,7 @@ public class DatabaseHelper {
             options.inJustDecodeBounds = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             bmp = BitmapFactory.decodeFileDescriptor(fd, null, options);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return bmp;
