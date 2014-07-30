@@ -88,10 +88,9 @@ public class PlayingHelper {
     }
 
     public boolean playOrPause() {
-        if (mIsProcessing) {
+        if (checkState()) {
             return isPlaying();
         }
-        mIsProcessing = true;
 
         // first playing
         if (sPlayingInfo.status != PlayStatus.Playing && sPlayingInfo.status != PlayStatus.Paused) {
@@ -120,14 +119,14 @@ public class PlayingHelper {
     }
 
     public boolean play() {
+        if (checkState()) {
+            return false;
+        }
+
         SongInfo info = PlayingInfoHolder.getInstance().getCurrentSong();
         if (info == null) {
             return false;
         }
-        if (mIsProcessing) {
-            return false;
-        }
-        mIsProcessing = true;
 
         mMediaPlayer.reset();
         try {
@@ -148,10 +147,9 @@ public class PlayingHelper {
     }
 
     public void pause() {
-        if (mIsProcessing) {
+        if (checkState()) {
             return;
         }
-        mIsProcessing = true;
 
         try {
             if (isPlaying()) {
@@ -167,10 +165,9 @@ public class PlayingHelper {
     }
 
     public void seekTo(int msec) {
-        if (mIsProcessing) {
+        if (checkState()) {
             return;
         }
-        mIsProcessing = true;
 
         try {
             mMediaPlayer.seekTo(msec);
@@ -182,12 +179,18 @@ public class PlayingHelper {
     }
 
     public void stop() {
+        if (checkState()) {
+            return;
+        }
+
         try {
             mMediaPlayer.stop();
             sPlayingInfo.status = PlayStatus.Stoped;
             notifyStop();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            mIsProcessing = false;
         }
     }
 
@@ -208,6 +211,12 @@ public class PlayingHelper {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private synchronized boolean checkState() {
+        boolean tmp = mIsProcessing;
+        mIsProcessing = true;
+        return tmp;
     }
 
     private void notifyStart() {
