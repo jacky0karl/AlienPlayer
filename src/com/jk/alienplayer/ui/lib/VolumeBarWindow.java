@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui.lib;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.impl.VolumeKeyHelper;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -71,6 +72,7 @@ public class VolumeBarWindow extends PopupWindow {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int volume = seekBar.getProgress();
+                VolumeKeyHelper.setSelfChangeVolume(true);
                 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
             }
 
@@ -90,6 +92,7 @@ public class VolumeBarWindow extends PopupWindow {
         mMuteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                VolumeKeyHelper.setSelfChangeVolume(true);
                 if (isMuted()) {
                     mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mLatestVolume, 0);
                     mMuteBtn.setImageResource(R.drawable.volume);

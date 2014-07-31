@@ -36,6 +36,12 @@ public class PlayService extends Service {
     public static final String ACTION_PROGRESS_UPDATE = "com.jk.alienplayer.action.PROGRESS_UPDATE";
     public static final String ACTION_TRACK_CHANGE = "com.jk.alienplayer.action.TRACK_CHANGE";
 
+    /** Hiding field of android.media.AudioManager, may be disabled in future */
+    public static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
+    public static final String VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
+    public static final String VOLUME_STREAM_VALUE = "android.media.EXTRA_VOLUME_STREAM_VALUE";
+    public static final String PREV_VOLUME_STREAM_VALUE = "android.media.EXTRA_PREV_VOLUME_STREAM_VALUE";
+
     private PlayingHelper mPlayingHelper;
     private AudioManager mAudioManager;
     private AudioFocusChangeListener mAudioFocusChangeListener;
@@ -51,9 +57,11 @@ public class PlayService extends Service {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(PlayService.ACTION_START)) {
+            if (intent.getAction().equals(ACTION_START)) {
                 mAudioManager.requestAudioFocus(mAudioFocusChangeListener,
                         AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            } else if (intent.getAction().equals(VOLUME_CHANGED_ACTION)) {
+                handleVolumeKey(intent);
             }
         }
     };
@@ -67,7 +75,8 @@ public class PlayService extends Service {
         mAudioManager.registerMediaButtonEventReceiver(mMediaButtonReceiver);
         mRemoteControlHelper = new RemoteControlHelper(this, mMediaButtonReceiver);
 
-        IntentFilter intentFilter = new IntentFilter(PlayService.ACTION_START);
+        IntentFilter intentFilter = new IntentFilter(ACTION_START);
+        intentFilter.addAction(VOLUME_CHANGED_ACTION);
         registerReceiver(mReceiver, intentFilter);
     }
 
@@ -115,6 +124,29 @@ public class PlayService extends Service {
         mPlayingHelper.release();
         sendStatusBroadCast(ACTION_EXIT);
         super.onDestroy();
+    }
+
+    private void handleVolumeKey(Intent intent) {
+        if (VolumeKeyHelper.isSelfChangeVolume()) {
+            VolumeKeyHelper.setSelfChangeVolume(false);
+            return;
+        }
+
+        int type = intent.getIntExtra(VOLUME_STREAM_TYPE, -1);
+        int value = intent.getIntExtra(VOLUME_STREAM_VALUE, -1);
+        int prevValue = intent.getIntExtra(PREV_VOLUME_STREAM_VALUE, -1);
+        int delta = value - prevValue;
+        if (type == AudioManager.STREAM_MUSIC && delta != 0) {
+            VolumeKeyHelper.setSelfChangeVolume(true);
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, prevValue, 0);
+
+            if (delta > 0) {
+                PlayingInfoHolder.getInstance().next(this);
+            } else if (delta < 0) {
+                PlayingInfoHolder.getInstance().prev(this);
+            }
+            mPlayingHelper.play();
+        }
     }
 
     public void sendStatusBroadCast(String action) {
