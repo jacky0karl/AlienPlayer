@@ -1,4 +1,4 @@
-package com.jk.alienplayer.impl;
+package com.jk.alienplayer.data;
 
 public class VolumeKeyHelper {
     private static boolean sSelfChangeVolume = false;

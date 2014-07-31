@@ -124,7 +124,9 @@ public class TracksFragment extends Fragment implements OnMenuItemClickListener 
     }
 
     private void onSongClick(SongInfo song) {
-        PlayingInfoHolder.getInstance().setCurrentInfo(getActivity(), song, null);
+        CurrentlistInfo currentlistInfo = new CurrentlistInfo(CurrentlistInfo.ID_ALL, CurrentlistInfo.TYPE_ALL, mTracks);
+        PlayingInfoHolder.getInstance().setCurrentInfo(getActivity(), song, currentlistInfo);
+
         Intent intent = PlayService
                 .getPlayingCommandIntent(getActivity(), PlayService.COMMAND_PLAY);
         getActivity().startService(intent);

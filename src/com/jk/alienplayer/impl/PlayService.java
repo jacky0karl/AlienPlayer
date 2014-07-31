@@ -2,6 +2,7 @@ package com.jk.alienplayer.impl;
 
 import com.jk.alienplayer.MediaButtonReceiver;
 import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.data.VolumeKeyHelper;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;

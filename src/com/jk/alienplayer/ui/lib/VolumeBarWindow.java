@@ -1,7 +1,7 @@
 package com.jk.alienplayer.ui.lib;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.impl.VolumeKeyHelper;
+import com.jk.alienplayer.data.VolumeKeyHelper;
 
 import android.content.Context;
 import android.media.AudioManager;

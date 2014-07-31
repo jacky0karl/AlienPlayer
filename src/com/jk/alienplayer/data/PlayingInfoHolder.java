@@ -155,7 +155,7 @@ public class PlayingInfoHolder {
             mCurrentlistInfo = currentlistInfo;
         } else {
             List<SongInfo> recentsList = RecentsDBHelper.getRecentTracks(context);
-            mCurrentlistInfo = new CurrentlistInfo(0, CurrentlistInfo.TYPE_RECENT, recentsList);
+            mCurrentlistInfo = new CurrentlistInfo(CurrentlistInfo.ID_RECENT, CurrentlistInfo.TYPE_RECENT, recentsList);
         }
 
         PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG_LIST_ID,

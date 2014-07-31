@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 public class CurrentlistInfo {
+    public static final int ID_ALL = -100;
+    public static final int ID_RECENT = -101;
 
     public static final int TYPE_ALL = 0;
     public static final int TYPE_ARTIST = 1;
