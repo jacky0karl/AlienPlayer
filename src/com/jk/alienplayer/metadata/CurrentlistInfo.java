@@ -3,6 +3,7 @@ package com.jk.alienplayer.metadata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 public class CurrentlistInfo {
     public static final int ID_ALL = -100;
@@ -18,6 +19,7 @@ public class CurrentlistInfo {
     private int type;
     private int currentIndex = 0;
     private List<SongInfo> songList = null;
+    private Stack<Integer> playedStack = null; // for shuffle
 
     public CurrentlistInfo(long id, int type, List<SongInfo> songList) {
         this.id = id;
@@ -28,6 +30,7 @@ public class CurrentlistInfo {
         } else {
             this.songList = songList;
         }
+        playedStack = new Stack<Integer>();
     }
 
     public boolean equals(long id, int type) {
@@ -84,7 +87,32 @@ public class CurrentlistInfo {
         }
     }
 
-    public void shuffle() {
-        currentIndex = new Random().nextInt(songList.size());
+    public void shuffleNext() {
+        int size = songList.size();
+        if (playedStack.size() >= size) {
+            playedStack.clear();
+        }
+
+        Random random = new Random();
+        int index = 0;
+        while (true) {
+            index = random.nextInt(songList.size());
+            if (!playedStack.contains(index)) {
+                playedStack.push(index);
+                currentIndex = index;
+                return;
+            }
+        }
+    }
+
+    public void shufflePrev() {
+        if (!playedStack.empty()) {
+            playedStack.pop();
+            if (!playedStack.empty()) {
+                currentIndex = playedStack.peek();
+                return;
+            }
+        }
+        prev();
     }
 }

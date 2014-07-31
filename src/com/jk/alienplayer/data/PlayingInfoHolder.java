@@ -95,7 +95,7 @@ public class PlayingInfoHolder {
         if (mRepeatMode == PlayingInfoHolder.REPEAT_ALL) {
             mCurrentlistInfo.next();
         } else if (mRepeatMode == PlayingInfoHolder.REPEAT_SHUFFLE) {
-            mCurrentlistInfo.shuffle();
+            mCurrentlistInfo.shuffleNext();
         } else {
             return;
         }
@@ -103,7 +103,13 @@ public class PlayingInfoHolder {
     }
 
     public void prev(Context context) {
-        mCurrentlistInfo.prev();
+        if (mRepeatMode == PlayingInfoHolder.REPEAT_ALL) {
+            mCurrentlistInfo.prev();
+        } else if (mRepeatMode == PlayingInfoHolder.REPEAT_SHUFFLE) {
+            mCurrentlistInfo.shufflePrev();
+        } else {
+            return;
+        }
         updateCurrentSongInfo(context, getCurrentSong());
     }
 
@@ -155,7 +161,8 @@ public class PlayingInfoHolder {
             mCurrentlistInfo = currentlistInfo;
         } else {
             List<SongInfo> recentsList = RecentsDBHelper.getRecentTracks(context);
-            mCurrentlistInfo = new CurrentlistInfo(CurrentlistInfo.ID_RECENT, CurrentlistInfo.TYPE_RECENT, recentsList);
+            mCurrentlistInfo = new CurrentlistInfo(CurrentlistInfo.ID_RECENT,
+                    CurrentlistInfo.TYPE_RECENT, recentsList);
         }
 
         PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG_LIST_ID,
