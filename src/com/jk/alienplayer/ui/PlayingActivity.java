@@ -175,6 +175,12 @@ public class PlayingActivity extends FragmentActivity {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.slide_down);
+    }
+
+    @Override
     protected void onDestroy() {
         mVolumeBar.dismiss();
         unregisterReceiver(mReceiver);

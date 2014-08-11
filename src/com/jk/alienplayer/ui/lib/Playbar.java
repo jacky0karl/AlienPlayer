@@ -9,6 +9,7 @@ import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.PlayingActivity;
 
+import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -114,8 +115,10 @@ public class Playbar extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (PlayingInfoHolder.getInstance().getCurrentSong() != null) {
+                    ActivityOptions opts = ActivityOptions.makeCustomAnimation(getContext(),
+                            R.anim.slide_up, 0);
                     Intent intent = new Intent(getContext(), PlayingActivity.class);
-                    getContext().startActivity(intent);
+                    getContext().startActivity(intent, opts.toBundle());
                 }
             }
         });
