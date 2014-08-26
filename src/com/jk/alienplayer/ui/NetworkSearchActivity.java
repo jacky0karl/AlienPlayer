@@ -189,6 +189,8 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
         if (item.getItemId() == R.id.download_list) {
             Intent intent = new Intent(this, DownloadListActivity.class);
             startActivity(intent);
+        } else if (item.getItemId() == R.id.clear_history) {
+            DiscoverSuggestionsProvider.clearHistory(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -198,6 +200,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(mQueryTextListener);
+        searchView.setIconified(false);
     }
 
     @Override

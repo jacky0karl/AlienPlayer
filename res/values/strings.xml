@@ -30,6 +30,7 @@
     <string name="no_result">No Result</string>
     <string name="no_item">No Item</string>
     <string name="download_list">Download List</string>
+    <string name="clear_history">Clear History</string>
     <string name="done">Done</string>
     <string name="failed">Failed</string>
     <string name="aborted">Aborted</string>

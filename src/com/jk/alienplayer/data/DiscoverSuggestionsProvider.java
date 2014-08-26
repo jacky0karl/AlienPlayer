@@ -11,9 +11,15 @@ public class DiscoverSuggestionsProvider extends SearchRecentSuggestionsProvider
         setupSuggestions(AUTHORITY, DATABASE_MODE_QUERIES);
     }
 
-    static public void saveRecentQuery(Context context, String query) {
+    public static void saveRecentQuery(Context context, String query) {
         SearchRecentSuggestions suggestions = new SearchRecentSuggestions(context, AUTHORITY,
                 DATABASE_MODE_QUERIES);
         suggestions.saveRecentQuery(query, null);
+    }
+    
+    public static void clearHistory(Context context) {
+        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(context,
+                AUTHORITY, DATABASE_MODE_QUERIES);
+        suggestions.clearHistory();
     }
 }
