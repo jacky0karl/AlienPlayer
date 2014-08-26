@@ -3,6 +3,7 @@ package com.jk.alienplayer.ui;
 import java.util.List;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DiscoverSuggestionsProvider;
 import com.jk.alienplayer.data.JsonHelper;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
@@ -14,6 +15,7 @@ import com.jk.alienplayer.ui.lib.DialogBuilder;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,11 +51,7 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
                 return true;
             }
 
-            mQueryKey = query;
-            mNoResult.setVisibility(View.GONE);
-            mLoading.setVisibility(View.VISIBLE);
-            HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
-            mIMManager.hideSoftInputFromWindow(mListView.getWindowToken(), 0);
+            doQuery(query);
             return true;
         }
 
@@ -153,6 +151,13 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
         init();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            doQuery(intent.getStringExtra(SearchManager.QUERY));
+        }
+    }
+
     private void init() {
         mIMManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mNoResult = (TextView) findViewById(R.id.no_result);
@@ -161,6 +166,15 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
         mAdapter = new NetworkSearchResultsAdapter(this);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+    }
+
+    private void doQuery(String query) {
+        mQueryKey = query;
+        mNoResult.setVisibility(View.GONE);
+        mLoading.setVisibility(View.VISIBLE);
+        DiscoverSuggestionsProvider.saveRecentQuery(NetworkSearchActivity.this, mQueryKey);
+        HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
+        mIMManager.hideSoftInputFromWindow(mListView.getWindowToken(), 0);
     }
 
     @Override
@@ -180,7 +194,9 @@ public class NetworkSearchActivity extends Activity implements OnItemClickListen
     }
 
     private void initSearchBar(MenuItem item) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) item.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(mQueryTextListener);
     }
 
