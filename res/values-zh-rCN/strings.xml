@@ -3,7 +3,10 @@
 
     <string name="app_name">外星播放器</string>
     <string name="settings">设置</string>
-    <string name="about">关于</string>    
+    <string name="about">关于</string>
+    <string name="copyright1">外星工作室 版权所有</string>
+    <string name="copyright2">Copyright © 2014 Alien Studio</string>
+    <string name="copyright3">All Rights Reserved.</string>
     <string name="exit">退出</string>
     <string name="volume">音量</string>
     <string name="media_scan">扫描音乐</string>
