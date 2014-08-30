@@ -73,6 +73,9 @@ public class MainActivity extends FragmentActivity {
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mIndicator, Gravity.CENTER);
+        } else if (item.getItemId() == R.id.action_about) {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
         } else if (item.getItemId() == R.id.action_exit) {
             exit();
         }

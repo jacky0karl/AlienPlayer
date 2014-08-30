@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">外星播放器</string>
+    <string name="settings">设置</string>
+    <string name="about">关于</string>    
+    <string name="exit">退出</string>
+    <string name="volume">音量</string>
+    <string name="media_scan">扫描音乐</string>
+    <string name="audioEffect">音效</string>
+    <string name="search">搜索</string>
+    <string name="discover">发现</string>
+    <string name="track_details">歌曲详情</string>
+    <string name="search_hint">歌手, 专辑或歌曲</string>
+    <string name="recents">最近</string>
+    <string name="playlists">播放列表</string>
+    <string name="artists">歌手</string>
+    <string name="album_artists">专辑歌手</string>
+    <string name="albums">专辑</string>
+    <string name="tracks">歌曲</string>
+    <string name="title">歌曲名</string>
+    <string name="artist">歌手</string>
+    <string name="album">专辑</string>
+    <string name="album_artist">专辑歌手</string>
+    <string name="track">歌曲</string>
+    <string name="year">发行时间</string>
+    <string name="artwork">封面</string>
+    <string name="lyric">歌词</string>
+    <string name="info">信息</string>
+    <string name="no_lyric">暂无歌词</string>
+    <string name="no_result">暂无结果</string>
+    <string name="no_item">暂无下载项</string>
+    <string name="download_list">下载列表</string>
+    <string name="clear_history">请客记录</string>
+    <string name="done">完成</string>
+    <string name="failed">失败</string>
+    <string name="aborted">已中止</string>
+    <string name="network_error">网络出错</string>
+
+    <!-- menu title -->
+    <string name="delete">删除</string>
+    <string name="remove">移除</string>
+    <string name="ok">确定</string>
+    <string name="view">查看</string>
+    <string name="retry">重试</string>
+    <string name="add">新建</string>
+    <string name="abort">中止</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="start_rolling">开始滚屏</string>
+    <string name="stop_rolling">停止滚屏</string>
+    <string name="name_hint">输入名字</string>
+    <string name="add_to_playlist">添加到播放列表</string>
+    <string name="download_all">下载全部</string>
+    <string name="clear">清除已完成</string>
+
+    <!-- dialog -->
+    <string name="download_track_confirm">你确定要下载该歌曲吗?</string>
+    <string name="delete_track_confirm">你确定要删除该歌曲吗?</string>
+    <string name="delete_file_aswell">同时删除文件</string>
+    <string name="download_fail">下载失败</string>
+    <string name="download_task_added">已加入下载列表</string>
+
+</resources>

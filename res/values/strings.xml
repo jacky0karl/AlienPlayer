@@ -3,6 +3,10 @@
 
     <string name="app_name">AlienPlayer</string>
     <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="copyright1">外星工作室 版权所有</string>
+    <string name="copyright2">Copyright © 2014 Alien Studio</string>
+    <string name="copyright3">All Rights Reserved.</string>
     <string name="exit">Exit</string>
     <string name="volume">Volume</string>
     <string name="media_scan">Media Scan</string>

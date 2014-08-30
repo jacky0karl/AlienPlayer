@@ -37,6 +37,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".ui.AboutActivity"
+            android:parentActivityName=".ui.AboutActivity" >
+        </activity>
+        <activity
             android:name=".ui.SongsActivity"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait" >

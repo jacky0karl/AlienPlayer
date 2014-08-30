@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.StrictMode;
 
 public class MainApplication extends Application {
+    private static final boolean DEBUG = false;
 
     @Override
     public void onCreate() {
@@ -25,7 +26,7 @@ public class MainApplication extends Application {
     }
 
     private void setDetection() {
-        if (true) {
+        if (DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll()
                     .penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
