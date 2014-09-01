@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">外星播放器</string>
+    <string name="app_name">外星音乐</string>
     <string name="settings">设置</string>
     <string name="about">关于</string>
     <string name="copyright1">外星工作室 版权所有</string>
@@ -34,7 +34,7 @@
     <string name="no_result">暂无结果</string>
     <string name="no_item">暂无下载项</string>
     <string name="download_list">下载列表</string>
-    <string name="clear_history">请客记录</string>
+    <string name="clear_history">清除记录</string>
     <string name="done">完成</string>
     <string name="failed">失败</string>
     <string name="aborted">已中止</string>
