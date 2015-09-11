@@ -43,7 +43,7 @@ public class ListMenu extends LinearLayout {
     private void init(Context context) {
         mInflater = LayoutInflater.from(context);
         setOrientation(VERTICAL);
-        setBackgroundColor(getResources().getColor(R.color.grey));
+        //setBackgroundColor(getResources().getColor(R.color.grey));
 
         int w = getResources().getDimensionPixelOffset(R.dimen.menu_width);
         int h = getResources().getDimensionPixelOffset(R.dimen.menu_height);

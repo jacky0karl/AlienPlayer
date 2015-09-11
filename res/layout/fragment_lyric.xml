@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_bg"
     android:orientation="vertical" >
 
     <TextView
@@ -16,8 +15,8 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:divider="@null"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:divider="@null" >
     </ListView>
 
 </FrameLayout>

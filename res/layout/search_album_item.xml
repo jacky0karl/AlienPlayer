@@ -8,10 +8,8 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:background="@color/dark_bg"
         android:gravity="center_vertical|left"
-        android:paddingLeft="30dp"
-        android:textColor="@android:color/white" >
+        android:paddingLeft="30dp" >
     </TextView>
 
     <RelativeLayout
@@ -41,7 +39,7 @@
             android:gravity="center_vertical|left"
             android:maxWidth="@dimen/max_text_width"
             android:singleLine="true"
-            android:textColor="#999"
+            android:textColor="@color/secondary_text"
             android:textSize="14sp" />
     </RelativeLayout>
 
