@@ -9,7 +9,6 @@ import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.adapter.NetworkAlbumsAdapter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class NetworkAlbumsActivity extends Activity {
+public class NetworkAlbumsActivity extends BaseActivity {
     public static final String LABEL = "label";
     public static final String ARTIST_ID = "artist_id";
 

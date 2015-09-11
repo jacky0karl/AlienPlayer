@@ -11,7 +11,6 @@ import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.adapter.NetworkTracksAdapter;
 import com.jk.alienplayer.ui.lib.DialogBuilder;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -26,7 +25,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
-public class NetworkTracksActivity extends Activity {
+public class NetworkTracksActivity extends BaseActivity {
     public static final String LABEL = "label";
     public static final String ALBUM_ID = "album_id";
 

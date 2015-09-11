@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -34,7 +33,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class PlayingActivity extends FragmentActivity {
+public class PlayingActivity extends BaseActivity {
     private static final int FRAGMENT_ARTWORK = 0;
     private static final int FRAGMENT_LYRIC = 1;
     private static final int FRAGMENT_CURR_LIST = 2;
@@ -67,7 +66,7 @@ public class PlayingActivity extends FragmentActivity {
                 String song = intent.getStringExtra(PlayService.SONG_NAME);
                 String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
                 setTitle(song);
-                getActionBar().setSubtitle(artist);
+                getSupportActionBar().setSubtitle(artist);
             } else if (action.equals(PlayService.ACTION_PAUSE)) {
                 mPlayBtn.setImageResource(R.drawable.play);
             } else if (action.equals(PlayService.ACTION_STOP)) {
@@ -116,7 +115,7 @@ public class PlayingActivity extends FragmentActivity {
     private void init() {
         SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
         setTitle(song.title);
-        getActionBar().setSubtitle(song.artist);
+        getSupportActionBar().setSubtitle(song.artist);
         mProgress = (TextView) findViewById(R.id.progress);
         mDuration = (TextView) findViewById(R.id.duration);
         mProgress.setText(PlayingTimeUtils.toDisplayTime(0));

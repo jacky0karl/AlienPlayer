@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,6 +168,9 @@ public class ArtistsFragment extends Fragment {
     private void sortList() {
         for (ArtistInfo info : mArtists) {
             info.sortKey = PinyinUtils.getPinyinString(info.name);
+            if (TextUtils.isEmpty(info.sortKey)) {
+                info.sortKey = "#";
+            }
         }
         Collections.sort(mArtists, new ArtistInfo.ArtistComparator());
     }

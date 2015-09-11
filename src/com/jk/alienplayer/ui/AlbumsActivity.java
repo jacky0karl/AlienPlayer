@@ -9,7 +9,6 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
 import com.jk.alienplayer.ui.lib.Playbar;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class AlbumsActivity extends Activity {
+public class AlbumsActivity extends BaseActivity {
     public static final String ALBUM_ARTIST = "album_artist";
 
     private ListView mListView;

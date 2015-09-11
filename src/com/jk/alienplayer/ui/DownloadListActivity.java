@@ -9,7 +9,6 @@ import com.jk.alienplayer.ui.adapter.FileDownloadListAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +22,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
 
-public class DownloadListActivity extends Activity {
+public class DownloadListActivity extends BaseActivity {
     private static final int UPDATE_INTERVAL = 500;
 
     private TextView mNoItem;

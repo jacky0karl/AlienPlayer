@@ -1,8 +1,12 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="actionBarStyle">@style/Theme.MyApp.ActionBar</item>
+    </style>
+
+    <style name="Theme.MyApp.ActionBar" parent="style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="elevation">0dp</item>
     </style>
 
     <style name="Theme.PageIndicatorDefaults" parent="AppTheme">

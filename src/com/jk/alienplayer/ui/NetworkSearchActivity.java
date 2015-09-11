@@ -13,7 +13,6 @@ import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.adapter.NetworkSearchResultsAdapter;
 import com.jk.alienplayer.ui.lib.DialogBuilder;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -35,7 +34,7 @@ import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NetworkSearchActivity extends Activity implements OnItemClickListener {
+public class NetworkSearchActivity extends BaseActivity implements OnItemClickListener {
 
     private InputMethodManager mIMManager;
     private TextView mNoResult;

@@ -7,14 +7,13 @@ import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class TrackInfoActivity extends Activity {
+public class TrackInfoActivity extends BaseActivity {
     private TrackTagInfo mTrackTagInfo;
     private String mTrackPath;
     private EditText mTitle;

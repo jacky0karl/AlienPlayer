@@ -1,28 +1,30 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="always"/>
+        android:title="@string/search"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/discover"
         android:orderInCategory="98"
-        android:showAsAction="never"
-        android:title="@string/discover"/>
+        android:title="@string/discover"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/action_volume"
         android:orderInCategory="99"
-        android:showAsAction="never"
-        android:title="@string/volume"/>
+        android:title="@string/volume"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/action_about"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/about"/>
+        android:title="@string/about"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/action_exit"
         android:orderInCategory="101"
-        android:showAsAction="never"
-        android:title="@string/exit"/>
+        android:title="@string/exit"
+        app:showAsAction="never"/>
 
 </menu>

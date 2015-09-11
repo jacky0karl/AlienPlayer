@@ -14,7 +14,6 @@ import com.viewpagerindicator.TabPageIndicator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -22,7 +21,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends BaseActivity {
     private static final int FRAGMENT_RECENTS = 0;
     private static final int FRAGMENT_PLAYLIST = 1;
     private static final int FRAGMENT_ALBUM_ARTISTS = 2;
