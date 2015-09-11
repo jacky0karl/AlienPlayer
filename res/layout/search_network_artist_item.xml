@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:gravity="center_vertical|left"
-        android:paddingLeft="10dp" >
+        android:paddingLeft="10dp"
+        android:textColor="@color/primary_text" >
     </TextView>
 
     <LinearLayout
@@ -32,6 +33,7 @@
             android:gravity="center_vertical|left"
             android:maxWidth="@dimen/max_text_width"
             android:singleLine="true"
+            android:textColor="@color/primary_text"
             android:textSize="18sp" >
         </TextView>
     </LinearLayout>
