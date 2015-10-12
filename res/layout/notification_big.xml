@@ -3,6 +3,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary"
     android:minHeight="110dp" >
 
     <ImageView
@@ -26,7 +27,7 @@
         android:ellipsize="end"
         android:maxWidth="160dp"
         android:singleLine="true"
-        android:textColor="@android:color/white"
+        android:textColor="@color/light_text"
         android:textSize="18sp" />
 
     <TextView
@@ -38,7 +39,7 @@
         android:ellipsize="end"
         android:maxWidth="160dp"
         android:singleLine="true"
-        android:textColor="#999"
+        android:textColor="@color/light_text"
         android:textSize="16sp" />
 
     <ImageView
