@@ -8,7 +8,7 @@
     <color name="accent">#448AFF</color>
     
     <!-- text -->
-    <color name="light_text">#000</color>
+    <color name="light_text">#fff</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>

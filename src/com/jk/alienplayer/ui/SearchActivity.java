@@ -17,6 +17,8 @@ import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +26,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.SearchView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.SearchView.OnQueryTextListener;
 
 public class SearchActivity extends BaseActivity implements OnItemClickListener {
     public static final String QUERY = "query";
