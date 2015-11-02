@@ -1,0 +1,48 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowBackground">@color/fc_bg</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="actionBarStyle">@style/Theme.MyApp.ActionBar</item>
+        <item name="searchViewStyle">@style/AppTheme.SearchView</item>
+    </style>
+
+    <style name="Theme.MyApp.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="AppTheme.SearchView" parent="@style/Widget.AppCompat.SearchView">
+        <item name="suggestionRowLayout">@layout/search_suggestions</item>
+    </style>
+
+    <style name="Theme.PageIndicatorDefaults" parent="AppTheme">
+        <item name="vpiIconPageIndicatorStyle">@style/Widget.IconPageIndicator</item>
+        <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
+    </style>
+
+    <style name="Theme.Search" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
+    </style>
+
+    <style name="Theme.NetworkSearch" parent="AppTheme">
+       
+    </style>
+
+    <style name="TextAppearance.TabPageIndicator" parent="Widget">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/vpi__light_theme</item>
+    </style>
+
+    <style name="NoAnimation">
+        <item name="@android:activityOpenEnterAnimation">@null</item>
+        <item name="@android:activityOpenExitAnimation">@null</item>
+        <item name="@android:activityCloseEnterAnimation">@null</item>
+        <item name="@android:activityCloseExitAnimation">@null</item>
+    </style>
+
+</resources>

@@ -1,4 +1,4 @@
-bin
-gen
-assets
-proguard
+.gradle
+/local.properties
+/.idea
+/build
