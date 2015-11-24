@@ -37,7 +37,7 @@ public class APWidgetProvider extends AppWidgetProvider {
     }
 
     private RemoteViews syncView(Context context, Intent intent) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.playbar);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.remote_playbar);
         String action = intent.getAction();
         if (action.equals(PlayService.ACTION_START)) {
             int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);

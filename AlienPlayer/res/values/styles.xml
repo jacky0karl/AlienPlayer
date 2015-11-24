@@ -8,11 +8,24 @@
         <item name="colorAccent">@color/accent</item>
         <item name="android:textColor">@color/primary_text</item>
         <item name="actionBarStyle">@style/Theme.MyApp.ActionBar</item>
-        <item name="searchViewStyle">@style/Theme.MyApp.SearchView</item>
+    </style>
+
+    <style name="Theme.Search" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
+    </style>
+
+    <style name="Theme.NetworkSearch" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="Theme.MyApp.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="elevation">0dp</item>
+    </style>
+
+    <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="searchViewStyle">@style/Theme.MyApp.SearchView</item>
     </style>
 
     <style name="Theme.MyApp.SearchView" parent="@style/Widget.AppCompat.SearchView">
@@ -22,15 +35,6 @@
     <style name="Theme.PageIndicatorDefaults" parent="AppTheme">
         <item name="vpiIconPageIndicatorStyle">@style/Widget.IconPageIndicator</item>
         <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
-    </style>
-
-    <style name="Theme.Search" parent="AppTheme">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
-    </style>
-
-    <style name="Theme.NetworkSearch" parent="AppTheme">
-       
     </style>
 
     <style name="TextAppearance.TabPageIndicator" parent="Widget">
