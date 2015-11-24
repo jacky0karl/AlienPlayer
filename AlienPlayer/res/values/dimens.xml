@@ -11,7 +11,7 @@
     <dimen name="detail_artwork_size">240dp</dimen>
     <dimen name="max_text_width">240dp</dimen>
     <dimen name="button_size">48dp</dimen>
-    <dimen name="timetag_offset">90dp</dimen>
+    <dimen name="timetag_offset">75dp</dimen>
     <dimen name="lyric_offset">120dp</dimen>
     <dimen name="list_avatar_size">50dp</dimen>
 

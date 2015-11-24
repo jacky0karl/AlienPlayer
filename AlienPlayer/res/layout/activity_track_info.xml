@@ -18,7 +18,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:text="@string/title"
                 android:textColor="#999"
                 android:textSize="18sp" />
@@ -34,7 +33,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:text="@string/artist"
                 android:textColor="#999"
                 android:textSize="18sp" />
@@ -50,7 +48,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:text="@string/album"
                 android:textColor="#999"
                 android:textSize="18sp" />
@@ -66,7 +63,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:text="@string/album_artist"
                 android:textColor="#999"
                 android:textSize="18sp" />
@@ -82,7 +78,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:text="@string/track"
                 android:textColor="#999"
                 android:textSize="18sp" />
@@ -99,7 +94,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:text="@string/year"
                 android:textColor="#999"
                 android:textSize="18sp" />

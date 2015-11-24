@@ -1,9 +1,5 @@
 package com.jk.alienplayer.impl;
 
-import com.jk.alienplayer.MediaButtonReceiver;
-import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.data.VolumeKeyHelper;
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -13,6 +9,10 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
+
+import com.jk.alienplayer.MediaButtonReceiver;
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.data.VolumeKeyHelper;
 
 public class PlayService extends Service {
     public static final String BROADCAST_ACTION = "broadCast_action";
@@ -62,7 +62,7 @@ public class PlayService extends Service {
                 mAudioManager.requestAudioFocus(mAudioFocusChangeListener,
                         AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             } else if (intent.getAction().equals(VOLUME_CHANGED_ACTION)) {
-                handleVolumeKey(intent);
+                // handleVolumeKey(intent);
             }
         }
     };
