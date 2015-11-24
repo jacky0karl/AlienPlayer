@@ -1,14 +1,5 @@
 package com.jk.alienplayer.ui.lib;
 
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.impl.PlayService;
-import com.jk.alienplayer.impl.PlayingHelper;
-import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
-import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
-import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.PlayingActivity;
-
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,10 +15,20 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
+import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
+import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.ui.PlayingActivity;
+import com.jk.lib.widget.PlayPauseButton;
+
 public class Playbar extends FrameLayout {
 
     private RelativeLayout mContentView;
-    private ImageButton mPlayBtn;
+    private PlayPauseButton mPlayBtn;
     private ImageButton mNextBtn;
     private ImageButton mPrevBtn;
     private ImageView mArtwork;
@@ -41,14 +42,14 @@ public class Playbar extends FrameLayout {
             String action = intent.getAction();
             if (action.equals(PlayService.ACTION_START)) {
                 int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
-                mPlayBtn.setImageResource(R.drawable.pause);
+                mPlayBtn.transformToPause(true);
                 mProgressBar.setMax(duration);
             } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
                 syncTrackInfo();
             } else if (action.equals(PlayService.ACTION_PAUSE)) {
-                mPlayBtn.setImageResource(R.drawable.play);
+                mPlayBtn.transformToPlay(true);
             } else if (action.equals(PlayService.ACTION_STOP)) {
-                mPlayBtn.setImageResource(R.drawable.play);
+                mPlayBtn.transformToPlay(true);
                 mProgressBar.setProgress(0);
             } else if (action.equals(PlayService.ACTION_PROGRESS_UPDATE)) {
                 int progress = intent.getIntExtra(PlayService.CURRENT_DURATION, 0);
@@ -80,7 +81,7 @@ public class Playbar extends FrameLayout {
         mSongLabel = (TextView) mContentView.findViewById(R.id.song);
         mArtistLabel = (TextView) mContentView.findViewById(R.id.artist);
         mProgressBar = (ProgressBar) mContentView.findViewById(R.id.progressBar);
-        mPlayBtn = (ImageButton) mContentView.findViewById(R.id.play);
+        mPlayBtn = (PlayPauseButton) mContentView.findViewById(R.id.playBtn);
         mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,15 +131,15 @@ public class Playbar extends FrameLayout {
         getContext().unregisterReceiver(mReceiver);
     }
 
-    public void syncView() {
+    private void syncView() {
         syncTrackInfo();
         PlayingInfo info = PlayingHelper.getPlayingInfo();
         if (info.status == PlayStatus.Playing) {
-            mPlayBtn.setImageResource(R.drawable.pause);
+            mPlayBtn.transformToPause(false);
             mProgressBar.setMax(info.duration);
             mProgressBar.setProgress(info.progress);
         } else if (info.status == PlayStatus.Paused) {
-            mPlayBtn.setImageResource(R.drawable.play);
+            mPlayBtn.transformToPlay(false);
             mProgressBar.setMax(info.duration);
             mProgressBar.setProgress(info.progress);
         }

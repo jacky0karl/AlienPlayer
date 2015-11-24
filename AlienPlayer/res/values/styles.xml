@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -8,14 +8,14 @@
         <item name="colorAccent">@color/accent</item>
         <item name="android:textColor">@color/primary_text</item>
         <item name="actionBarStyle">@style/Theme.MyApp.ActionBar</item>
-        <item name="searchViewStyle">@style/AppTheme.SearchView</item>
+        <item name="searchViewStyle">@style/Theme.MyApp.SearchView</item>
     </style>
 
     <style name="Theme.MyApp.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="elevation">0dp</item>
     </style>
 
-    <style name="AppTheme.SearchView" parent="@style/Widget.AppCompat.SearchView">
+    <style name="Theme.MyApp.SearchView" parent="@style/Widget.AppCompat.SearchView">
         <item name="suggestionRowLayout">@layout/search_suggestions</item>
     </style>
 

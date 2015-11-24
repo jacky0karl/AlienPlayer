@@ -1,15 +1,15 @@
 package com.jk.alienplayer.utils;
 
+import android.content.Context;
+import android.os.Environment;
+import android.os.storage.StorageManager;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import android.content.Context;
-import android.os.Environment;
-import android.os.storage.StorageManager;
 
 public class FileSavingUtils {
     private static final int LOG_SIZE = 1024 * 512;
@@ -24,7 +24,7 @@ public class FileSavingUtils {
         String systemPath = null;
         try {
             String[] paths = (String[]) sm.getClass().getMethod("getVolumePaths", null)
-                    .invoke(sm, null);
+                    .invoke(sm);
             for (int i = 0; i < paths.length; i++) {
                 String status = (String) sm.getClass().getMethod("getVolumeState", String.class)
                         .invoke(sm, paths[i]);

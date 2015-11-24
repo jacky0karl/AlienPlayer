@@ -1,13 +1,5 @@
 package com.jk.alienplayer;
 
-import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.impl.PlayService;
-import com.jk.alienplayer.impl.PlayingHelper;
-import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
-import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
-import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.utils.PendingIntentUtils;
-
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -15,6 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.RemoteViews;
+
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.impl.PlayingHelper;
+import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
+import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
+import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.utils.PendingIntentUtils;
 
 public class APWidgetProvider extends AppWidgetProvider {
 
@@ -72,7 +72,7 @@ public class APWidgetProvider extends AppWidgetProvider {
     }
 
     private RemoteViews initView(Context context) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.playbar);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.remote_playbar);
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         if (songInfo != null) {
             syncSongInfo(views, songInfo.title, songInfo.artist);

@@ -1,10 +1,5 @@
 package com.jk.alienplayer;
 
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.impl.PlayService;
-import com.jk.alienplayer.utils.PendingIntentUtils;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -12,6 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.RemoteViews;
+
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.utils.PendingIntentUtils;
 
 public class NotificationHelper extends BroadcastReceiver {
     private static final int NOTIFICATION_ID = 1;
@@ -27,7 +26,7 @@ public class NotificationHelper extends BroadcastReceiver {
 
     public void sendNotification(Context context, Intent intent) {
         Notification n = new Notification.Builder(context).setSmallIcon(R.drawable.app_icon)
-                .setPriority(Notification.PRIORITY_MAX)//
+                .setPriority(Notification.PRIORITY_MAX)
                 .setContent(mViews).setOngoing(true).build();
         n.bigContentView = updateBigView(context, intent);
 

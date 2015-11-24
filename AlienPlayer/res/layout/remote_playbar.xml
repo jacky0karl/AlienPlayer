@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/playbar_height"
+    android:layout_height="100dp"
     android:background="@color/primary"
-    android:padding="@dimen/normal_padding" >
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/artwork"
@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
         android:layout_toRightOf="@id/artwork"
         android:ellipsize="end"
         android:maxWidth="150dp"
@@ -48,13 +49,13 @@
         android:secondaryProgress="0" />
 
     <include
+        layout="@layout/remote_playbtnbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/progressBar"
         android:layout_below="@id/progressBar"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="8dp"
-        layout="@layout/playbtnbar" />
+        android:layout_marginTop="4dp" />
 
 </RelativeLayout>
