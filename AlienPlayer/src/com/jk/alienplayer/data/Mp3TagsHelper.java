@@ -1,18 +1,18 @@
 package com.jk.alienplayer.data;
 
-import java.io.File;
+import android.text.TextUtils;
+
+import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.metadata.TrackTagInfo;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-import org.jaudiotagger.tag.id3.ID3v23Tag;
+import org.jaudiotagger.tag.id3.ID3v24Tag;
 
-import android.text.TextUtils;
-
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
-import com.jk.alienplayer.metadata.TrackTagInfo;
+import java.io.File;
 
 public class Mp3TagsHelper {
 
@@ -28,7 +28,8 @@ public class Mp3TagsHelper {
             MP3File mp3 = (MP3File) AudioFileIO.read(file);
             TagField cover = mp3.getID3v2Tag().getFirstField(FieldKey.COVER_ART);
 
-            ID3v23Tag tag = new ID3v23Tag();
+            //ID3v23Tag tag = new ID3v23Tag();
+            ID3v24Tag tag = new ID3v24Tag();
             if (cover != null) {
                 tag.setField(cover);
             }

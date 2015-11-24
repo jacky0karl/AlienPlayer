@@ -392,7 +392,7 @@ public class HanziToPinyin {
             // Check if zh_CN collation data is available
             final Locale locale[] = Collator.getAvailableLocales();
             for (int i = 0; i < locale.length; i++) {
-                if (locale[i].equals(Locale.CHINA)) {
+                if (locale[i].equals(Locale.CHINA) || locale[i].equals(Locale.CHINESE)) {
                     // Do self validation just once.
                     if (DEBUG) {
                         Log.d(TAG, "Self validation. Result: " + doSelfValidation());
