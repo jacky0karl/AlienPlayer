@@ -1,29 +1,29 @@
 package com.jk.alienplayer.ui;
 
-import java.util.List;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
+import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.ui.lib.Playbar;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper;
-import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
+import java.util.List;
 
 public class SongsActivity extends BaseActivity implements OnMenuItemClickListener {
     public static final String KEY_TYPE = "key_type";
@@ -32,6 +32,7 @@ public class SongsActivity extends BaseActivity implements OnMenuItemClickListen
 
     private int mKeyType;
     private long mKey;
+    private String mLabel;
     private ListView mListView;
     private TracksAdapter mAdapter;
     private Playbar mPlaybar;
@@ -70,7 +71,8 @@ public class SongsActivity extends BaseActivity implements OnMenuItemClickListen
         mPlaybar = (Playbar) findViewById(R.id.playbar);
         mKeyType = getIntent().getIntExtra(KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
         mKey = getIntent().getLongExtra(KEY, -1);
-        setTitle(getIntent().getStringExtra(LABEL));
+        mLabel = getIntent().getStringExtra(LABEL);
+        setTitle(mLabel);
 
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new TracksAdapter(this, mOnItemClickListener);
@@ -135,6 +137,8 @@ public class SongsActivity extends BaseActivity implements OnMenuItemClickListen
     private void updateList() {
         if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
             mSongList = PlaylistHelper.getPlaylistMembers(this, mKey);
+        } else if (mKeyType == CurrentlistInfo.TYPE_ARTIST) {
+            mSongList = DatabaseHelper.getTracks(this, mLabel);
         } else {
             mSongList = DatabaseHelper.getTracks(this, mKeyType, mKey);
         }

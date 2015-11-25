@@ -1,20 +1,5 @@
 package com.jk.alienplayer.ui.fragment;
 
-import java.util.Collections;
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.impl.MediaScanService;
-import com.jk.alienplayer.metadata.ArtistInfo;
-import com.jk.alienplayer.metadata.CurrentlistInfo;
-import com.jk.alienplayer.ui.AlbumsActivity;
-import com.jk.alienplayer.ui.SongsActivity;
-import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
-import com.jk.alienplayer.ui.lib.ListSeekBar;
-import com.jk.alienplayer.ui.lib.ListSeekBar.OnIndicatorChangedListener;
-import com.jk.alienplayer.utils.PinyinUtils;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +16,21 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.impl.MediaScanService;
+import com.jk.alienplayer.metadata.ArtistInfo;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.ui.AlbumsActivity;
+import com.jk.alienplayer.ui.SongsActivity;
+import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
+import com.jk.alienplayer.ui.lib.ListSeekBar;
+import com.jk.alienplayer.ui.lib.ListSeekBar.OnIndicatorChangedListener;
+import com.jk.alienplayer.utils.PinyinUtils;
+
+import java.util.Collections;
+import java.util.List;
+
 public class ArtistsFragment extends Fragment {
     public static final String TYPE = "type";
     public static final int TYPE_ARTISTS = 0;
@@ -43,15 +43,6 @@ public class ArtistsFragment extends Fragment {
     private TextView mIndicator;
     private ProgressBar mLoading;
     private List<ArtistInfo> mArtists;
-
-    public static ArtistsFragment newInstance(int type) {
-        ArtistsFragment fragment = new ArtistsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(TYPE, type);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -61,35 +52,6 @@ public class ArtistsFragment extends Fragment {
             }
         }
     };
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mType = getArguments().getInt(TYPE, TYPE_ARTISTS);
-        View root = inflater.inflate(R.layout.fragment_list_seekbar, container, false);
-        init(root);
-        MediaScanService.registerScanReceiver(getActivity(), mReceiver);
-        return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
-        super.onDestroyView();
-    }
-
-    private void init(View root) {
-        mListSeekBar = (ListSeekBar) root.findViewById(R.id.listSeekBar);
-        mIndicator = (TextView) root.findViewById(R.id.indicator);
-        mListSeekBar.setOnIndicatorChangedListener(mIndicatorChangedListener);
-
-        mLoading = (ProgressBar) root.findViewById(R.id.loading);
-        mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new ArtistsAdapter(getActivity());
-        mListView.setAdapter(mAdapter);
-        updateArtists();
-        mListView.setOnItemClickListener(mOnItemClickListener);
-    }
-
     private OnIndicatorChangedListener mIndicatorChangedListener = new OnIndicatorChangedListener() {
         @Override
         public void onIndicatorShow() {
@@ -123,28 +85,67 @@ public class ArtistsFragment extends Fragment {
             }
         }
     };
-
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ArtistInfo info = mAdapter.getItem(position);
             if (info != null) {
-                startSubPage(info.id, info.name);
+                if (mType == TYPE_ARTISTS) {
+                    startSongsActivity(info.id, info.name);
+                } else {
+                    startAlbumsActivity(info.name);
+                }
             }
         }
     };
 
-    private void startSubPage(long key, String label) {
-        Intent intent = null;
-        if (mType == TYPE_ARTISTS) {
-            intent = new Intent(getActivity(), SongsActivity.class);
-            intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
-            intent.putExtra(SongsActivity.KEY, key);
-            intent.putExtra(SongsActivity.LABEL, label);
-        } else {
-            intent = new Intent(getActivity(), AlbumsActivity.class);
-            intent.putExtra(AlbumsActivity.ALBUM_ARTIST, label);
-        }
+    public static ArtistsFragment newInstance(int type) {
+        ArtistsFragment fragment = new ArtistsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TYPE, type);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mType = getArguments().getInt(TYPE, TYPE_ARTISTS);
+        View root = inflater.inflate(R.layout.fragment_list_seekbar, container, false);
+        init(root);
+        MediaScanService.registerScanReceiver(getActivity(), mReceiver);
+        return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
+        super.onDestroyView();
+    }
+
+    private void init(View root) {
+        mListSeekBar = (ListSeekBar) root.findViewById(R.id.listSeekBar);
+        mIndicator = (TextView) root.findViewById(R.id.indicator);
+        mListSeekBar.setOnIndicatorChangedListener(mIndicatorChangedListener);
+
+        mLoading = (ProgressBar) root.findViewById(R.id.loading);
+        mListView = (ListView) root.findViewById(R.id.list);
+        mAdapter = new ArtistsAdapter(getActivity());
+        mListView.setAdapter(mAdapter);
+        updateArtists();
+        mListView.setOnItemClickListener(mOnItemClickListener);
+    }
+
+    private void startSongsActivity(long key, String label) {
+        Intent intent = new Intent(getActivity(), SongsActivity.class);
+        intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
+        intent.putExtra(SongsActivity.KEY, key);
+        intent.putExtra(SongsActivity.LABEL, label);
+        startActivity(intent);
+    }
+
+    private void startAlbumsActivity(String label) {
+        Intent intent = new Intent(getActivity(), AlbumsActivity.class);
+        intent.putExtra(AlbumsActivity.ALBUM_ARTIST, label);
         startActivity(intent);
     }
 

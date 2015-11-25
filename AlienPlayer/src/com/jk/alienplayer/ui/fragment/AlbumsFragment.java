@@ -1,15 +1,5 @@
 package com.jk.alienplayer.ui.fragment;
 
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.impl.MediaScanService;
-import com.jk.alienplayer.metadata.AlbumInfo;
-import com.jk.alienplayer.metadata.CurrentlistInfo;
-import com.jk.alienplayer.ui.SongsActivity;
-import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,9 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.impl.MediaScanService;
+import com.jk.alienplayer.metadata.AlbumInfo;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.ui.SongsActivity;
+import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
+
+import java.util.List;
 
 public class AlbumsFragment extends Fragment {
     private ListView mListView;
@@ -83,6 +83,9 @@ public class AlbumsFragment extends Fragment {
             @Override
             public void run() {
                 mAlbums = DatabaseHelper.getAlbums(getActivity());
+                for (AlbumInfo info : mAlbums) {
+                    info.artwork = DatabaseHelper.getAlbumArtwork(getActivity(), info.id);
+                }
                 updateList();
             }
         });

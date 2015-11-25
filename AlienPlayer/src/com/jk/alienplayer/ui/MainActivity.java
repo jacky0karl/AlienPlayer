@@ -1,5 +1,15 @@
 package com.jk.alienplayer.ui;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.ui.fragment.AlbumsFragment;
@@ -11,23 +21,14 @@ import com.jk.alienplayer.ui.lib.Playbar;
 import com.jk.alienplayer.ui.lib.VolumeBarWindow;
 import com.viewpagerindicator.TabPageIndicator;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-
 public class MainActivity extends BaseActivity {
-    private static final int FRAGMENT_RECENTS = 0;
-    private static final int FRAGMENT_PLAYLIST = 1;
-    private static final int FRAGMENT_ALBUM_ARTISTS = 2;
-    private static final int FRAGMENT_ARTISTS = 3;
-    private static final int FRAGMENT_ALBUMS = 4;
-    private static final int FRAGMENT_TRACKS = 5;
+
+    private static final int FRAGMENT_ALBUM_ARTISTS = 0;
+    private static final int FRAGMENT_ARTISTS = 1;
+    private static final int FRAGMENT_ALBUMS = 2;
+    private static final int FRAGMENT_TRACKS = 3;
+    private static final int FRAGMENT_RECENTS = 4;
+    private static final int FRAGMENT_PLAYLIST = 5;
     private static final int FRAGMENT_COUNT = 6;
 
     private Playbar mPlaybar;
