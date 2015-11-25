@@ -135,10 +135,6 @@ public class JsonHelper {
                     String name = trackObj.getString("name");
                     int position = trackObj.getInt("position");
 
-                    JSONObject hMusicObj = trackObj.getJSONObject("hMusic");
-                    long dfsId = hMusicObj.getLong("dfsId");
-                    String ext = hMusicObj.getString("extension");
-
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
                     long publishTime = albumObj.getLong("publishTime");
@@ -147,11 +143,10 @@ public class JsonHelper {
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
                     info.coverUrl = albumObj.getString("picUrl");
-                    info.dfsId = dfsId;
+                    info.dfsId = getDfsIdOfItem(trackObj);
                     info.artistAlbum = artistAlbum;
                     info.album = albumStr;
                     info.position = position;
-                    info.ext = ext;
                     info.setYear(publishTime);
                     tracks.add(info);
                 }
@@ -174,10 +169,6 @@ public class JsonHelper {
                     String name = trackObj.getString("name");
                     int position = trackObj.getInt("position");
 
-                    JSONObject hMusicObj = trackObj.getJSONObject("hMusic");
-                    long dfsId = hMusicObj.getLong("dfsId");
-                    String ext = hMusicObj.getString("extension");
-
                     JSONObject albumObj = trackObj.getJSONObject("album");
                     String albumStr = albumObj.getString("name");
                     long publishTime = albumObj.getLong("publishTime");
@@ -186,11 +177,10 @@ public class JsonHelper {
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
                     info.coverUrl = albumObj.getString("picUrl");
-                    info.dfsId = dfsId;
+                    info.dfsId = getDfsIdOfItem(trackObj);
                     info.album = albumStr;
                     info.artistAlbum = artistAlbum;
                     info.position = position;
-                    info.ext = ext;
                     info.setYear(publishTime);
                     return info;
                 }
@@ -232,4 +222,30 @@ public class JsonHelper {
         return artists;
     }
 
+    private static long getDfsIdOfItem(JSONObject trackObj) {
+        try {
+            JSONObject hMusicObj = trackObj.getJSONObject("hMusic");
+            if (hMusicObj != null) {
+                return hMusicObj.getLong("dfsId");
+            }
+
+            JSONObject mMusicObj = trackObj.getJSONObject("mMusic");
+            if (mMusicObj != null) {
+                return mMusicObj.getLong("dfsId");
+            }
+
+            JSONObject lMusicObj = trackObj.getJSONObject("lMusic");
+            if (lMusicObj != null) {
+                return lMusicObj.getLong("dfsId");
+            }
+
+            JSONObject bMusicObj = trackObj.getJSONObject("bMusic");
+            if (bMusicObj != null) {
+                return bMusicObj.getLong("dfsId");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

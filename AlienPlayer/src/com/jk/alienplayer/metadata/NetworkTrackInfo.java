@@ -10,7 +10,7 @@ public class NetworkTrackInfo extends NetworkSearchResult {
     public long dfsId = 0;
     public int position = 0;
     public int year = 0;
-    public String ext;
+    public String ext = "mp3";
 
     public NetworkTrackInfo(long id, String name, String artists) {
         super(id, TYPE_TRACKS, name);
