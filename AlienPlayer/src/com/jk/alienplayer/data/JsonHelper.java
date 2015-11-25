@@ -1,16 +1,16 @@
 package com.jk.alienplayer.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.jk.alienplayer.metadata.NetworkAlbumInfo;
+import com.jk.alienplayer.metadata.NetworkArtistInfo;
+import com.jk.alienplayer.metadata.NetworkSearchResult;
+import com.jk.alienplayer.metadata.NetworkTrackInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jk.alienplayer.metadata.NetworkAlbumInfo;
-import com.jk.alienplayer.metadata.NetworkArtistInfo;
-import com.jk.alienplayer.metadata.NetworkSearchResult;
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JsonHelper {
     public static final String RESULT = "result";
@@ -146,6 +146,7 @@ public class JsonHelper {
                     String artists = getArtistsOfItem(trackObj);
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
+                    info.coverUrl = albumObj.getString("picUrl");
                     info.dfsId = dfsId;
                     info.artistAlbum = artistAlbum;
                     info.album = albumStr;
@@ -167,7 +168,7 @@ public class JsonHelper {
             int status = json.getInt(STATUS);
             if (status == STATUS_OK) {
                 JSONArray trackArray = json.getJSONArray("songs");
-                for (int i = 0; i < trackArray.length();) {
+                for (int i = 0; i < trackArray.length(); ) {
                     JSONObject trackObj = trackArray.getJSONObject(i);
                     long id = trackObj.getLong("id");
                     String name = trackObj.getString("name");
@@ -184,6 +185,7 @@ public class JsonHelper {
                     String artists = getArtistsOfItem(trackObj);
 
                     NetworkTrackInfo info = new NetworkTrackInfo(id, name, artists);
+                    info.coverUrl = albumObj.getString("picUrl");
                     info.dfsId = dfsId;
                     info.album = albumStr;
                     info.artistAlbum = artistAlbum;
@@ -223,11 +225,11 @@ public class JsonHelper {
                 String artist = artistObj.getString("name");
                 artists += artist + "&";
             }
+            artists = artists.substring(0, artists.length() - 1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        artists = artists.substring(0, artists.length() - 1);
         return artists;
     }
+
 }

@@ -3,6 +3,7 @@ package com.jk.alienplayer.metadata;
 import java.util.Calendar;
 
 public class NetworkTrackInfo extends NetworkSearchResult {
+    public String coverUrl;
     public String artists;
     public String artistAlbum;
     public String album;

@@ -1,17 +1,17 @@
 package com.jk.alienplayer.ui;
 
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.Mp3TagsHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
-
-import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 
 public class TrackInfoActivity extends BaseActivity {
     private TrackTagInfo mTrackTagInfo;
@@ -75,6 +75,11 @@ public class TrackInfoActivity extends BaseActivity {
         String artistAlbum = mAlbumArtist.getText().toString().trim();
         String track = mTrack.getText().toString().trim();
         String year = mYear.getText().toString().trim();
-        Mp3TagsHelper.writeMp3Tags(title, artists, album, artistAlbum, track, year, mTrackPath);
+
+        Mp3TagsHelper.writeMp3Tags(new Mp3TagsHelper.OnMP3AddListener() {
+            @Override
+            public void onMP3Added() {
+            }
+        }, null, title, artists, album, artistAlbum, track, year, mTrackPath);
     }
 }

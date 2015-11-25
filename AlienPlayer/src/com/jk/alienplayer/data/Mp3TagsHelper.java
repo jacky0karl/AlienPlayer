@@ -1,38 +1,44 @@
 package com.jk.alienplayer.data;
 
+import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
+import com.jk.alienplayer.utils.FileSavingUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-import org.jaudiotagger.tag.id3.ID3v24Tag;
+import org.jaudiotagger.tag.id3.ID3v23Tag;
+import org.jaudiotagger.tag.images.AndroidArtwork;
+import org.jaudiotagger.tag.images.Artwork;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 public class Mp3TagsHelper {
 
-    public static void writeMp3Tags(NetworkTrackInfo info, String filePath) {
-        writeMp3Tags(info.name, info.artists, info.album, info.artistAlbum,
+    public static void writeMp3Tags(OnMP3AddListener l, NetworkTrackInfo info, String filePath) {
+        writeMp3Tags(l, info.coverUrl, info.name, info.artists, info.album, info.artistAlbum,
                 String.valueOf(info.position), String.valueOf(info.year), filePath);
     }
 
-    public static void writeMp3Tags(String title, String artists, String album, String artistAlbum,
-            String track, String year, String filePath) {
-        File file = new File(filePath);
-        try {
-            MP3File mp3 = (MP3File) AudioFileIO.read(file);
-            TagField cover = mp3.getID3v2Tag().getFirstField(FieldKey.COVER_ART);
+    public static void writeMp3Tags(OnMP3AddListener l, String coverUrl, String title, String artists, String album, String artistAlbum,
+                                    String track, String year, String filePath) {
+        if (l == null) {
+            return;
+        }
 
-            //ID3v23Tag tag = new ID3v23Tag();
-            ID3v24Tag tag = new ID3v24Tag();
-            if (cover != null) {
-                tag.setField(cover);
-            }
+        try {
+            File file = new File(filePath);
+            MP3File mp3 = (MP3File) AudioFileIO.read(file);
+            ID3v23Tag tag = new ID3v23Tag();
             tag.setField(FieldKey.ARTIST, artists);
             tag.setField(FieldKey.ALBUM_ARTIST, artistAlbum);
             tag.setField(FieldKey.ALBUM, album);
@@ -46,8 +52,14 @@ public class Mp3TagsHelper {
 
             mp3.setID3v2Tag(tag);
             mp3.save();
+
+            if (TextUtils.isEmpty(coverUrl)) {
+                l.onMP3Added();
+            } else {
+                fetchCover(l, mp3, coverUrl);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            l.onMP3Added();
         }
     }
 
@@ -72,5 +84,64 @@ public class Mp3TagsHelper {
             e.printStackTrace();
         }
         return info;
+    }
+
+    private static void fetchCover(final OnMP3AddListener l, final MP3File mp3, String url) {
+        ImageLoader.getInstance().loadImage(url, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String s, View view) {
+            }
+
+            @Override
+            public void onLoadingFailed(String s, View view, FailReason failReason) {
+                l.onMP3Added();
+            }
+
+            @Override
+            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                if (bitmap == null) {
+                    return;
+                }
+
+                try {
+                    String tmp = FileSavingUtils.sRootPath + System.currentTimeMillis();
+                    FileOutputStream fos = new FileOutputStream(tmp);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    fos.flush();
+                    fos.close();
+                    bitmap.recycle();
+                    addCoverField(l, mp3, tmp);
+                } catch (Exception e) {
+                    l.onMP3Added();
+                }
+            }
+
+            @Override
+            public void onLoadingCancelled(String s, View view) {
+                l.onMP3Added();
+            }
+        });
+    }
+
+    private static void addCoverField(OnMP3AddListener l, MP3File mp3, String filePath) {
+        try {
+            File file = new File(filePath);
+            Artwork cover = AndroidArtwork.createArtworkFromFile(file);
+            if (cover != null) {
+                AbstractID3v2Tag tags = mp3.getID3v2Tag();
+                tags.deleteArtworkField();
+                tags.setField(cover);
+                mp3.setID3v2Tag(tags);
+                mp3.save();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            l.onMP3Added();
+        }
+    }
+
+    public interface OnMP3AddListener {
+        void onMP3Added();
     }
 }

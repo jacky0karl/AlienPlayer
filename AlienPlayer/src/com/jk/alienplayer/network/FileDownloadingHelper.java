@@ -1,5 +1,17 @@
 package com.jk.alienplayer.network;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.jk.alienplayer.data.JsonHelper;
+import com.jk.alienplayer.data.Mp3TagsHelper;
+import com.jk.alienplayer.impl.MediaScanService;
+import com.jk.alienplayer.metadata.FileDownloadingInfo;
+import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
+import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
+import com.jk.alienplayer.utils.FileSavingUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,18 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.jk.alienplayer.data.JsonHelper;
-import com.jk.alienplayer.data.Mp3TagsHelper;
-import com.jk.alienplayer.impl.MediaScanService;
-import com.jk.alienplayer.metadata.FileDownloadingInfo;
-import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
-import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
-import com.jk.alienplayer.utils.FileSavingUtils;
-
-import android.content.Context;
-import android.text.TextUtils;
 
 public class FileDownloadingHelper {
     public static final String LYRIC_EXT = "lyr";
@@ -241,11 +241,15 @@ public class FileDownloadingHelper {
         }
     }
 
-    private void processDownloadFile(NetworkTrackInfo info, String filePath) {
+    private void processDownloadFile(NetworkTrackInfo info, final String filePath) {
         if (info.ext.equalsIgnoreCase("mp3")) {
-            Mp3TagsHelper.writeMp3Tags(info, filePath);
+            Mp3TagsHelper.writeMp3Tags(new Mp3TagsHelper.OnMP3AddListener() {
+                @Override
+                public void onMP3Added() {
+                    MediaScanService.startScan(mContext, filePath);
+                }
+            }, info, filePath);
         }
-        MediaScanService.startScan(mContext, filePath);
     }
 
     private String buildFilePath(NetworkTrackInfo info) {
