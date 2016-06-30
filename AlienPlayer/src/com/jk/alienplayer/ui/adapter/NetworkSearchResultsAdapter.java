@@ -1,17 +1,5 @@
 package com.jk.alienplayer.ui.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.metadata.NetworkAlbumInfo;
-import com.jk.alienplayer.metadata.NetworkArtistInfo;
-import com.jk.alienplayer.metadata.NetworkSearchResult;
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
-import com.jk.alienplayer.metadata.SearchResult;
-import com.jk.alienplayer.utils.ImageLoaderUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +7,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.metadata.NetworkAlbumInfo;
+import com.jk.alienplayer.metadata.NetworkSearchResult;
+import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.metadata.SearchResult;
+import com.jk.alienplayer.utils.ImageLoaderUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkSearchResultsAdapter extends BaseAdapter {
 
@@ -100,9 +99,9 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
             viewHolder = (ArtistViewHolder) view.getTag();
         }
 
-        NetworkArtistInfo result = (NetworkArtistInfo) mResults.get(position);
-        ImageLoader.getInstance().displayImage(result.avatar, viewHolder.avatar,
-                ImageLoaderUtils.sOptions);
+        NetworkSearchResult result =  mResults.get(position);
+        //ImageLoader.getInstance().displayImage(result.avatar, viewHolder.avatar,
+        //        ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
         showTitle(viewHolder.title, position, result.type);
         return view;

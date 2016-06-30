@@ -1,22 +1,20 @@
 package com.jk.alienplayer.ui;
 
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.JsonHelper;
-import com.jk.alienplayer.metadata.NetworkAlbumInfo;
-import com.jk.alienplayer.network.HttpHelper;
-import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
-import com.jk.alienplayer.ui.adapter.NetworkAlbumsAdapter;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.metadata.NetworkAlbumInfo;
+import com.jk.alienplayer.presenter.AlbumsPresenter;
+import com.jk.alienplayer.ui.adapter.NetworkAlbumsAdapter;
+
+import java.util.List;
 
 public class NetworkAlbumsActivity extends BaseActivity {
     public static final String LABEL = "label";
@@ -27,6 +25,7 @@ public class NetworkAlbumsActivity extends BaseActivity {
     private ListView mListView;
     private NetworkAlbumsAdapter mAdapter;
     private long mArtistId;
+    private AlbumsPresenter mPresenter;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -58,38 +57,25 @@ public class NetworkAlbumsActivity extends BaseActivity {
 
         mLoading.setVisibility(View.VISIBLE);
         mNoResult.setVisibility(View.GONE);
-        HttpHelper.getAlbums(String.valueOf(mArtistId), mResponseHandler);
+        mPresenter = new AlbumsPresenter(this);
+        mPresenter.fetchAlbums(String.valueOf(mArtistId));
     }
 
-    private HttpResponseHandler mResponseHandler = new HttpResponseHandler() {
-        @Override
-        public void onSuccess(String response) {
-            final List<NetworkAlbumInfo> albums = JsonHelper.parseAlbums(response);
-            NetworkAlbumsActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.setAlbums(albums);
-                    if (mAdapter.getCount() == 0) {
-                        mNoResult.setText(R.string.no_result);
-                        mNoResult.setVisibility(View.VISIBLE);
-                    } else {
-                        mNoResult.setVisibility(View.GONE);
-                    }
-                    mLoading.setVisibility(View.GONE);
-                }
-            });
+    public void fetchAlbumsSuccess(List<NetworkAlbumInfo> albums) {
+        mAdapter.setAlbums(albums);
+        if (mAdapter.getCount() == 0) {
+            mNoResult.setText(R.string.no_result);
+            mNoResult.setVisibility(View.VISIBLE);
+        } else {
+            mNoResult.setVisibility(View.GONE);
         }
+        mLoading.setVisibility(View.GONE);
+    }
 
-        @Override
-        public void onFail(int status, String response) {
-            NetworkAlbumsActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mNoResult.setText(R.string.network_error);
-                    mNoResult.setVisibility(View.VISIBLE);
-                    mLoading.setVisibility(View.GONE);
-                }
-            });
-        }
-    };
+    public void fetchAlbumsFail() {
+        mNoResult.setText(R.string.network_error);
+        mNoResult.setVisibility(View.VISIBLE);
+        mLoading.setVisibility(View.GONE);
+    }
+
 }

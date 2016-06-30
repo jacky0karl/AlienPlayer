@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DiscoverSuggestionsProvider;
 import com.jk.alienplayer.data.JsonHelper;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
@@ -44,6 +43,12 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
     private NetworkSearchResultsAdapter mAdapter;
     private String mQueryKey;
 
+    public interface SearchResultHandler {
+        void onSuccess(List<NetworkSearchResult> results);
+
+        void onFail(int status, String response);
+    }
+
     private OnQueryTextListener mQueryTextListener = new OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -61,15 +66,16 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
         }
     };
 
-    private HttpResponseHandler mSearchArtistHandler = new HttpResponseHandler() {
+    private SearchResultHandler mSearchArtistHandler = new SearchResultHandler() {
         @Override
-        public void onSuccess(String response) {
-            HttpHelper.search(NetworkSearchResult.TYPE_ALBUMS, mQueryKey, mSearchAlbumHandler);
-            final List<NetworkSearchResult> artists = JsonHelper.parseSearchArtists(response);
+        public void onSuccess(List<NetworkSearchResult> results) {
+            //HttpHelper.search(NetworkSearchResult.TYPE_ALBUMS, mQueryKey, mSearchAlbumHandler);
+            //final List<NetworkSearchResult> artists = JsonHelper.parseSearchArtists(response);
             NetworkSearchActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.setResults(artists);
+                    mAdapter.setResults(results);
+                    mLoading.setVisibility(View.GONE);
                 }
             });
         }
@@ -90,7 +96,7 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
     private HttpResponseHandler mSearchAlbumHandler = new HttpResponseHandler() {
         @Override
         public void onSuccess(String response) {
-            HttpHelper.search(NetworkSearchResult.TYPE_TRACKS, mQueryKey, mSearchTrackHandler);
+            //HttpHelper.search(NetworkSearchResult.TYPE_TRACKS, mQueryKey, mSearchTrackHandler);
             final List<NetworkSearchResult> albums = JsonHelper.parseSearchAlbums(response);
             NetworkSearchActivity.this.runOnUiThread(new Runnable() {
                 @Override
@@ -175,7 +181,7 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
         mQueryKey = query;
         mNoResult.setVisibility(View.GONE);
         mLoading.setVisibility(View.VISIBLE);
-        DiscoverSuggestionsProvider.saveRecentQuery(NetworkSearchActivity.this, mQueryKey);
+        //DiscoverSuggestionsProvider.saveRecentQuery(NetworkSearchActivity.this, mQueryKey);
         HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
         mIMManager.hideSoftInputFromWindow(mListView.getWindowToken(), 0);
     }
@@ -193,7 +199,7 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
             Intent intent = new Intent(this, DownloadListActivity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.clear_history) {
-            DiscoverSuggestionsProvider.clearHistory(this);
+            //DiscoverSuggestionsProvider.clearHistory(this);
         }
         return super.onOptionsItemSelected(item);
     }
