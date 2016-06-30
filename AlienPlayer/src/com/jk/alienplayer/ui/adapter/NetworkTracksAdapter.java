@@ -1,11 +1,5 @@
 package com.jk.alienplayer.ui.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +8,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.model.TrackBean;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class NetworkTracksAdapter extends BaseAdapter {
-
+    private Context mContext;
     private LayoutInflater mInflater;
-    private List<NetworkTrackInfo> mTracks;
+    private List<TrackBean> mTracks;
 
-    public void setTracks(List<NetworkTrackInfo> tracks) {
+    public void setTracks(List<TrackBean> tracks) {
         if (tracks != null) {
             mTracks = tracks;
             notifyDataSetChanged();
@@ -27,9 +27,9 @@ public class NetworkTracksAdapter extends BaseAdapter {
     }
 
     public NetworkTracksAdapter(Context context) {
-        super();
+        mContext = context;
         mInflater = LayoutInflater.from(context);
-        mTracks = new ArrayList<NetworkTrackInfo>();
+        mTracks = new ArrayList<>();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class NetworkTracksAdapter extends BaseAdapter {
     }
 
     @Override
-    public NetworkTrackInfo getItem(int position) {
+    public TrackBean getItem(int position) {
         return mTracks.get(position);
     }
 
@@ -61,10 +61,14 @@ public class NetworkTracksAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        NetworkTrackInfo info = mTracks.get(position);
-        viewHolder.name.setText(info.name);
-        viewHolder.artists.setText(info.artists);
-        return view;
+        try {
+            TrackBean bean = mTracks.get(position);
+            viewHolder.name.setText(bean.getName());
+            viewHolder.artists.setText(bean.getShowingArtists());
+            return view;
+        } catch (Exception e) {
+            return new View(mContext);
+        }
     }
 
     static class ViewHolder {

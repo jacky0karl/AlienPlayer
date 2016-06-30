@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AlbumBean {
     @JsonProperty("id")
-    private int id = 0;
+    private long id = 0;
 
     @JsonProperty("name")
     private String name = "";
@@ -20,13 +20,16 @@ public class AlbumBean {
     @JsonProperty("publishTime")
     private long publishTime = 0L;
 
+    @JsonProperty("artist")
+    private ArtistBean artist = null;
+
     @JsonProperty("id")
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -58,5 +61,15 @@ public class AlbumBean {
     @JsonProperty("publishTime")
     public void setPublishTime(long publishTime) {
         this.publishTime = publishTime;
+    }
+
+    @JsonProperty("artist")
+    public ArtistBean getArtist() {
+        return artist;
+    }
+
+    @JsonProperty("artist")
+    public void setArtist(ArtistBean artist) {
+        this.artist = artist;
     }
 }

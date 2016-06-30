@@ -11,21 +11,8 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AlbumsBean extends BaseBean {
-    @JsonProperty("artist")
-    private ArtistBean artist = null;
-
     @JsonProperty("hotAlbums")
     private List<AlbumBean> hotAlbums = new ArrayList<AlbumBean>();
-
-    @JsonProperty("artist")
-    public ArtistBean getArtist() {
-        return artist;
-    }
-
-    @JsonProperty("artist")
-    public void setArtist(ArtistBean artist) {
-        this.artist = artist;
-    }
 
     @JsonProperty("hotAlbums")
     public List<AlbumBean> getHotAlbums() {

@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.metadata.NetworkAlbumInfo;
+import com.jk.alienplayer.model.AlbumBean;
 import com.jk.alienplayer.presenter.AlbumsPresenter;
 import com.jk.alienplayer.ui.adapter.NetworkAlbumsAdapter;
 
@@ -30,10 +30,10 @@ public class NetworkAlbumsActivity extends BaseActivity {
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            NetworkAlbumInfo info = mAdapter.getItem(position);
+            AlbumBean info = mAdapter.getItem(position);
             Intent intent = new Intent(NetworkAlbumsActivity.this, NetworkTracksActivity.class);
-            intent.putExtra(NetworkTracksActivity.ALBUM_ID, info.id);
-            intent.putExtra(NetworkTracksActivity.LABEL, info.name);
+            intent.putExtra(NetworkTracksActivity.ALBUM_ID, info.getId());
+            intent.putExtra(NetworkTracksActivity.LABEL, info.getName());
             startActivity(intent);
         }
     };
@@ -58,10 +58,10 @@ public class NetworkAlbumsActivity extends BaseActivity {
         mLoading.setVisibility(View.VISIBLE);
         mNoResult.setVisibility(View.GONE);
         mPresenter = new AlbumsPresenter(this);
-        mPresenter.fetchAlbums(String.valueOf(mArtistId));
+        mPresenter.fetchAlbums(mArtistId);
     }
 
-    public void fetchAlbumsSuccess(List<NetworkAlbumInfo> albums) {
+    public void fetchAlbumsSuccess(List<AlbumBean> albums) {
         mAdapter.setAlbums(albums);
         if (mAdapter.getCount() == 0) {
             mNoResult.setText(R.string.no_result);

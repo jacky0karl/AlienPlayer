@@ -24,12 +24,13 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class HttpHelper {
+    public static final int HTTP_OK = 200;
 
     private static final String COOKIE = "appver=1.7.6;os=Android";
     private static final String KEY = "3go8&$8*3*3h0k(2)2";
     private static final String SEARCH_LIMIT = "50";
 
-    private static final String GET_TRACKS_URL = "http://music.163.com/api/album/";
+
     private static final String GET_TRACK_URL = "http://music.163.com/api/song/detail/";
     private static final String TRACK_DOWANLOAD_URL = "http://m1.music.126.net/";
     private static final String GET_LYRIC_URL = "http://music.163.com/api/song/lyric?id=";
@@ -81,21 +82,6 @@ public class HttpHelper {
                     e.printStackTrace();
                     handler.onFail(-1, e.getMessage());
                 }
-            }
-        });
-        thread.start();
-    }
-
-    public static void getTracks(final String albumId, final HttpResponseHandler handler) {
-        if (handler == null) {
-            return;
-        }
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpGet get = new HttpGet(GET_TRACKS_URL + albumId);
-                handleRequest(get, handler);
             }
         });
         thread.start();

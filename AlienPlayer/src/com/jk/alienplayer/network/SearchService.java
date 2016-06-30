@@ -2,6 +2,7 @@ package com.jk.alienplayer.network;
 
 import com.jk.alienplayer.model.AlbumsBean;
 import com.jk.alienplayer.model.SearchBean;
+import com.jk.alienplayer.model.TracksBean;
 
 import java.util.Map;
 
@@ -20,5 +21,8 @@ public interface SearchService {
     Call<SearchBean> search(@QueryMap Map<String, String> params);
 
     @GET("artist/albums/{artistId}?offset=0&limit=" + ALBUM_LIMIT)
-    Observable<AlbumsBean> fetchAlbums(@Path("artistId") String artistId);
+    Observable<AlbumsBean> fetchAlbums(@Path("artistId") long artistId);
+
+    @GET("album/{albumId}")
+    Observable<TracksBean> fetchTracks(@Path("albumId") long albumId);
 }

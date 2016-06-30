@@ -1,13 +1,5 @@
 package com.jk.alienplayer.ui.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.metadata.NetworkAlbumInfo;
-import com.jk.alienplayer.utils.ImageLoaderUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +8,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.model.AlbumBean;
+import com.jk.alienplayer.utils.ImageLoaderUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class NetworkAlbumsAdapter extends BaseAdapter {
-
+    private Context mContext;
     private LayoutInflater mInflater;
-    private List<NetworkAlbumInfo> mAlbums;
+    private List<AlbumBean> mAlbums;
 
-    public void setAlbums(List<NetworkAlbumInfo> albums) {
+    public void setAlbums(List<AlbumBean> albums) {
         if (albums != null) {
             mAlbums = albums;
             notifyDataSetChanged();
@@ -29,9 +29,9 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
     }
 
     public NetworkAlbumsAdapter(Context context) {
-        super();
+        mContext = context;
         mInflater = LayoutInflater.from(context);
-        mAlbums = new ArrayList<NetworkAlbumInfo>();
+        mAlbums = new ArrayList<>();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
     }
 
     @Override
-    public NetworkAlbumInfo getItem(int position) {
+    public AlbumBean getItem(int position) {
         return mAlbums.get(position);
     }
 
@@ -63,12 +63,16 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        NetworkAlbumInfo info = mAlbums.get(position);
-        viewHolder.name.setText(info.name);
-        viewHolder.artist.setText(info.artist);
-        ImageLoader.getInstance().displayImage(info.avatar, viewHolder.artwork,
-                ImageLoaderUtils.sOptions);
-        return view;
+        try {
+            AlbumBean info = mAlbums.get(position);
+            viewHolder.name.setText(info.getName());
+            viewHolder.artist.setText(info.getArtist().getName());
+            ImageLoader.getInstance().displayImage(info.getPicUrl(), viewHolder.artwork,
+                    ImageLoaderUtils.sOptions);
+            return view;
+        } catch (Exception e) {
+            return new View(mContext);
+        }
     }
 
     static class ViewHolder {

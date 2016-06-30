@@ -9,18 +9,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArtistBean {
     @JsonProperty("id")
-    private int id = 0;
+    private long id = 0;
 
     @JsonProperty("name")
     private String name = "";
 
+    @JsonProperty("picUrl")
+    private String picUrl = "";
+
     @JsonProperty("id")
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -32,5 +35,15 @@ public class ArtistBean {
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
+    }
+
+    @JsonProperty("picUrl")
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    @JsonProperty("picUrl")
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
     }
 }

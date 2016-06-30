@@ -1,16 +1,5 @@
 package com.jk.alienplayer.ui;
 
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.JsonHelper;
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
-import com.jk.alienplayer.network.FileDownloadingHelper;
-import com.jk.alienplayer.network.HttpHelper;
-import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
-import com.jk.alienplayer.ui.adapter.NetworkTracksAdapter;
-import com.jk.alienplayer.ui.lib.DialogBuilder;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -19,11 +8,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
+
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.model.TrackBean;
+import com.jk.alienplayer.network.FileDownloadingHelper;
+import com.jk.alienplayer.network.HttpHelper;
+import com.jk.alienplayer.presenter.TracksPresenter;
+import com.jk.alienplayer.ui.adapter.NetworkTracksAdapter;
+import com.jk.alienplayer.ui.lib.DialogBuilder;
+
+import java.util.List;
 
 public class NetworkTracksActivity extends BaseActivity {
     public static final String LABEL = "label";
@@ -34,15 +34,17 @@ public class NetworkTracksActivity extends BaseActivity {
     private ListView mListView;
     private NetworkTracksAdapter mAdapter;
     private long mAlbumId;
-    private List<NetworkTrackInfo> mTracks = null;
+    private TracksPresenter mPresenter;
+    private List<TrackBean> mTracks = null;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            NetworkTrackInfo info = mAdapter.getItem(position);
-            if (info != null) {
-                downloadTrack(info);
-            }
+            //TODO
+//            NetworkTrackInfo info = mAdapter.getItem(position);
+//            if (info != null) {
+//                downloadTrack(info);
+//            }
         }
     };
 
@@ -63,9 +65,10 @@ public class NetworkTracksActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_download) {
             if (mTracks != null && mTracks.size() > 0) {
-                for (NetworkTrackInfo info : mTracks) {
-                    doDownloadTrack(info);
-                }
+                //TODO
+//                for (NetworkTrackInfo info : mTracks) {
+//                    doDownloadTrack(info);
+//                }
                 makeToast();
             }
         }
@@ -84,40 +87,26 @@ public class NetworkTracksActivity extends BaseActivity {
 
         mLoading.setVisibility(View.VISIBLE);
         mNoResult.setVisibility(View.GONE);
-        HttpHelper.getTracks(String.valueOf(mAlbumId), mResponseHandler);
+        mPresenter = new TracksPresenter(this);
+        mPresenter.fetchTracks(mAlbumId);
     }
 
-    private HttpResponseHandler mResponseHandler = new HttpResponseHandler() {
-        @Override
-        public void onSuccess(String response) {
-            mTracks = JsonHelper.parseTracks(response);
-            NetworkTracksActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.setTracks(mTracks);
-                    if (mAdapter.getCount() == 0) {
-                        mNoResult.setText(R.string.no_result);
-                        mNoResult.setVisibility(View.VISIBLE);
-                    } else {
-                        mNoResult.setVisibility(View.GONE);
-                    }
-                    mLoading.setVisibility(View.GONE);
-                }
-            });
+    public void fetchTracksSuccess(List<TrackBean> tracks) {
+        mAdapter.setTracks(tracks);
+        if (mAdapter.getCount() == 0) {
+            mNoResult.setText(R.string.no_result);
+            mNoResult.setVisibility(View.VISIBLE);
+        } else {
+            mNoResult.setVisibility(View.GONE);
         }
+        mLoading.setVisibility(View.GONE);
+    }
 
-        @Override
-        public void onFail(int status, String response) {
-            NetworkTracksActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mNoResult.setText(R.string.network_error);
-                    mNoResult.setVisibility(View.VISIBLE);
-                    mLoading.setVisibility(View.GONE);
-                }
-            });
-        }
-    };
+    public void fetchTracksFail() {
+        mNoResult.setText(R.string.network_error);
+        mNoResult.setVisibility(View.VISIBLE);
+        mLoading.setVisibility(View.GONE);
+    }
 
     private void downloadTrack(final NetworkTrackInfo info) {
         OnClickListener listener = new OnClickListener() {

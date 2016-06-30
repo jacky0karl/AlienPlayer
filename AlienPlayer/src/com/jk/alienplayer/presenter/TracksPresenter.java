@@ -1,10 +1,10 @@
 package com.jk.alienplayer.presenter;
 
-import com.jk.alienplayer.model.AlbumsBean;
+import com.jk.alienplayer.model.TracksBean;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.SearchService;
 import com.jk.alienplayer.network.ServiceHelper;
-import com.jk.alienplayer.ui.NetworkAlbumsActivity;
+import com.jk.alienplayer.ui.NetworkTracksActivity;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -13,23 +13,23 @@ import rx.schedulers.Schedulers;
 /**
  * Created by junjie.qu on 6/24/2016.
  */
-public class AlbumsPresenter {
+public class TracksPresenter {
 
-    private NetworkAlbumsActivity mActivity;
+    private NetworkTracksActivity mActivity;
 
-    public AlbumsPresenter(NetworkAlbumsActivity activity) {
+    public TracksPresenter(NetworkTracksActivity activity) {
         mActivity = activity;
     }
 
-    public void fetchAlbums(final long artistId) {
+    public void fetchTracks(final long albumId) {
         SearchService service = ServiceHelper.create(SearchService.class);
-        service.fetchAlbums(artistId)
+        service.fetchTracks(albumId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AlbumsSubscriber());
+                .subscribe(new TracksSubscriber());
     }
 
-    public class AlbumsSubscriber extends Subscriber<AlbumsBean> {
+    public class TracksSubscriber extends Subscriber<TracksBean> {
 
         @Override
         public void onCompleted() {
@@ -38,24 +38,24 @@ public class AlbumsPresenter {
         @Override
         public void onError(Throwable e) {
             if (mActivity != null && !mActivity.isFinishing()) {
-                mActivity.fetchAlbumsFail();
+                mActivity.fetchTracksFail();
             }
         }
 
         @Override
-        public void onNext(AlbumsBean o) {
+        public void onNext(TracksBean o) {
             if (mActivity == null || mActivity.isFinishing()) {
                 return;
             }
 
             try {
                 if (o.getCode() == HttpHelper.HTTP_OK) {
-                    mActivity.fetchAlbumsSuccess(o.getHotAlbums());
+                    mActivity.fetchTracksSuccess(o.getAlbum().getSongs());
                 } else {
-                    mActivity.fetchAlbumsFail();
+                    mActivity.fetchTracksFail();
                 }
             } catch (Exception e) {
-                mActivity.fetchAlbumsFail();
+                mActivity.fetchTracksFail();
             }
         }
     }
