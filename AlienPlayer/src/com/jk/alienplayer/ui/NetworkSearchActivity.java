@@ -26,7 +26,6 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.JsonHelper;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
-import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.adapter.NetworkSearchResultsAdapter;
@@ -251,7 +250,7 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
             NetworkTrackInfo info = JsonHelper.parseTrack(response);
             if (info != null) {
                 String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId), info.ext);
-                FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
+               //TODO FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
             }
         }
 

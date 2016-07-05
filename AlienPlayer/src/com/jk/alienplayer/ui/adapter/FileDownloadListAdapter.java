@@ -1,23 +1,23 @@
 package com.jk.alienplayer.ui.adapter;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileDownloadListAdapter extends BaseAdapter {
 
@@ -71,8 +71,8 @@ public class FileDownloadListAdapter extends BaseAdapter {
         }
 
         FileDownloadingInfo info = mInfos.get(position);
-        viewHolder.title.setText(info.trackInfo.name);
-        viewHolder.artist.setText(info.trackInfo.artists);
+        viewHolder.title.setText(info.trackInfo.getName());
+        viewHolder.artist.setText(info.trackInfo.getShowingArtists());
         viewHolder.size.setText(calculateSize(info));
         viewHolder.progressBar.setMax(info.size);
         viewHolder.progressBar.setProgress(info.progress);

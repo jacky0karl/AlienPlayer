@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.network.HttpHelper;
@@ -40,11 +39,10 @@ public class NetworkTracksActivity extends BaseActivity {
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //TODO
-//            NetworkTrackInfo info = mAdapter.getItem(position);
-//            if (info != null) {
-//                downloadTrack(info);
-//            }
+            TrackBean info = mAdapter.getItem(position);
+            if (info != null) {
+                downloadTrack(info);
+            }
         }
     };
 
@@ -65,10 +63,9 @@ public class NetworkTracksActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_download) {
             if (mTracks != null && mTracks.size() > 0) {
-                //TODO
-//                for (NetworkTrackInfo info : mTracks) {
-//                    doDownloadTrack(info);
-//                }
+                for (TrackBean info : mTracks) {
+                    doDownloadTrack(info);
+                }
                 makeToast();
             }
         }
@@ -108,7 +105,7 @@ public class NetworkTracksActivity extends BaseActivity {
         mLoading.setVisibility(View.GONE);
     }
 
-    private void downloadTrack(final NetworkTrackInfo info) {
+    private void downloadTrack(final TrackBean info) {
         OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -124,8 +121,8 @@ public class NetworkTracksActivity extends BaseActivity {
         dialog.show();
     }
 
-    private void doDownloadTrack(NetworkTrackInfo info) {
-        String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId), info.ext);
+    private void doDownloadTrack(TrackBean info) {
+        String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.getDfsId()), info.getExtension());
         FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
     }
 

@@ -1,6 +1,17 @@
 package com.jk.alienplayer.ui;
 
-import java.util.List;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
@@ -9,18 +20,7 @@ import com.jk.alienplayer.ui.adapter.FileDownloadListAdapter;
 import com.jk.alienplayer.ui.lib.ListMenu;
 import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
+import java.util.List;
 
 public class DownloadListActivity extends BaseActivity {
     private static final int UPDATE_INTERVAL = 500;
@@ -159,7 +159,7 @@ public class DownloadListActivity extends BaseActivity {
 
     private void viewTrack() {
         Intent intent = new Intent(DownloadListActivity.this, SearchActivity.class);
-        intent.putExtra(SearchActivity.QUERY, mCurrInfo.trackInfo.name);
+        intent.putExtra(SearchActivity.QUERY, mCurrInfo.trackInfo.getName());
         startActivity(intent);
     }
 

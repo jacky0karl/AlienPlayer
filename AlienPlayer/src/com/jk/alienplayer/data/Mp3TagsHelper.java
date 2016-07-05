@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
+import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.utils.FileSavingUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -24,13 +24,14 @@ import java.io.FileOutputStream;
 
 public class Mp3TagsHelper {
 
-    public static void writeMp3Tags(OnMP3AddListener l, NetworkTrackInfo info, String filePath) {
-        writeMp3Tags(l, info.coverUrl, info.name, info.artists, info.album, info.artistAlbum,
-                String.valueOf(info.position), String.valueOf(info.year), filePath);
+    public static void writeMp3Tags(OnMP3AddListener l, TrackBean info, String filePath) {
+        writeMp3Tags(l, info.getAlbum().getPicUrl(), info.getName(), info.getShowingArtists(),
+                info.getAlbum().getName(), info.getAlbum().getShowingArtist(), String.valueOf(info.getPosition()),
+                String.valueOf(info.getAlbum().getPublishTime()), filePath);
     }
 
-    public static void writeMp3Tags(OnMP3AddListener l, String coverUrl, String title, String artists, String album, String artistAlbum,
-                                    String track, String year, String filePath) {
+    public static void writeMp3Tags(OnMP3AddListener l, String coverUrl, String title, String artists,
+                                    String album, String artistAlbum, String track, String year, String filePath) {
         if (l == null) {
             return;
         }

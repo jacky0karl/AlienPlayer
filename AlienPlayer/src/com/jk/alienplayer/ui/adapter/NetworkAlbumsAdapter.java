@@ -66,7 +66,7 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
         try {
             AlbumBean info = mAlbums.get(position);
             viewHolder.name.setText(info.getName());
-            viewHolder.artist.setText(info.getArtist().getName());
+            viewHolder.artist.setText(info.getShowingArtist());
             ImageLoader.getInstance().displayImage(info.getPicUrl(), viewHolder.artwork,
                     ImageLoaderUtils.sOptions);
             return view;

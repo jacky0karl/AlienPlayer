@@ -32,7 +32,7 @@ public class HttpHelper {
 
 
     private static final String GET_TRACK_URL = "http://music.163.com/api/song/detail/";
-    private static final String TRACK_DOWANLOAD_URL = "http://m1.music.126.net/";
+    private static final String TRACK_DOWANLOAD_URL = "http://m2.music.126.net/";
     private static final String GET_LYRIC_URL = "http://music.163.com/api/song/lyric?id=";
 
     public interface HttpResponseHandler {

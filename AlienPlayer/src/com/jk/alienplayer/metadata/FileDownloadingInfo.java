@@ -1,12 +1,14 @@
 package com.jk.alienplayer.metadata;
 
+import com.jk.alienplayer.model.TrackBean;
+
 public class FileDownloadingInfo {
 
     public enum Status {
         PENDING, DOWALOADING, FAILED, COMPLETED, CANCELED
     }
 
-    public NetworkTrackInfo trackInfo;
+    public TrackBean trackInfo;
     public Status status = Status.PENDING;
     public String url;
 
@@ -15,7 +17,7 @@ public class FileDownloadingInfo {
     /** Byte */
     public int progress = 0;
 
-    public FileDownloadingInfo(NetworkTrackInfo trackInfo) {
+    public FileDownloadingInfo(TrackBean trackInfo) {
         this.trackInfo = trackInfo;
     }
 

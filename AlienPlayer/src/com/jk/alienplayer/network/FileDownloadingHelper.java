@@ -8,7 +8,7 @@ import com.jk.alienplayer.data.Mp3TagsHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.metadata.FileDownloadingInfo.Status;
-import com.jk.alienplayer.metadata.NetworkTrackInfo;
+import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.utils.FileSavingUtils;
 
@@ -52,7 +52,7 @@ public class FileDownloadingHelper {
         FileSavingUtils.setupRootPath(mContext);
     }
 
-    public void requstDownloadTrack(NetworkTrackInfo trackInfo, String url) {
+    public void requstDownloadTrack(TrackBean trackInfo, String url) {
         if (trackInfo == null || TextUtils.isEmpty(url)) {
             return;
         }
@@ -154,10 +154,10 @@ public class FileDownloadingHelper {
             public void onFail(int status, String response) {
             }
         };
-        HttpHelper.getLyric(String.valueOf(info.trackInfo.id), handler);
+        HttpHelper.getLyric(String.valueOf(info.trackInfo.getId()), handler);
     }
 
-    private void saveLyric(NetworkTrackInfo info, String lyric) {
+    private void saveLyric(TrackBean info, String lyric) {
         String filePath = buildLyricPath(info);
         try {
             File file = new File(filePath);
@@ -241,8 +241,8 @@ public class FileDownloadingHelper {
         }
     }
 
-    private void processDownloadFile(NetworkTrackInfo info, final String filePath) {
-        if (info.ext.equalsIgnoreCase("mp3")) {
+    private void processDownloadFile(TrackBean info, final String filePath) {
+        if (info.getExtension().equalsIgnoreCase("mp3")) {
             Mp3TagsHelper.writeMp3Tags(new Mp3TagsHelper.OnMP3AddListener() {
                 @Override
                 public void onMP3Added() {
@@ -252,22 +252,22 @@ public class FileDownloadingHelper {
         }
     }
 
-    private String buildFilePath(NetworkTrackInfo info) {
-        return buildPath(info) + info.ext;
+    private String buildFilePath(TrackBean info) {
+        return buildPath(info) + info.getExtension();
     }
 
-    private String buildLyricPath(NetworkTrackInfo info) {
+    private String buildLyricPath(TrackBean info) {
         return buildPath(info) + LYRIC_EXT;
     }
 
-    private String buildPath(NetworkTrackInfo info) {
+    private String buildPath(TrackBean info) {
         StringBuilder sb = new StringBuilder();
         sb.append(FileSavingUtils.sRootPath);
-        sb.append(FileSavingUtils.removeIllegalChar(info.artistAlbum));
+        sb.append(FileSavingUtils.removeIllegalChar(info.getAlbum().getShowingArtist()));
         sb.append(File.separator);
-        sb.append(FileSavingUtils.removeIllegalChar(info.album));
+        sb.append(FileSavingUtils.removeIllegalChar(info.getAlbum().getName()));
         sb.append(File.separator);
-        sb.append(FileSavingUtils.removeIllegalChar(info.name));
+        sb.append(FileSavingUtils.removeIllegalChar(info.getName()));
         sb.append(".");
         return sb.toString();
     }

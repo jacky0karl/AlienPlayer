@@ -3,6 +3,9 @@ package com.jk.alienplayer.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by junjie.qu on 6/22/2016.
  */
@@ -20,8 +23,8 @@ public class AlbumBean {
     @JsonProperty("publishTime")
     private long publishTime = 0L;
 
-    @JsonProperty("artist")
-    private ArtistBean artist = null;
+    @JsonProperty("artists")
+    private List<ArtistBean> artists = new ArrayList<>();
 
     @JsonProperty("id")
     public long getId() {
@@ -63,13 +66,30 @@ public class AlbumBean {
         this.publishTime = publishTime;
     }
 
-    @JsonProperty("artist")
-    public ArtistBean getArtist() {
-        return artist;
+    @JsonProperty("artists")
+    public List<ArtistBean> getArtists() {
+        return artists;
     }
 
-    @JsonProperty("artist")
-    public void setArtist(ArtistBean artist) {
-        this.artist = artist;
+    @JsonProperty("artists")
+    public void setArtists(List<ArtistBean> artists) {
+        this.artists = artists;
+    }
+
+    public String getShowingArtist() {
+        if (artists == null) {
+            return "";
+        }
+
+        StringBuffer sb = new StringBuffer();
+        for (ArtistBean bean : artists) {
+            sb.append(bean.getName());
+            sb.append("&");
+        }
+        if (sb.length() > 1) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+
+        return sb.toString();
     }
 }
