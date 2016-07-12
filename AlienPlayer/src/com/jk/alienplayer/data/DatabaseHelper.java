@@ -73,6 +73,27 @@ public class DatabaseHelper {
         return artists;
     }
 
+    public static List<AlbumInfo> getAlbums(Context context, long artistId) {
+        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
+        String[] projection = new String[]{DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
+                ALBUM_ARTIST};
+        String selection = MEDIA_SELECTION;
+        selection += " and " + Media.ARTIST_ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(artistId)};
+
+        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
+                selection, selectionArgs, Media.YEAR);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    albums.add(bulidAlbumInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return albums;
+    }
+
     public static List<AlbumInfo> getAlbums(Context context, String albumArtist) {
         List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
         String[] projection = new String[]{DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,

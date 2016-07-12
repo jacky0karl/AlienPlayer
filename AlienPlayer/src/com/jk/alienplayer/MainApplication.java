@@ -1,17 +1,16 @@
 package com.jk.alienplayer;
 
+import android.app.Application;
+import android.content.Intent;
+import android.os.StrictMode;
+
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.utils.ImageLoaderUtils;
 import com.jk.alienplayer.utils.UncaughtExceptionLoger;
 
-import android.app.Application;
-import android.content.Intent;
-import android.os.StrictMode;
-
 public class MainApplication extends Application {
-    private static final boolean DEBUG = false;
 
     @Override
     public void onCreate() {
@@ -26,7 +25,7 @@ public class MainApplication extends Application {
     }
 
     private void setDetection() {
-        if (DEBUG) {
+        if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll()
                     .penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()

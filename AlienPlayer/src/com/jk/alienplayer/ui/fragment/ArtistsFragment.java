@@ -90,11 +90,7 @@ public class ArtistsFragment extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ArtistInfo info = mAdapter.getItem(position);
             if (info != null) {
-                if (mType == TYPE_ARTISTS) {
-                    startSongsActivity(info.id, info.name);
-                } else {
-                    startAlbumsActivity(info.name);
-                }
+                startAlbumsActivity(info.id, info.name);
             }
         }
     };
@@ -143,9 +139,10 @@ public class ArtistsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void startAlbumsActivity(String label) {
+    private void startAlbumsActivity(long id, String name) {
         Intent intent = new Intent(getActivity(), AlbumsActivity.class);
-        intent.putExtra(AlbumsActivity.ALBUM_ARTIST, label);
+        intent.putExtra(AlbumsActivity.ARTIST_ID, id);
+        intent.putExtra(AlbumsActivity.ARTIST_NAME, name);
         startActivity(intent);
     }
 
@@ -154,11 +151,8 @@ public class ArtistsFragment extends Fragment {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                if (mType == TYPE_ARTISTS) {
-                    mArtists = DatabaseHelper.getArtists(getActivity());
-                } else {
-                    mArtists = DatabaseHelper.getAlbumArtists(getActivity());
-                }
+                mArtists = DatabaseHelper.getArtists(getActivity());
+                //mArtists = DatabaseHelper.getAlbumArtists(getActivity());
                 sortList();
                 updateList();
             }

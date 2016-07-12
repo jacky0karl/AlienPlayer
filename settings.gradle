@@ -1,1 +1,1 @@
-include ':AlienPlayer', ':viewpagerindicator'
+include ':AlienPlayer'

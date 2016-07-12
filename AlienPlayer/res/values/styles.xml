@@ -32,16 +32,6 @@
         <item name="suggestionRowLayout">@layout/search_suggestions</item>
     </style>
 
-    <style name="Theme.PageIndicatorDefaults" parent="AppTheme">
-        <item name="vpiIconPageIndicatorStyle">@style/Widget.IconPageIndicator</item>
-        <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
-    </style>
-
-    <style name="TextAppearance.TabPageIndicator" parent="Widget">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/vpi__light_theme</item>
-    </style>
-
     <style name="NoAnimation">
         <item name="@android:activityOpenEnterAnimation">@null</item>
         <item name="@android:activityOpenExitAnimation">@null</item>

@@ -43,7 +43,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':viewpagerindicator')
     compile 'com.android.support:design:23.4.0'
 
     compile 'com.squareup.okhttp3:okhttp:3.2.0'

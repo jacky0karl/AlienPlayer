@@ -1,6 +1,11 @@
 package com.jk.alienplayer.ui;
 
-import java.util.List;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
@@ -9,21 +14,18 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
 import com.jk.alienplayer.ui.lib.Playbar;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
+import java.util.List;
 
 public class AlbumsActivity extends BaseActivity {
-    public static final String ALBUM_ARTIST = "album_artist";
+    public static final String ARTIST_ID = "artist_id";
+    public static final String ARTIST_NAME = "artist_name";
 
     private ListView mListView;
     private AlbumsAdapter mAdapter;
     private Playbar mPlaybar;
     private AlbumInfo mCurrAlbum;
-    private String mAlbumArtist;
+    private long mArtistId;
+    private String mArtistName;
     private List<AlbumInfo> mAlbums;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
@@ -49,13 +51,14 @@ public class AlbumsActivity extends BaseActivity {
 
     private void init() {
         mPlaybar = (Playbar) findViewById(R.id.playbar);
-        mAlbumArtist = getIntent().getStringExtra(ALBUM_ARTIST);
-        setTitle(mAlbumArtist);
+        mArtistId = getIntent().getLongExtra(ARTIST_ID, 0);
+        mArtistName = getIntent().getStringExtra(ARTIST_NAME);
+        setTitle(mArtistName);
 
         mListView = (ListView) findViewById(R.id.list);
         mAdapter = new AlbumsAdapter(this);
         mListView.setAdapter(mAdapter);
-        mAlbums = DatabaseHelper.getAlbums(this, mAlbumArtist);
+        mAlbums = DatabaseHelper.getAlbums(this, mArtistId);
         mAdapter.setAlbums(mAlbums);
         mListView.setOnItemClickListener(mOnItemClickListener);
         getAlbumArtworks();
