@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,9 +25,8 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.PlayingActivity;
 import com.jk.lib.widget.PlayPauseButton;
 
-public class Playbar extends FrameLayout {
+public class Playbar extends RelativeLayout {
 
-    private RelativeLayout mContentView;
     private PlayPauseButton mPlayBtn;
     private ImageButton mNextBtn;
     private ImageButton mPrevBtn;
@@ -74,24 +73,26 @@ public class Playbar extends FrameLayout {
     }
 
     private void init() {
-        mContentView = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.playbar,
-                null);
-        addView(mContentView);
+        int padding = getResources().getDimensionPixelOffset(R.dimen.normal_padding);
+        int height = getResources().getDimensionPixelOffset(R.dimen.playbar_height);
+        LayoutInflater.from(getContext()).inflate(R.layout.playbar, this);
+        setBackgroundColor(getResources().getColor(R.color.primary));
+        setPadding(padding, padding, padding, padding);
+        ViewGroup.LayoutParams lps = new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, height);
+        setLayoutParams(lps);
 
-        mSongLabel = (TextView) mContentView.findViewById(R.id.song);
-        mArtistLabel = (TextView) mContentView.findViewById(R.id.artist);
-        mProgressBar = (ProgressBar) mContentView.findViewById(R.id.progressBar);
-        mPlayBtn = (PlayPauseButton) mContentView.findViewById(R.id.playBtn);
-        mPlayBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = PlayService.getPlayingCommandIntent(getContext(),
-                        PlayService.COMMAND_PLAY_PAUSE);
-                getContext().startService(intent);
-            }
+        mSongLabel = (TextView) findViewById(R.id.song);
+        mArtistLabel = (TextView) findViewById(R.id.artist);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        mPlayBtn = (PlayPauseButton) findViewById(R.id.playBtn);
+        mPlayBtn.setOnClickListener(v -> {
+            Intent intent = PlayService.getPlayingCommandIntent(getContext(),
+                    PlayService.COMMAND_PLAY_PAUSE);
+            getContext().startService(intent);
         });
 
-        mNextBtn = (ImageButton) mContentView.findViewById(R.id.next);
+        mNextBtn = (ImageButton) findViewById(R.id.next);
         mNextBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,7 +102,7 @@ public class Playbar extends FrameLayout {
             }
         });
 
-        mPrevBtn = (ImageButton) mContentView.findViewById(R.id.prev);
+        mPrevBtn = (ImageButton) findViewById(R.id.prev);
         mPrevBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +112,7 @@ public class Playbar extends FrameLayout {
             }
         });
 
-        mArtwork = (ImageView) mContentView.findViewById(R.id.artwork);
+        mArtwork = (ImageView) findViewById(R.id.artwork);
         mArtwork.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
