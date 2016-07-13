@@ -1,5 +1,6 @@
 package com.jk.alienplayer.ui;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,12 +13,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.fragment.AlbumsFragment;
 import com.jk.alienplayer.ui.fragment.ArtistsFragment;
 import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
 import com.jk.alienplayer.ui.lib.Playbar;
 import com.jk.alienplayer.ui.lib.VolumeBarWindow;
+import com.jk.alienplayer.utils.UncaughtExceptionLoger;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 public class MainActivity extends BaseActivity {
     //private static final int FRAGMENT_ALBUM_ARTISTS = 0;
@@ -35,22 +40,45 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        RxPermissions.getInstance(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                    if (granted) {
+                        init();
+                    } else {
+                        finish();
+                    }
+                });
+    }
+
+    private void init() {
+        FileDownloadingHelper.getInstance().init(this);
+        UncaughtExceptionLoger.getInstance().init();
+        PlayingInfoHolder.getInstance().init(this);
+        Intent intent = new Intent(this, PlayService.class);
+        startService(intent);
+
         setContentView(R.layout.activity_main);
         mPlaybar = (Playbar) findViewById(R.id.playbar);
+        mVolumeBar = VolumeBarWindow.createVolumeBarWindow(this);
 
         FragmentPagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
-
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(pager);
-        mVolumeBar = VolumeBarWindow.createVolumeBarWindow(this);
+        pager.setCurrentItem(FRAGMENT_ARTISTS);
     }
 
     @Override
     protected void onDestroy() {
-        mVolumeBar.dismiss();
-        mPlaybar.finish();
+        if (mVolumeBar != null) {
+            mVolumeBar.dismiss();
+        }
+        if (mPlaybar != null) {
+            mPlaybar.finish();
+        }
+
         super.onDestroy();
     }
 
@@ -93,40 +121,40 @@ public class MainActivity extends BaseActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-            //case FRAGMENT_RECENTS:
-            //    return new RecentsFragment();
-            case FRAGMENT_PLAYLIST:
-                return new PlaylistsFragment();
-            case FRAGMENT_ARTISTS:
-                return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ARTISTS);
-            //case FRAGMENT_ALBUM_ARTISTS:
-            //    return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ALBUM_ARTISTS);
-            case FRAGMENT_ALBUMS:
-                return new AlbumsFragment();
-            //case FRAGMENT_TRACKS:
-            //    return new TracksFragment();
-            default:
-                return null;
+                //case FRAGMENT_RECENTS:
+                //    return new RecentsFragment();
+                case FRAGMENT_PLAYLIST:
+                    return new PlaylistsFragment();
+                case FRAGMENT_ARTISTS:
+                    return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ARTISTS);
+                //case FRAGMENT_ALBUM_ARTISTS:
+                //    return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ALBUM_ARTISTS);
+                case FRAGMENT_ALBUMS:
+                    return new AlbumsFragment();
+                //case FRAGMENT_TRACKS:
+                //    return new TracksFragment();
+                default:
+                    return null;
             }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-            //case FRAGMENT_RECENTS:
-            //    return getString(R.string.recents);
-            case FRAGMENT_PLAYLIST:
-                return getString(R.string.playlists);
-            case FRAGMENT_ARTISTS:
-                return getString(R.string.artists);
-            //case FRAGMENT_ALBUM_ARTISTS:
-            //    return getString(R.string.album_artists);
-            case FRAGMENT_ALBUMS:
-                return getString(R.string.albums);
-            //case FRAGMENT_TRACKS:
-            //    return getString(R.string.tracks);
-            default:
-                return "";
+                //case FRAGMENT_RECENTS:
+                //    return getString(R.string.recents);
+                case FRAGMENT_PLAYLIST:
+                    return getString(R.string.playlists);
+                case FRAGMENT_ARTISTS:
+                    return getString(R.string.artists);
+                //case FRAGMENT_ALBUM_ARTISTS:
+                //    return getString(R.string.album_artists);
+                case FRAGMENT_ALBUMS:
+                    return getString(R.string.albums);
+                //case FRAGMENT_TRACKS:
+                //    return getString(R.string.tracks);
+                default:
+                    return "";
             }
         }
 
