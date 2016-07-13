@@ -49,6 +49,6 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/play" />
+        android:src="@drawable/icon_play" />
 
 </RelativeLayout>

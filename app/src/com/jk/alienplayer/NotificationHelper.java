@@ -39,16 +39,16 @@ public class NotificationHelper extends BroadcastReceiver {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notification);
         String action = intent.getAction();
         if (action.equals(PlayService.ACTION_START)) {
-            views.setImageViewResource(R.id.play, R.drawable.pause);
+            views.setImageViewResource(R.id.play, R.drawable.icon_pause);
         } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
             String song = intent.getStringExtra(PlayService.SONG_NAME);
             String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
             views.setTextViewText(R.id.song, song);
             views.setTextViewText(R.id.artist, artist);
         } else if (action.equals(PlayService.ACTION_PAUSE)) {
-            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setImageViewResource(R.id.play, R.drawable.icon_play);
         } else if (action.equals(PlayService.ACTION_STOP)) {
-            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setImageViewResource(R.id.play, R.drawable.icon_play);
         } else if (action.equals(PlayService.ACTION_EXIT)) {
             NotificationManager manager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -66,15 +66,15 @@ public class NotificationHelper extends BroadcastReceiver {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notification_big);
         String action = intent.getAction();
         if (action.equals(PlayService.ACTION_START)) {
-            views.setImageViewResource(R.id.play, R.drawable.pause);
+            views.setImageViewResource(R.id.play, R.drawable.icon_pause);
         } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
             String song = intent.getStringExtra(PlayService.SONG_NAME);
             String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
             syncSongInfo(views, song, artist);
         } else if (action.equals(PlayService.ACTION_PAUSE)) {
-            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setImageViewResource(R.id.play, R.drawable.icon_play);
         } else if (action.equals(PlayService.ACTION_STOP)) {
-            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setImageViewResource(R.id.play, R.drawable.icon_play);
         }
 
         setOnAllClickEvents(context, views);

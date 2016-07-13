@@ -5,30 +5,30 @@
 
     <ImageButton
         android:id="@+id/prev"
-        android:layout_width="@dimen/button_size"
-        android:layout_height="@dimen/button_size"
+        android:layout_width="@dimen/small_button_size"
+        android:layout_height="@dimen/small_button_size"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitCenter"
-        android:src="@drawable/prev" />
+        android:src="@drawable/icon_previous" />
 
     <com.jk.lib.widget.PlayPauseButton
         android:id="@+id/playBtn"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_centerInParent="true"
         android:clickable="true"
         app:elevation="0dp" />
 
     <ImageButton
         android:id="@+id/next"
-        android:layout_width="@dimen/button_size"
-        android:layout_height="@dimen/button_size"
+        android:layout_width="@dimen/small_button_size"
+        android:layout_height="@dimen/small_button_size"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitCenter"
-        android:src="@drawable/next" />
+        android:src="@drawable/icon_next" />
 
 </RelativeLayout>

@@ -41,16 +41,16 @@ public class APWidgetProvider extends AppWidgetProvider {
         String action = intent.getAction();
         if (action.equals(PlayService.ACTION_START)) {
             int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
-            views.setImageViewResource(R.id.play, R.drawable.pause);
+            views.setImageViewResource(R.id.play, R.drawable.icon_pause);
             views.setProgressBar(R.id.progressBar, duration, 0, false);
         } else if (action.equals(PlayService.ACTION_TRACK_CHANGE)) {
             String song = intent.getStringExtra(PlayService.SONG_NAME);
             String artist = intent.getStringExtra(PlayService.ARTIST_NAME);
             syncSongInfo(views, song, artist);
         } else if (action.equals(PlayService.ACTION_PAUSE)) {
-            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setImageViewResource(R.id.play, R.drawable.icon_play);
         } else if (action.equals(PlayService.ACTION_STOP)) {
-            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setImageViewResource(R.id.play, R.drawable.icon_play);
             views.setProgressBar(R.id.progressBar, 0, 0, false);
         } else if (action.equals(PlayService.ACTION_PROGRESS_UPDATE)) {
             int duration = intent.getIntExtra(PlayService.TOTAL_DURATION, 0);
@@ -80,10 +80,10 @@ public class APWidgetProvider extends AppWidgetProvider {
 
         PlayingInfo info = PlayingHelper.getPlayingInfo();
         if (info.status == PlayStatus.Playing) {
-            views.setImageViewResource(R.id.play, R.drawable.pause);
+            views.setImageViewResource(R.id.play, R.drawable.icon_pause);
             views.setProgressBar(R.id.progressBar, info.duration, info.progress, false);
         } else if (info.status == PlayStatus.Paused) {
-            views.setImageViewResource(R.id.play, R.drawable.play);
+            views.setImageViewResource(R.id.play, R.drawable.icon_play);
             views.setProgressBar(R.id.progressBar, info.duration, info.progress, false);
         }
         setOnClickEvents(context, views);

@@ -10,7 +10,7 @@
         android:layout_centerVertical="true"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:src="@drawable/prev" />
+        android:src="@drawable/icon_previous" />
 
     <ImageButton
         android:id="@+id/play"
@@ -19,7 +19,7 @@
         android:layout_centerInParent="true"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:src="@drawable/play" />
+        android:src="@drawable/icon_play" />
 
     <ImageButton
         android:id="@+id/next"
@@ -29,5 +29,5 @@
         android:layout_centerVertical="true"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:src="@drawable/next" />
+        android:src="@drawable/icon_next" />
 </RelativeLayout>

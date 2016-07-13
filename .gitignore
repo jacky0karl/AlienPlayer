@@ -3,6 +3,5 @@
 /.idea
 /build
 /*.iml
-/AlienPlayer/*.iml
-/viewpagerindicator/*.iml
+/app/*.iml
 .idea
