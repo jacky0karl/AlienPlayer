@@ -20,9 +20,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.ArtistInfo;
-import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.AlbumsActivity;
-import com.jk.alienplayer.ui.SongsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
 import com.jk.alienplayer.ui.lib.ListSeekBar;
 import com.jk.alienplayer.ui.lib.ListSeekBar.OnIndicatorChangedListener;
@@ -32,11 +30,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ArtistsFragment extends Fragment {
-    public static final String TYPE = "type";
-    public static final int TYPE_ARTISTS = 0;
-    public static final int TYPE_ALBUM_ARTISTS = 1;
-
-    private int mType;
     private ListView mListView;
     private ArtistsAdapter mAdapter;
     private ListSeekBar mListSeekBar;
@@ -95,17 +88,8 @@ public class ArtistsFragment extends Fragment {
         }
     };
 
-    public static ArtistsFragment newInstance(int type) {
-        ArtistsFragment fragment = new ArtistsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(TYPE, type);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mType = getArguments().getInt(TYPE, TYPE_ARTISTS);
         View root = inflater.inflate(R.layout.fragment_list_seekbar, container, false);
         init(root);
         MediaScanService.registerScanReceiver(getActivity(), mReceiver);
@@ -129,14 +113,6 @@ public class ArtistsFragment extends Fragment {
         mListView.setAdapter(mAdapter);
         updateArtists();
         mListView.setOnItemClickListener(mOnItemClickListener);
-    }
-
-    private void startSongsActivity(long key, String label) {
-        Intent intent = new Intent(getActivity(), SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
-        intent.putExtra(SongsActivity.KEY, key);
-        intent.putExtra(SongsActivity.LABEL, label);
-        startActivity(intent);
     }
 
     private void startAlbumsActivity(long id, String name) {

@@ -128,7 +128,10 @@ public class PlayingActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_info) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        } else if (item.getItemId() == R.id.action_info) {
             Intent intent = new Intent(this, TrackInfoActivity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {

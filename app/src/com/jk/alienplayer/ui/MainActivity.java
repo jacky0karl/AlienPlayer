@@ -126,7 +126,7 @@ public class MainActivity extends BaseActivity {
                 case FRAGMENT_PLAYLIST:
                     return new PlaylistsFragment();
                 case FRAGMENT_ARTISTS:
-                    return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ARTISTS);
+                    return new ArtistsFragment();
                 //case FRAGMENT_ALBUM_ARTISTS:
                 //    return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ALBUM_ARTISTS);
                 case FRAGMENT_ALBUMS:

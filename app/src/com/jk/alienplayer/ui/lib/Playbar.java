@@ -117,7 +117,7 @@ public class Playbar extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 if (PlayingInfoHolder.getInstance().getCurrentSong() != null) {
-                    ActivityOptions opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
+                    ActivityOptions opts = ActivityOptions.makeCustomAnimation(getContext(), R.anim.slide_up, 0);
                     Intent intent = new Intent(getContext(), PlayingActivity.class);
                     getContext().startActivity(intent, opts.toBundle());
                 }

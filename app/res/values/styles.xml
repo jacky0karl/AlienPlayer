@@ -10,6 +10,10 @@
         <item name="actionBarStyle">@style/Theme.MyApp.ActionBar</item>
     </style>
 
+    <style name="Theme.Playing" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="Theme.Search" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@style/NoAnimation</item>
