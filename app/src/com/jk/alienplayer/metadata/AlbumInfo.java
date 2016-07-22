@@ -1,8 +1,8 @@
 package com.jk.alienplayer.metadata;
 
-import com.jk.alienplayer.metadata.SearchResult.SearchResultData;
-
 import android.text.TextUtils;
+
+import com.jk.alienplayer.metadata.SearchResult.SearchResultData;
 
 public class AlbumInfo implements SearchResultData {
     public long id;
@@ -10,6 +10,7 @@ public class AlbumInfo implements SearchResultData {
     public String artist;
     public String artwork;
     public int year = 0;
+    public int tracks = 0;
 
     public AlbumInfo(long id, String name, String artist) {
         this.id = id;

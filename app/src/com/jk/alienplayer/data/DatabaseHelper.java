@@ -358,6 +358,7 @@ public class DatabaseHelper {
         String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
         AlbumInfo info = new AlbumInfo(albumId, album, artist);
         info.year = year;
+       // info.tracks = tracks;
         return info;
     }
 

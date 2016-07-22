@@ -25,6 +25,7 @@
     <string name="artist">歌手</string>
     <string name="album">专辑</string>
     <string name="album_artist">专辑歌手</string>
+    <string name="track_count">首</string>
     <string name="track">歌曲</string>
     <string name="year">发行时间</string>
     <string name="artwork">封面</string>

@@ -25,6 +25,7 @@
     <string name="artist">Artist</string>
     <string name="album">Album</string>
     <string name="album_artist">Album Artist</string>
+    <string name="track_count">&#160;tracks</string>
     <string name="track">Track</string>
     <string name="year">Year</string>
     <string name="artwork">Artwork</string>
