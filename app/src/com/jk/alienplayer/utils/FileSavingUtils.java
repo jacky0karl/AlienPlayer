@@ -23,8 +23,7 @@ public class FileSavingUtils {
         StorageManager sm = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
         String systemPath = null;
         try {
-            String[] paths = (String[]) sm.getClass().getMethod("getVolumePaths", null)
-                    .invoke(sm);
+            String[] paths = (String[]) sm.getClass().getMethod("getVolumePaths").invoke(sm);
             for (int i = 0; i < paths.length; i++) {
                 String status = (String) sm.getClass().getMethod("getVolumeState", String.class)
                         .invoke(sm, paths[i]);

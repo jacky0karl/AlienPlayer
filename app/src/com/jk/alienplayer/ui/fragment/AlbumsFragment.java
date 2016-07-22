@@ -82,7 +82,7 @@ public class AlbumsFragment extends Fragment {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                mAlbums = DatabaseHelper.getAlbums(getActivity());
+                mAlbums = DatabaseHelper.getAllAlbums(getActivity());
                 for (AlbumInfo info : mAlbums) {
                     info.artwork = DatabaseHelper.getAlbumArtwork(getActivity(), info.id);
                 }

@@ -115,22 +115,41 @@ public class DatabaseHelper {
         return albums;
     }
 
-    public static List<AlbumInfo> getAlbums(Context context) {
+    public static List<AlbumInfo> getAllAlbums(Context context) {
         List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-        String[] projection = new String[]{DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
-                ALBUM_ARTIST};
+        String[] projection = new String[]{DISTINCT + Albums._ID, Albums.ALBUM, Albums.ARTIST,
+                Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS};
 
-        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-                MEDIA_SELECTION, null, ALBUM_ARTIST);
+        Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
+                null, null, Albums.ARTIST);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    albums.add(bulidAlbumInfo(cursor));
+                    AlbumInfo info = bulidAlbums(cursor);
+                    if (info != null) {
+                        albums.add(info);
+                    }
                 } while (cursor.moveToNext());
             }
             cursor.close();
         }
         return albums;
+    }
+
+    private static AlbumInfo bulidAlbums(Cursor cursor) {
+        long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(Albums._ID));
+        String album = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM));
+        String artist = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ARTIST));
+        int year = cursor.getInt(cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR));
+        int tracks = cursor.getInt(cursor.getColumnIndexOrThrow(Albums.NUMBER_OF_SONGS));
+
+        if (!AlbumInfo.UNKNOWN.equals(artist)) {
+            AlbumInfo info = new AlbumInfo(albumId, album, artist);
+            info.year = year;
+            info.tracks = tracks;
+            return info;
+        }
+        return null;
     }
 
     public static List<SongInfo> getTracks(Context context, String artist) {
@@ -358,7 +377,7 @@ public class DatabaseHelper {
         String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
         AlbumInfo info = new AlbumInfo(albumId, album, artist);
         info.year = year;
-       // info.tracks = tracks;
+        // info.tracks = tracks;
         return info;
     }
 

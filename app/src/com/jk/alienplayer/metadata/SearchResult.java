@@ -6,6 +6,8 @@ public class SearchResult {
     public static final int TYPE_TRACKS = 2;
 
     public interface SearchResultData {
+        public static final String UNKNOWN = "<unknown>";
+
         long getId();
 
         String getDisplayName();
