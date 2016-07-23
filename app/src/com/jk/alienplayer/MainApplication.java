@@ -3,15 +3,15 @@ package com.jk.alienplayer;
 import android.app.Application;
 import android.os.StrictMode;
 
-import com.jk.alienplayer.utils.ImageLoaderUtils;
-
 public class MainApplication extends Application {
+
+    public static Application app = null;
 
     @Override
     public void onCreate() {
         setDetection();
         super.onCreate();
-        ImageLoaderUtils.initImageLoader(this);
+        app = this;
     }
 
     private void setDetection() {

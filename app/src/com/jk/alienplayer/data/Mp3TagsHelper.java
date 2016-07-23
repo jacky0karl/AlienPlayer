@@ -1,15 +1,15 @@
 package com.jk.alienplayer.data;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.view.View;
 
+import com.jk.alienplayer.MainApplication;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.utils.FileSavingUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
@@ -88,22 +88,9 @@ public class Mp3TagsHelper {
     }
 
     private static void fetchCover(final OnMP3AddListener l, final MP3File mp3, String url) {
-        ImageLoader.getInstance().loadImage(url, new ImageLoadingListener() {
+        Target target = new Target() {
             @Override
-            public void onLoadingStarted(String s, View view) {
-            }
-
-            @Override
-            public void onLoadingFailed(String s, View view, FailReason failReason) {
-                l.onMP3Added();
-            }
-
-            @Override
-            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                if (bitmap == null) {
-                    return;
-                }
-
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 try {
                     String tmp = FileSavingUtils.sRootPath + System.currentTimeMillis();
                     FileOutputStream fos = new FileOutputStream(tmp);
@@ -118,10 +105,16 @@ public class Mp3TagsHelper {
             }
 
             @Override
-            public void onLoadingCancelled(String s, View view) {
+            public void onBitmapFailed(Drawable errorDrawable) {
                 l.onMP3Added();
             }
-        });
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        };
+
+        Picasso.with(MainApplication.app).load(url).into(target);
     }
 
     private static void addCoverField(OnMP3AddListener l, MP3File mp3, String filePath) {

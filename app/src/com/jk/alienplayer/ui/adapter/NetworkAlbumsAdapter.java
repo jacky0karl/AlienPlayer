@@ -10,8 +10,7 @@ import android.widget.TextView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.model.AlbumBean;
-import com.jk.alienplayer.utils.ImageLoaderUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +66,7 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
             AlbumBean info = mAlbums.get(position);
             viewHolder.name.setText(info.getName());
             viewHolder.artist.setText(info.getShowingArtist());
-            ImageLoader.getInstance().displayImage(info.getPicUrl(), viewHolder.artwork,
-                    ImageLoaderUtils.sOptions);
+            Picasso.with(mContext).load(info.getPicUrl()).placeholder(R.drawable.disk).into(viewHolder.artwork);
             return view;
         } catch (Exception e) {
             return new View(mContext);

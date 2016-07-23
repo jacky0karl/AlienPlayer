@@ -13,8 +13,7 @@ import com.jk.alienplayer.metadata.NetworkAlbumInfo;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.metadata.SearchResult;
-import com.jk.alienplayer.utils.ImageLoaderUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,8 +99,6 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkSearchResult result =  mResults.get(position);
-        //ImageLoader.getInstance().displayImage(result.avatar, viewHolder.avatar,
-        //        ImageLoaderUtils.sOptions);
         viewHolder.content.setText(result.name);
         showTitle(viewHolder.title, position, result.type);
         return view;
@@ -122,8 +119,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkAlbumInfo result = (NetworkAlbumInfo) mResults.get(position);
-        ImageLoader.getInstance().displayImage(result.avatar, viewHolder.artwork,
-                ImageLoaderUtils.sOptions);
+        Picasso.with(mContext).load(result.avatar).placeholder(R.drawable.disk).into(viewHolder.artwork);
         viewHolder.content.setText(result.name);
         viewHolder.artist.setText(result.artist);
         showTitle(viewHolder.title, position, result.type);
