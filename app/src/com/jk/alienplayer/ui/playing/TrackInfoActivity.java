@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.playing;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +12,7 @@ import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
+import com.jk.alienplayer.ui.BaseActivity;
 
 public class TrackInfoActivity extends BaseActivity {
     private TrackTagInfo mTrackTagInfo;

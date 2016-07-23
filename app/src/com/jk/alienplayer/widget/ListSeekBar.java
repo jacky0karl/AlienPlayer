@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui.lib;
+package com.jk.alienplayer.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;

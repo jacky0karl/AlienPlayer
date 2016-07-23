@@ -9,12 +9,12 @@
         android:layout_height="match_parent" >
     </ListView>
 
-    <com.jk.alienplayer.ui.lib.ListSeekBar
+    <com.jk.alienplayer.widget.ListSeekBar
         android:id="@+id/listSeekBar"
         android:layout_width="30dp"
         android:layout_height="match_parent"
         android:layout_gravity="right" >
-    </com.jk.alienplayer.ui.lib.ListSeekBar>
+    </com.jk.alienplayer.widget.ListSeekBar>
 
     <include layout="@layout/indicator_label" />
 

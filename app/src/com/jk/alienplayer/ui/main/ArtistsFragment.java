@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui.fragment;
+package com.jk.alienplayer.ui.main;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,10 +20,10 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.ArtistInfo;
-import com.jk.alienplayer.ui.AlbumsActivity;
+import com.jk.alienplayer.ui.artistdetail.AlbumsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
-import com.jk.alienplayer.ui.lib.ListSeekBar;
-import com.jk.alienplayer.ui.lib.ListSeekBar.OnIndicatorChangedListener;
+import com.jk.alienplayer.widget.ListSeekBar;
+import com.jk.alienplayer.widget.ListSeekBar.OnIndicatorChangedListener;
 import com.jk.alienplayer.utils.PinyinUtils;
 
 import java.util.Collections;

@@ -13,7 +13,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/icon_previous" />
 
-    <com.jk.lib.widget.PlayPauseButton
+    <com.jk.alienplayer.widget.PlayPauseButton
         android:id="@+id/playBtn"
         android:layout_width="55dp"
         android:layout_height="55dp"

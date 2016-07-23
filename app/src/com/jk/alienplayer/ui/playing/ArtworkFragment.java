@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui.fragment;
+package com.jk.alienplayer.ui.playing;
 
 import com.jk.alienplayer.R;
 

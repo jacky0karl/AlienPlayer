@@ -1,4 +1,4 @@
-package com.jk.lib.widget;
+package com.jk.alienplayer.widget;
 
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.jk.alienplayer.impl.PlayService;
-import com.jk.alienplayer.ui.MainActivity;
+import com.jk.alienplayer.ui.main.MainActivity;
 
 public class PendingIntentUtils {
     private static final int LAUNCH_INTENT_ID = 100;

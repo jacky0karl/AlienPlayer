@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.network;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.model.AlbumBean;
 import com.jk.alienplayer.presenter.AlbumsPresenter;
+import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.NetworkAlbumsAdapter;
 
 import java.util.List;

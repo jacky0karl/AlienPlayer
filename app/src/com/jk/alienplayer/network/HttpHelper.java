@@ -6,7 +6,7 @@ import android.util.Base64;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.model.ArtistBean;
 import com.jk.alienplayer.model.SearchBean;
-import com.jk.alienplayer.ui.NetworkSearchActivity;
+import com.jk.alienplayer.ui.network.NetworkSearchActivity;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;

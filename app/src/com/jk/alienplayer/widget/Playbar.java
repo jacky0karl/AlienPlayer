@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui.lib;
+package com.jk.alienplayer.widget;
 
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
@@ -22,8 +22,7 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.PlayingActivity;
-import com.jk.lib.widget.PlayPauseButton;
+import com.jk.alienplayer.ui.playing.PlayingActivity;
 
 public class Playbar extends RelativeLayout {
 

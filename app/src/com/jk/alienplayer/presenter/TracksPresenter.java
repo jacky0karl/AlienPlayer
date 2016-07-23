@@ -4,7 +4,7 @@ import com.jk.alienplayer.model.TracksBean;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.SearchService;
 import com.jk.alienplayer.network.ServiceHelper;
-import com.jk.alienplayer.ui.NetworkTracksActivity;
+import com.jk.alienplayer.ui.network.NetworkTracksActivity;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.network;
 
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -28,8 +28,9 @@ import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
+import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.NetworkSearchResultsAdapter;
-import com.jk.alienplayer.ui.lib.DialogBuilder;
+import com.jk.alienplayer.widget.DialogBuilder;
 
 import java.util.List;
 

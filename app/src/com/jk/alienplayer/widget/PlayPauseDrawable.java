@@ -27,7 +27,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.jk.lib.widget;
+package com.jk.alienplayer.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

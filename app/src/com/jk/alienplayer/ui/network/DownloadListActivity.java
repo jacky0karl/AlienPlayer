@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.network;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +16,11 @@ import android.widget.TextView;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.network.FileDownloadingHelper;
+import com.jk.alienplayer.ui.BaseActivity;
+import com.jk.alienplayer.ui.main.SearchActivity;
 import com.jk.alienplayer.ui.adapter.FileDownloadListAdapter;
-import com.jk.alienplayer.ui.lib.ListMenu;
-import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
+import com.jk.alienplayer.widget.ListMenu;
+import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
 
 import java.util.List;
 

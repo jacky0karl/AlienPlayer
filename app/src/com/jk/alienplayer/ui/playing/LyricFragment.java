@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui.fragment;
+package com.jk.alienplayer.ui.playing;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import com.jk.alienplayer.metadata.LyricInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.LyricInfo.Sentence;
 import com.jk.alienplayer.ui.adapter.LyricAdapter;
-import com.jk.alienplayer.ui.lib.TrackOperationHelper;
+import com.jk.alienplayer.widget.TrackOperationHelper;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

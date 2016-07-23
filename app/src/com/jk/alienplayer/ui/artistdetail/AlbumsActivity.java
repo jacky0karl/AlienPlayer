@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.artistdetail;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.AlbumInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
-import com.jk.alienplayer.ui.lib.Playbar;
+import com.jk.alienplayer.widget.Playbar;
 
 import java.util.List;
 

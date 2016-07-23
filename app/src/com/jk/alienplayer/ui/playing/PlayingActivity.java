@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.playing;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,12 +27,10 @@ import com.jk.alienplayer.impl.PlayingHelper;
 import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.fragment.ArtworkFragment;
-import com.jk.alienplayer.ui.fragment.CurrentListFragment;
-import com.jk.alienplayer.ui.fragment.LyricFragment;
-import com.jk.alienplayer.ui.lib.VolumeBarWindow;
+import com.jk.alienplayer.ui.BaseActivity;
+import com.jk.alienplayer.widget.VolumeBarWindow;
 import com.jk.alienplayer.utils.PlayingTimeUtils;
-import com.jk.lib.widget.PlayPauseButton;
+import com.jk.alienplayer.widget.PlayPauseButton;
 
 public class PlayingActivity extends BaseActivity {
     private static final int FRAGMENT_ARTWORK = 0;

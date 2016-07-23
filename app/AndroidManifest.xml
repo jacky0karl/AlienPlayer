@@ -21,7 +21,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -31,8 +31,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.AlbumsActivity"
-            android:parentActivityName=".ui.MainActivity"
+            android:name=".ui.artistdetail.AlbumsActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -40,22 +40,22 @@
             android:parentActivityName=".ui.AboutActivity">
         </activity>
         <activity
-            android:name=".ui.SongsActivity"
-            android:parentActivityName=".ui.MainActivity"
+            android:name=".ui.artistdetail.SongsActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".ui.SearchActivity"
+            android:name=".ui.main.SearchActivity"
             android:label="@string/search"
-            android:parentActivityName=".ui.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Search">
         </activity>
         <activity
-            android:name=".ui.NetworkSearchActivity"
+            android:name=".ui.network.NetworkSearchActivity"
             android:label="@string/discover"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NetworkSearch">
             <intent-filter>
@@ -67,32 +67,32 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:name=".ui.PlayingActivity"
-            android:parentActivityName=".ui.MainActivity"
+            android:name=".ui.playing.PlayingActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/Theme.Playing"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".ui.TrackInfoActivity"
+            android:name=".ui.playing.TrackInfoActivity"
             android:label="@string/track_details"
-            android:parentActivityName=".ui.PlayingActivity"
+            android:parentActivityName=".ui.playing.PlayingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
-            android:name=".ui.NetworkAlbumsActivity"
-            android:parentActivityName=".ui.NetworkSearchActivity"
+            android:name=".ui.network.NetworkAlbumsActivity"
+            android:parentActivityName=".ui.network.NetworkSearchActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".ui.NetworkTracksActivity"
-            android:parentActivityName=".ui.NetworkSearchActivity"
+            android:name=".ui.network.NetworkTracksActivity"
+            android:parentActivityName=".ui.network.NetworkSearchActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".ui.DownloadListActivity"
+            android:name=".ui.network.DownloadListActivity"
             android:label="@string/download_list"
-            android:parentActivityName=".ui.NetworkSearchActivity"
+            android:parentActivityName=".ui.network.NetworkSearchActivity"
             android:screenOrientation="portrait">
         </activity>
 

@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.network;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,8 +19,9 @@ import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.presenter.TracksPresenter;
+import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.NetworkTracksAdapter;
-import com.jk.alienplayer.ui.lib.DialogBuilder;
+import com.jk.alienplayer.widget.DialogBuilder;
 
 import java.util.List;
 

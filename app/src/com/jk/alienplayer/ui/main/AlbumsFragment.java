@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui.fragment;
+package com.jk.alienplayer.ui.main;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,7 +19,7 @@ import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.AlbumInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
-import com.jk.alienplayer.ui.SongsActivity;
+import com.jk.alienplayer.ui.artistdetail.SongsActivity;
 import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
 
 import java.util.List;

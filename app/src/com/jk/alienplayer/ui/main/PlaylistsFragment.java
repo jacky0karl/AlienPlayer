@@ -1,13 +1,13 @@
-package com.jk.alienplayer.ui.fragment;
+package com.jk.alienplayer.ui.main;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.PlaylistInfo;
-import com.jk.alienplayer.ui.SongsActivity;
+import com.jk.alienplayer.ui.artistdetail.SongsActivity;
 import com.jk.alienplayer.ui.adapter.PlaylistsAdapter;
-import com.jk.alienplayer.ui.lib.ListMenu;
-import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
+import com.jk.alienplayer.widget.ListMenu;
+import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

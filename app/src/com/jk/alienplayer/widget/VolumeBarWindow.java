@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui.lib;
+package com.jk.alienplayer.widget;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.VolumeKeyHelper;

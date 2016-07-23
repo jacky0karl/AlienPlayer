@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.main;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,11 +16,11 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.network.FileDownloadingHelper;
-import com.jk.alienplayer.ui.fragment.AlbumsFragment;
-import com.jk.alienplayer.ui.fragment.ArtistsFragment;
-import com.jk.alienplayer.ui.fragment.PlaylistsFragment;
-import com.jk.alienplayer.ui.lib.Playbar;
-import com.jk.alienplayer.ui.lib.VolumeBarWindow;
+import com.jk.alienplayer.ui.AboutActivity;
+import com.jk.alienplayer.ui.BaseActivity;
+import com.jk.alienplayer.ui.network.NetworkSearchActivity;
+import com.jk.alienplayer.widget.Playbar;
+import com.jk.alienplayer.widget.VolumeBarWindow;
 import com.jk.alienplayer.utils.UncaughtExceptionLoger;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
@@ -29,7 +29,6 @@ public class MainActivity extends BaseActivity {
     private static final int FRAGMENT_PLAYLIST = 0;
     private static final int FRAGMENT_ARTISTS = 1;
     private static final int FRAGMENT_ALBUMS = 2;
-    //private static final int FRAGMENT_TRACKS = 3;
     //private static final int FRAGMENT_RECENTS = 4;
     private static final int FRAGMENT_COUNT = 3;
 
@@ -131,8 +130,6 @@ public class MainActivity extends BaseActivity {
                 //    return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ALBUM_ARTISTS);
                 case FRAGMENT_ALBUMS:
                     return new AlbumsFragment();
-                //case FRAGMENT_TRACKS:
-                //    return new TracksFragment();
                 default:
                     return null;
             }
@@ -151,8 +148,6 @@ public class MainActivity extends BaseActivity {
                 //    return getString(R.string.album_artists);
                 case FRAGMENT_ALBUMS:
                     return getString(R.string.albums);
-                //case FRAGMENT_TRACKS:
-                //    return getString(R.string.tracks);
                 default:
                     return "";
             }

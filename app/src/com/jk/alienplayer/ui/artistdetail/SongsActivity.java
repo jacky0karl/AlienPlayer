@@ -1,4 +1,4 @@
-package com.jk.alienplayer.ui;
+package com.jk.alienplayer.ui.artistdetail;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,12 +16,13 @@ import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.TracksAdapter;
-import com.jk.alienplayer.ui.lib.ListMenu;
-import com.jk.alienplayer.ui.lib.ListMenu.OnMenuItemClickListener;
-import com.jk.alienplayer.ui.lib.Playbar;
-import com.jk.alienplayer.ui.lib.TrackOperationHelper;
-import com.jk.alienplayer.ui.lib.TrackOperationHelper.OnDeleteTrackListener;
+import com.jk.alienplayer.widget.ListMenu;
+import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
+import com.jk.alienplayer.widget.Playbar;
+import com.jk.alienplayer.widget.TrackOperationHelper;
+import com.jk.alienplayer.widget.TrackOperationHelper.OnDeleteTrackListener;
 
 import java.util.List;
 
