@@ -83,9 +83,6 @@ public class AlbumsFragment extends Fragment {
             @Override
             public void run() {
                 mAlbums = DatabaseHelper.getAllAlbums(getActivity());
-                for (AlbumInfo info : mAlbums) {
-                    info.artwork = DatabaseHelper.getAlbumArtwork(getActivity(), info.id);
-                }
                 updateList();
             }
         });

@@ -7,7 +7,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Albums;
+import android.provider.MediaStore.Audio.Artists;
 import android.provider.MediaStore.Audio.Media;
 import android.text.TextUtils;
 
@@ -32,17 +34,18 @@ public class DatabaseHelper {
             + String.valueOf(MIN_MUSIC_SIZE) + "' and " + Media.IS_MUSIC + "=1";
     private static final Uri AlbumArtUri = Uri.parse("content://media/external/audio/albumart");
 
-    public static List<ArtistInfo> getArtists(Context context) {
+    public static List<ArtistInfo> getAllArtists(Context context) {
         List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
-        String[] projection = new String[]{DISTINCT + Media.ARTIST_ID, Media.ARTIST};
+        String[] projection = new String[]{DISTINCT + Artists._ID, Artists.ARTIST,
+                Artists.NUMBER_OF_ALBUMS, Artists.NUMBER_OF_TRACKS};
 
-        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-                MEDIA_SELECTION, null, Media.ARTIST);
+        Cursor cursor = context.getContentResolver().query(Artists.EXTERNAL_CONTENT_URI, projection,
+                null, null, Artists.ARTIST);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ARTIST_ID));
-                    String artist = cursor.getString(cursor.getColumnIndexOrThrow(Media.ARTIST));
+                    long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(Artists._ID));
+                    String artist = cursor.getString(cursor.getColumnIndexOrThrow(Artists.ARTIST));
                     ArtistInfo info = new ArtistInfo(artistId, artist);
                     artists.add(info);
                 } while (cursor.moveToNext());
@@ -116,9 +119,9 @@ public class DatabaseHelper {
     }
 
     public static List<AlbumInfo> getAllAlbums(Context context) {
-        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
+        List<AlbumInfo> albums = new ArrayList<>();
         String[] projection = new String[]{DISTINCT + Albums._ID, Albums.ALBUM, Albums.ARTIST,
-                Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS};
+                Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS, Albums.ALBUM_ART};
 
         Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
                 null, null, Albums.ARTIST);
@@ -142,11 +145,13 @@ public class DatabaseHelper {
         String artist = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ARTIST));
         int year = cursor.getInt(cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR));
         int tracks = cursor.getInt(cursor.getColumnIndexOrThrow(Albums.NUMBER_OF_SONGS));
+        String artwork = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
 
         if (!AlbumInfo.UNKNOWN.equals(artist)) {
             AlbumInfo info = new AlbumInfo(albumId, album, artist);
             info.year = year;
             info.tracks = tracks;
+            info.artwork = "file://" + artwork;
             return info;
         }
         return null;

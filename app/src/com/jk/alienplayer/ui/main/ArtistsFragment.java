@@ -127,7 +127,7 @@ public class ArtistsFragment extends Fragment {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                mArtists = DatabaseHelper.getArtists(getActivity());
+                mArtists = DatabaseHelper.getAllArtists(getActivity());
                 //mArtists = DatabaseHelper.getAlbumArtists(getActivity());
                 sortList();
                 updateList();
