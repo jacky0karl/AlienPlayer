@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Artists;
 import android.provider.MediaStore.Audio.Media;
@@ -55,62 +54,21 @@ public class DatabaseHelper {
         return artists;
     }
 
-    public static List<ArtistInfo> getAlbumArtists(Context context) {
-        List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
-        String[] projection = new String[]{DISTINCT + ALBUM_ARTIST};
-
-        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-                MEDIA_SELECTION, null, ALBUM_ARTIST);
+    public static List<AlbumInfo> getAlbums(Context context, String artist) {
+        List<AlbumInfo> albums = new ArrayList<>();
+        String[] projection = new String[]{DISTINCT + Albums._ID, Albums.ALBUM, Albums.ARTIST,
+                Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS, Albums.ALBUM_ART};
+        String selection = Albums.ARTIST + "=?";
+        String[] selectionArgs = new String[]{artist};
+        Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
+                selection, selectionArgs, Albums.FIRST_YEAR);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
-                    if (!TextUtils.isEmpty(artist)) {
-                        ArtistInfo info = new ArtistInfo(ArtistInfo.ALBUM_ARTIST_ID, artist);
-                        artists.add(info);
+                    AlbumInfo info = bulidAlbums(cursor);
+                    if (info != null) {
+                        albums.add(info);
                     }
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-        }
-        return artists;
-    }
-
-    public static List<AlbumInfo> getAlbums(Context context, long artistId) {
-        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-        String[] projection = new String[]{DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
-                ALBUM_ARTIST};
-        String selection = MEDIA_SELECTION;
-        selection += " and " + Media.ARTIST_ID + "=?";
-        String[] selectionArgs = new String[]{String.valueOf(artistId)};
-
-        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-                selection, selectionArgs, Media.YEAR);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    albums.add(bulidAlbumInfo(cursor));
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-        }
-        return albums;
-    }
-
-    public static List<AlbumInfo> getAlbums(Context context, String albumArtist) {
-        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-        String[] projection = new String[]{DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
-                ALBUM_ARTIST};
-        String selection = MEDIA_SELECTION;
-        selection += " and " + ALBUM_ARTIST + "=?";
-        String[] selectionArgs = new String[]{albumArtist};
-
-        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-                selection, selectionArgs, Media.YEAR);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    albums.add(bulidAlbumInfo(cursor));
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -414,4 +372,46 @@ public class DatabaseHelper {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         return BitmapFactory.decodeFileDescriptor(fd, null, options);
     }
+
+//    public static List<ArtistInfo> getAlbumArtists(Context context) {
+//        List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
+//        String[] projection = new String[]{DISTINCT + ALBUM_ARTIST};
+//
+//        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
+//                MEDIA_SELECTION, null, ALBUM_ARTIST);
+//        if (cursor != null) {
+//            if (cursor.moveToFirst()) {
+//                do {
+//                    String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
+//                    if (!TextUtils.isEmpty(artist)) {
+//                        ArtistInfo info = new ArtistInfo(ArtistInfo.ALBUM_ARTIST_ID, artist);
+//                        artists.add(info);
+//                    }
+//                } while (cursor.moveToNext());
+//            }
+//            cursor.close();
+//        }
+//        return artists;
+//    }
+
+//    public static List<AlbumInfo> getAlbums(Context context, String albumArtist) {
+//        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
+//        String[] projection = new String[]{DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
+//                ALBUM_ARTIST};
+//        String selection = MEDIA_SELECTION;
+//        selection += " and " + ALBUM_ARTIST + "=?";
+//        String[] selectionArgs = new String[]{albumArtist};
+//
+//        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
+//                selection, selectionArgs, Media.YEAR);
+//        if (cursor != null) {
+//            if (cursor.moveToFirst()) {
+//                do {
+//                    albums.add(bulidAlbumInfo(cursor));
+//                } while (cursor.moveToNext());
+//            }
+//            cursor.close();
+//        }
+//        return albums;
+//    }
 }

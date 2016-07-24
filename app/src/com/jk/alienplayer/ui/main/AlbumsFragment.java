@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,9 @@ import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
 import java.util.List;
 
 public class AlbumsFragment extends Fragment {
+    public static final String ARTIST_NAME = "artist_name";
+
+    private String mArtistName;
     private ListView mListView;
     private AlbumsAdapter mAdapter;
     private List<AlbumInfo> mAlbums;
@@ -49,6 +53,10 @@ public class AlbumsFragment extends Fragment {
     }
 
     private void init(View root) {
+        if (getArguments() != null) {
+            mArtistName = getArguments().getString(ARTIST_NAME);
+        }
+
         mLoading = (ProgressBar) root.findViewById(R.id.loading);
         mListView = (ListView) root.findViewById(R.id.list);
         mAdapter = new AlbumsAdapter(getActivity());
@@ -82,7 +90,11 @@ public class AlbumsFragment extends Fragment {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                mAlbums = DatabaseHelper.getAllAlbums(getActivity());
+                if (!TextUtils.isEmpty(mArtistName)) {
+                    mAlbums = DatabaseHelper.getAlbums(getActivity(), mArtistName);
+                } else {
+                    mAlbums = DatabaseHelper.getAllAlbums(getActivity());
+                }
                 updateList();
             }
         });

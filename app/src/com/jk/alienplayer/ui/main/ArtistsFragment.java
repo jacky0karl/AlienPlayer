@@ -20,11 +20,11 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.ArtistInfo;
-import com.jk.alienplayer.ui.artistdetail.AlbumsActivity;
 import com.jk.alienplayer.ui.adapter.ArtistsAdapter;
+import com.jk.alienplayer.ui.artistdetail.ArtistDetailActivity;
+import com.jk.alienplayer.utils.PinyinUtils;
 import com.jk.alienplayer.widget.ListSeekBar;
 import com.jk.alienplayer.widget.ListSeekBar.OnIndicatorChangedListener;
-import com.jk.alienplayer.utils.PinyinUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -116,9 +116,9 @@ public class ArtistsFragment extends Fragment {
     }
 
     private void startAlbumsActivity(long id, String name) {
-        Intent intent = new Intent(getActivity(), AlbumsActivity.class);
-        intent.putExtra(AlbumsActivity.ARTIST_ID, id);
-        intent.putExtra(AlbumsActivity.ARTIST_NAME, name);
+        Intent intent = new Intent(getActivity(), ArtistDetailActivity.class);
+        intent.putExtra(ArtistDetailActivity.ARTIST_ID, id);
+        intent.putExtra(ArtistDetailActivity.ARTIST_NAME, name);
         startActivity(intent);
     }
 
