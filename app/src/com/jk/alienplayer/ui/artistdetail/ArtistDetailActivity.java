@@ -36,17 +36,20 @@ public class ArtistDetailActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        //mPlaybar.finish();
+        if (mPlaybar != null) {
+            mPlaybar.finish();
+        }
         super.onDestroy();
     }
 
     private void init() {
-        //mPlaybar = (Playbar) findViewById(R.id.playbar);
+        mPlaybar = (Playbar) findViewById(R.id.playbar);
         mArtistId = getIntent().getLongExtra(ARTIST_ID, 0);
         mArtistName = getIntent().getStringExtra(ARTIST_NAME);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mArtistName);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FragmentPagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.viewpager);

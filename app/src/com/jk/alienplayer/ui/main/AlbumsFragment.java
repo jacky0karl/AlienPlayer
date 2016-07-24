@@ -6,13 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.jk.alienplayer.R;
@@ -20,8 +19,9 @@ import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.AlbumInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
-import com.jk.alienplayer.ui.artistdetail.SongsActivity;
 import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
+import com.jk.alienplayer.ui.adapter.OnItemClickListener;
+import com.jk.alienplayer.ui.artistdetail.SongsActivity;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class AlbumsFragment extends Fragment {
     public static final String ARTIST_NAME = "artist_name";
 
     private String mArtistName;
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
     private AlbumsAdapter mAdapter;
     private List<AlbumInfo> mAlbums;
     private ProgressBar mLoading;
@@ -46,7 +46,7 @@ public class AlbumsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_list, container, false);
+        View root = inflater.inflate(R.layout.fragment_albums, container, false);
         init(root);
         MediaScanService.registerScanReceiver(getActivity(), mReceiver);
         return root;
@@ -58,16 +58,16 @@ public class AlbumsFragment extends Fragment {
         }
 
         mLoading = (ProgressBar) root.findViewById(R.id.loading);
-        mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new AlbumsAdapter(getActivity());
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new OnItemClickListener() {
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new AlbumsAdapter(getActivity(), new OnItemClickListener<AlbumInfo>(){
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlbumInfo info = mAdapter.getItem(position);
+            public void onItemClick(View view, int position, AlbumInfo info) {
                 startSongsPage(info.id, info.name);
             }
         });
+        mRecyclerView.setAdapter(mAdapter);
         updateAlbums();
     }
 

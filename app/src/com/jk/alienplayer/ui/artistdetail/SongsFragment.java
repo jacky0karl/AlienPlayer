@@ -3,13 +3,12 @@ package com.jk.alienplayer.ui.artistdetail;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 
 import com.jk.alienplayer.R;
@@ -19,7 +18,8 @@ import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.adapter.TracksAdapter;
+import com.jk.alienplayer.ui.adapter.OnItemClickListener;
+import com.jk.alienplayer.ui.adapter.SongsAdapter;
 import com.jk.alienplayer.widget.ListMenu;
 import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
 import com.jk.alienplayer.widget.TrackOperationHelper;
@@ -35,17 +35,21 @@ public class SongsFragment extends Fragment implements OnMenuItemClickListener {
     private int mKeyType;
     private long mKey;
     private String mLabel;
-    private ListView mListView;
-    private TracksAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private SongsAdapter mAdapter;
     private ListMenu mListMenu;
     private PopupWindow mPopupWindow;
-    private SongInfo mCurrTrack;
+    private SongInfo mCurrTrack = null;
     private List<SongInfo> mSongList = null;
 
-    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener<SongInfo>() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mCurrTrack = mAdapter.getItem(position);
+        public void onItemClick(View view, int position, SongInfo obj) {
+            if (obj == null) {
+                return;
+            }
+
+            mCurrTrack = obj;
             if (view.getId() == R.id.action) {
                 mPopupWindow.showAsDropDown(view);
             } else {
@@ -68,18 +72,19 @@ public class SongsFragment extends Fragment implements OnMenuItemClickListener {
     }
 
     private void init(View root) {
-        if (getArguments() !=null) {
+        if (getArguments() != null) {
             mKeyType = getArguments().getInt(KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
             mKey = getArguments().getLong(KEY, -1);
             mLabel = getArguments().getString(LABEL);
         }
 
-        mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new TracksAdapter(getActivity(), mOnItemClickListener);
-        mListView.setAdapter(mAdapter);
-        updateList();
-        mListView.setOnItemClickListener(mOnItemClickListener);
         setupPopupWindow();
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new SongsAdapter(getActivity(), mOnItemClickListener);
+        mRecyclerView.setAdapter(mAdapter);
+        updateList();
     }
 
     private void setupPopupWindow() {
