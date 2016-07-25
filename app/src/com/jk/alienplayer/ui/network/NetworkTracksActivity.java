@@ -18,7 +18,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.network.HttpHelper;
-import com.jk.alienplayer.presenter.TracksPresenter;
+import com.jk.alienplayer.presenter.network.NetworkTracksPresenter;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.NetworkTracksAdapter;
 import com.jk.alienplayer.widget.DialogBuilder;
@@ -34,7 +34,7 @@ public class NetworkTracksActivity extends BaseActivity {
     private ListView mListView;
     private NetworkTracksAdapter mAdapter;
     private long mAlbumId;
-    private TracksPresenter mPresenter;
+    private NetworkTracksPresenter mPresenter;
     private List<TrackBean> mTracks = null;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
@@ -85,7 +85,7 @@ public class NetworkTracksActivity extends BaseActivity {
 
         mLoading.setVisibility(View.VISIBLE);
         mNoResult.setVisibility(View.GONE);
-        mPresenter = new TracksPresenter(this);
+        mPresenter = new NetworkTracksPresenter(this);
         mPresenter.fetchTracks(mAlbumId);
     }
 

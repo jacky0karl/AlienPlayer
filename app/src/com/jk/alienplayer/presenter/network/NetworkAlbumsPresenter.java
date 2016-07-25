@@ -1,4 +1,4 @@
-package com.jk.alienplayer.presenter;
+package com.jk.alienplayer.presenter.network;
 
 import com.jk.alienplayer.model.AlbumsBean;
 import com.jk.alienplayer.network.HttpHelper;
@@ -13,11 +13,12 @@ import rx.schedulers.Schedulers;
 /**
  * Created by junjie.qu on 6/24/2016.
  */
-public class AlbumsPresenter {
+public class NetworkAlbumsPresenter
+{
 
     private NetworkAlbumsActivity mActivity;
 
-    public AlbumsPresenter(NetworkAlbumsActivity activity) {
+    public NetworkAlbumsPresenter(NetworkAlbumsActivity activity) {
         mActivity = activity;
     }
 

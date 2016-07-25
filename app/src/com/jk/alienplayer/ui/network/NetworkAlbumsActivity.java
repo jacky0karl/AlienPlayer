@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.model.AlbumBean;
-import com.jk.alienplayer.presenter.AlbumsPresenter;
+import com.jk.alienplayer.presenter.network.NetworkAlbumsPresenter;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.NetworkAlbumsAdapter;
 
@@ -26,7 +26,7 @@ public class NetworkAlbumsActivity extends BaseActivity {
     private ListView mListView;
     private NetworkAlbumsAdapter mAdapter;
     private long mArtistId;
-    private AlbumsPresenter mPresenter;
+    private NetworkAlbumsPresenter mPresenter;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -58,7 +58,7 @@ public class NetworkAlbumsActivity extends BaseActivity {
 
         mLoading.setVisibility(View.VISIBLE);
         mNoResult.setVisibility(View.GONE);
-        mPresenter = new AlbumsPresenter(this);
+        mPresenter = new NetworkAlbumsPresenter(this);
         mPresenter.fetchAlbums(mArtistId);
     }
 

@@ -8,17 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.AlbumInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.presenter.main.AlbumsPresenter;
 import com.jk.alienplayer.ui.adapter.AlbumsAdapter;
 import com.jk.alienplayer.ui.adapter.OnItemClickListener;
 import com.jk.alienplayer.ui.artistdetail.SongsActivity;
@@ -30,9 +29,9 @@ public class AlbumsFragment extends Fragment {
 
     private String mArtistName;
     private RecyclerView mRecyclerView;
-    private AlbumsAdapter mAdapter;
-    private List<AlbumInfo> mAlbums;
     private ProgressBar mLoading;
+    private AlbumsAdapter mAdapter;
+    private AlbumsPresenter mPresenter;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -41,6 +40,21 @@ public class AlbumsFragment extends Fragment {
             if (action.equals(MediaScanService.ACTION_MEDIA_SCAN_COMPLETED)) {
                 updateAlbums();
             }
+        }
+    };
+
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener<AlbumInfo>() {
+        @Override
+        public void onItemClick(View view, int position, AlbumInfo info) {
+            if (info == null) {
+                return;
+            }
+
+            Intent intent = new Intent(getActivity(), SongsActivity.class);
+            intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ALBUM);
+            intent.putExtra(SongsActivity.KEY, info.id);
+            intent.putExtra(SongsActivity.LABEL, info.name);
+            startActivity(intent);
         }
     };
 
@@ -61,13 +75,10 @@ public class AlbumsFragment extends Fragment {
         mRecyclerView = (RecyclerView) root.findViewById(R.id.list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new AlbumsAdapter(getActivity(), new OnItemClickListener<AlbumInfo>(){
-            @Override
-            public void onItemClick(View view, int position, AlbumInfo info) {
-                startSongsPage(info.id, info.name);
-            }
-        });
+        mAdapter = new AlbumsAdapter(getActivity(), mOnItemClickListener);
         mRecyclerView.setAdapter(mAdapter);
+
+        mPresenter = new AlbumsPresenter(this);
         updateAlbums();
     }
 
@@ -77,37 +88,19 @@ public class AlbumsFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private void startSongsPage(long key, String label) {
-        Intent intent = new Intent(getActivity(), SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ALBUM);
-        intent.putExtra(SongsActivity.KEY, key);
-        intent.putExtra(SongsActivity.LABEL, label);
-        startActivity(intent);
-    }
-
     private void updateAlbums() {
         mLoading.setVisibility(View.VISIBLE);
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (!TextUtils.isEmpty(mArtistName)) {
-                    mAlbums = DatabaseHelper.getAlbums(getActivity(), mArtistName);
-                } else {
-                    mAlbums = DatabaseHelper.getAllAlbums(getActivity());
-                }
-                updateList();
-            }
-        });
-        thread.start();
+        mPresenter.getAlbums(mArtistName);
     }
 
-    private void updateList() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.setAlbums(mAlbums);
-                mLoading.setVisibility(View.GONE);
-            }
-        });
+    public void fetchAlbumsSucc(List<AlbumInfo> list) {
+        mLoading.setVisibility(View.GONE);
+        if (list != null) {
+            mAdapter.setAlbums(list);
+        }
+    }
+
+    public void fetchAlbumsFail() {
+        mLoading.setVisibility(View.GONE);
     }
 }
