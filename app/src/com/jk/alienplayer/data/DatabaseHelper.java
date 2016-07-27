@@ -97,6 +97,23 @@ public class DatabaseHelper {
         return albums;
     }
 
+    public static String getAlbumArtwork(Context context, long albumId) {
+        String[] projection = new String[]{Albums.ALBUM_ART};
+        String selection = Albums._ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(albumId)};
+
+        Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
+                selection, selectionArgs, null);
+        String artwork = "file://";
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                artwork += cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
+            }
+            cursor.close();
+        }
+        return artwork;
+    }
+
     private static AlbumInfo bulidAlbums(Cursor cursor) {
         long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(Albums._ID));
         String album = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM));
@@ -227,22 +244,7 @@ public class DatabaseHelper {
         return bmp;
     }
 
-    public static String getAlbumArtwork(Context context, long albumId) {
-        String[] projection = new String[]{Albums.ALBUM_ART};
-        String selection = Albums._ID + "=?";
-        String[] selectionArgs = new String[]{String.valueOf(albumId)};
 
-        Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
-                selection, selectionArgs, null);
-        String artwork = "file://";
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                artwork += cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
-            }
-            cursor.close();
-        }
-        return artwork;
-    }
 
     public static List<SearchResult> search(Context context, String key) {
         List<SearchResult> results = new ArrayList<SearchResult>();

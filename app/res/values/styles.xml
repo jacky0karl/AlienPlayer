@@ -24,11 +24,6 @@
         <item name="android:windowAnimationStyle">@style/NoAnimation</item>
     </style>
 
-    <style name="Theme.NetworkSearch" parent="AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <style name="Theme.MyApp.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="elevation">0dp</item>
     </style>
@@ -39,6 +34,11 @@
 
     <style name="Theme.MyApp.SearchView" parent="@style/Widget.AppCompat.SearchView">
         <item name="suggestionRowLayout">@layout/search_suggestions</item>
+    </style>
+
+    <style name="TextApperance.Toolbar.Title" parent="@style/TextAppearance.AppCompat">
+        <item name="android:textColor">@color/light_text</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="NoAnimation">

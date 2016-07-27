@@ -43,6 +43,7 @@
         <activity
             android:name=".ui.artistdetail.SongsActivity"
             android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/Theme.Toolbar"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -58,7 +59,7 @@
             android:launchMode="singleTop"
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.NetworkSearch">
+            android:theme="@style/Theme.Toolbar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
