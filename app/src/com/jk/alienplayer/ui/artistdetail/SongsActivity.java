@@ -1,13 +1,18 @@
 package com.jk.alienplayer.ui.artistdetail;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.jk.alienplayer.MainApplication;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
@@ -15,6 +20,7 @@ import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.utils.UiUtils;
 import com.jk.alienplayer.widget.Playbar;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class SongsActivity extends BaseActivity {
     public static final String KEY_TYPE = "key_type";
@@ -78,14 +84,55 @@ public class SongsActivity extends BaseActivity {
             ImageView cover = (ImageView) findViewById(R.id.cover);
             cover.setMinimumHeight(height);
             cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            String file = DatabaseHelper.getAlbumArtwork(this, mKey);
-            Picasso.with(this).load(file).into(cover);
+            Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    cover.setImageBitmap(bitmap);
+                    setToolbarColor(bitmap);
+                    AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBarLayout);
+                    UiUtils.setAppBarLayoutOffset(appbar, (int) (height * 0.45));
+                }
 
-            AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBarLayout);
-            UiUtils.setAppBarLayoutOffset(appbar, (int) (height * 0.45));
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
+            };
+
+            String file = DatabaseHelper.getAlbumArtwork(this, mKey);
+            Picasso.with(MainApplication.app).load(file).into(target);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    private void setToolbarColor(Bitmap bitmap) {
+        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);
+        Palette.PaletteAsyncListener listener = new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                int primaryColor = -1;
+                Palette.Swatch swatch = palette.getVibrantSwatch();
+                if (swatch != null) {
+                    primaryColor = swatch.getRgb();
+                } else {
+                    Palette.Swatch swatchMuted = palette.getMutedSwatch();
+                    if (swatchMuted != null) {
+                        primaryColor = swatchMuted.getRgb();
+                    }
+                }
+
+                if (primaryColor != -1) {
+                    ctl.setContentScrimColor(primaryColor);
+                    ctl.setStatusBarScrimColor(UiUtils.generateStatusBarColor(primaryColor));
+                    mPlaybar.setBackgroundColor(primaryColor);
+                }
+            }
+        };
+        new Palette.Builder(bitmap).generate(listener);
+    }
 }

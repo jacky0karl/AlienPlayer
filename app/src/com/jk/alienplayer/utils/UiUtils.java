@@ -2,6 +2,7 @@ package com.jk.alienplayer.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.DisplayMetrics;
@@ -11,6 +12,13 @@ public class UiUtils {
     public static int getScreenWidth(Context context) {
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         return dm.widthPixels;
+    }
+
+    public static int generateStatusBarColor(int primaryColor) {
+        float[] arrayOfFloat = new float[3];
+        Color.colorToHSV(primaryColor, arrayOfFloat);
+        arrayOfFloat[2] *= 0.9F;
+        return Color.HSVToColor(arrayOfFloat);
     }
 
     public static int dpToPixel(Context context, float dp) {
@@ -24,7 +32,7 @@ public class UiUtils {
         appbar.post(new Runnable() {
             @Override
             public void run() {
-                CoordinatorLayout cl = (CoordinatorLayout)appbar.getParent();
+                CoordinatorLayout cl = (CoordinatorLayout) appbar.getParent();
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
                 AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
                 behavior.onNestedPreScroll(cl, appbar, null, 0, offset, new int[]{0, 0});
