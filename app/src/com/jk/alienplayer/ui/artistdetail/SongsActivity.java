@@ -115,18 +115,9 @@ public class SongsActivity extends BaseActivity {
         Palette.PaletteAsyncListener listener = new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                int primaryColor = -1;
                 Palette.Swatch swatch = palette.getVibrantSwatch();
                 if (swatch != null) {
-                    primaryColor = swatch.getRgb();
-                } else {
-                    Palette.Swatch swatchMuted = palette.getMutedSwatch();
-                    if (swatchMuted != null) {
-                        primaryColor = swatchMuted.getRgb();
-                    }
-                }
-
-                if (primaryColor != -1) {
+                    int primaryColor = swatch.getRgb();
                     ctl.setContentScrimColor(primaryColor);
                     ctl.setStatusBarScrimColor(UiUtils.generateStatusBarColor(primaryColor));
                     mPlaybar.setBackgroundColor(primaryColor);

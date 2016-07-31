@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.Mp3TagsHelper;
@@ -17,6 +18,7 @@ import com.jk.alienplayer.ui.BaseActivity;
 public class TrackInfoActivity extends BaseActivity {
     private TrackTagInfo mTrackTagInfo;
     private String mTrackPath;
+    private ImageView mArtwork;
     private EditText mTitle;
     private EditText mArtist;
     private EditText mAlbum;
@@ -38,6 +40,10 @@ public class TrackInfoActivity extends BaseActivity {
         mTrackPath = song.path;
         mTrackTagInfo = Mp3TagsHelper.readMp3Tags(mTrackPath);
 
+        mArtwork = (ImageView) findViewById(R.id.artwork);
+        if (mTrackTagInfo.getArtwork() != null) {
+            mArtwork.setImageBitmap(mTrackTagInfo.getArtwork());
+        }
         mTitle = (EditText) findViewById(R.id.title);
         mTitle.setText(mTrackTagInfo.getTitle());
         mArtist = (EditText) findViewById(R.id.artist);

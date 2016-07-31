@@ -1,6 +1,7 @@
 package com.jk.alienplayer.data;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
@@ -74,6 +75,13 @@ public class Mp3TagsHelper {
         try {
             MP3File mp3 = (MP3File) AudioFileIO.read(file);
             AbstractID3v2Tag tag = mp3.getID3v2Tag();
+
+            Artwork artwork = tag.getFirstArtwork();
+            if (artwork != null) {
+                byte[] data = artwork.getBinaryData();
+                Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                info.setArtwork(bmp);
+            }
 
             info.setTitle(tag.getFirst(FieldKey.TITLE));
             info.setArtists(tag.getFirst(FieldKey.ARTIST));

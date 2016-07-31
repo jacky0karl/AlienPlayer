@@ -1,14 +1,25 @@
 package com.jk.alienplayer.metadata;
 
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 public class TrackTagInfo {
+    private Bitmap artwork;
     private String title;
     private String artists;
     private String album;
     private String artistAlbum;
     private String track;
     private String year;
+
+
+    public Bitmap getArtwork() {
+        return artwork;
+    }
+
+    public void setArtwork(Bitmap artwork) {
+        this.artwork = artwork;
+    }
 
     public String getTitle() {
         return title;
