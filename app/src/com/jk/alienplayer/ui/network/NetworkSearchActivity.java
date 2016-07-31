@@ -1,5 +1,6 @@
 package com.jk.alienplayer.ui.network;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -24,23 +25,31 @@ import android.widget.Toast;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.JsonHelper;
+import com.jk.alienplayer.metadata.NetworkAlbumInfo;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.network.HttpHelper;
 import com.jk.alienplayer.network.HttpHelper.HttpResponseHandler;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.adapter.NetworkSearchResultsAdapter;
+import com.jk.alienplayer.ui.playing.TrackInfoActivity;
 import com.jk.alienplayer.widget.DialogBuilder;
 
 import java.util.List;
 
 public class NetworkSearchActivity extends BaseActivity implements OnItemClickListener {
+    public static final String KEY = "key";
+    public static final String TYPE = "type";
+
+    public static final int TYPE_ARTWORK = 0;
+    public static final int TYPE_SONG = 1;
 
     private InputMethodManager mIMManager;
     private TextView mNoResult;
     private ProgressBar mLoading;
     private ListView mListView;
     private NetworkSearchResultsAdapter mAdapter;
+    private int mType;
     private String mQueryKey;
 
     public interface SearchResultHandler {
@@ -52,10 +61,6 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
     private OnQueryTextListener mQueryTextListener = new OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (TextUtils.isEmpty(query)) {
-                return true;
-            }
-
             doQuery(query);
             return true;
         }
@@ -66,42 +71,14 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
         }
     };
 
-    private SearchResultHandler mSearchArtistHandler = new SearchResultHandler() {
+    private SearchResultHandler mSearchResultHandler = new SearchResultHandler() {
         @Override
         public void onSuccess(List<NetworkSearchResult> results) {
-            //HttpHelper.search(NetworkSearchResult.TYPE_ALBUMS, mQueryKey, mSearchAlbumHandler);
-            //final List<NetworkSearchResult> artists = JsonHelper.parseSearchArtists(response);
             NetworkSearchActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mAdapter.setResults(results);
                     mLoading.setVisibility(View.GONE);
-                }
-            });
-        }
-
-        @Override
-        public void onFail(int status, String response) {
-            NetworkSearchActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLoading.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), R.string.network_error,
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    };
-
-    private HttpResponseHandler mSearchAlbumHandler = new HttpResponseHandler() {
-        @Override
-        public void onSuccess(String response) {
-            //HttpHelper.search(NetworkSearchResult.TYPE_TRACKS, mQueryKey, mSearchTrackHandler);
-            final List<NetworkSearchResult> albums = JsonHelper.parseSearchAlbums(response);
-            NetworkSearchActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.addResults(albums);
                 }
             });
         }
@@ -153,6 +130,7 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mType = getIntent().getIntExtra(TYPE, TYPE_ARTWORK);
         setContentView(R.layout.activity_network_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -178,11 +156,19 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
     }
 
     private void doQuery(String query) {
+        if (TextUtils.isEmpty(query)) {
+            return;
+        }
+
         mQueryKey = query;
         mNoResult.setVisibility(View.GONE);
         mLoading.setVisibility(View.VISIBLE);
+        if (mType == TYPE_ARTWORK) {
+            HttpHelper.search(NetworkSearchResult.TYPE_ALBUMS, mQueryKey, mSearchResultHandler);
+        } else {
+            HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchResultHandler);
+        }
         //DiscoverSuggestionsProvider.saveRecentQuery(NetworkSearchActivity.this, mQueryKey);
-        HttpHelper.search(NetworkSearchResult.TYPE_ARTISTS, mQueryKey, mSearchArtistHandler);
         mIMManager.hideSoftInputFromWindow(mListView.getWindowToken(), 0);
     }
 
@@ -210,6 +196,9 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(mQueryTextListener);
         searchView.setIconified(false);
+        if (mType == TYPE_ARTWORK) {
+            searchView.setQuery(getIntent().getStringExtra(KEY), true);
+        }
     }
 
     @Override
@@ -221,10 +210,20 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
             intent.putExtra(NetworkAlbumsActivity.LABEL, result.name);
             startActivity(intent);
         } else if (result.type == NetworkSearchResult.TYPE_ALBUMS) {
-            Intent intent = new Intent(this, NetworkTracksActivity.class);
-            intent.putExtra(NetworkTracksActivity.ALBUM_ID, result.id);
-            intent.putExtra(NetworkTracksActivity.LABEL, result.name);
-            startActivity(intent);
+            if (mType == TYPE_ARTWORK) {
+                NetworkAlbumInfo album = (NetworkAlbumInfo) result;
+                if (!TextUtils.isEmpty(album.avatar)) {
+                    Intent data = new Intent();
+                    data.putExtra(TrackInfoActivity.EXTRA_ARTWORK, album.avatar);
+                    setResult(Activity.RESULT_OK, data);
+                    finish();
+                }
+            } else {
+                Intent intent = new Intent(this, NetworkTracksActivity.class);
+                intent.putExtra(NetworkTracksActivity.ALBUM_ID, result.id);
+                intent.putExtra(NetworkTracksActivity.LABEL, result.name);
+                startActivity(intent);
+            }
         } else if (result.type == NetworkSearchResult.TYPE_TRACKS) {
             downloadTrack((NetworkTrackInfo) result);
         }
@@ -251,7 +250,7 @@ public class NetworkSearchActivity extends BaseActivity implements OnItemClickLi
             NetworkTrackInfo info = JsonHelper.parseTrack(response);
             if (info != null) {
                 String url = HttpHelper.getDownloadTrackUrl(String.valueOf(info.dfsId), info.ext);
-               //TODO FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
+                //TODO FileDownloadingHelper.getInstance().requstDownloadTrack(info, url);
             }
         }
 

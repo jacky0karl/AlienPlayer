@@ -1,5 +1,7 @@
 package com.jk.alienplayer.ui.playing;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,9 +16,15 @@ import com.jk.alienplayer.impl.MediaScanService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 import com.jk.alienplayer.ui.BaseActivity;
+import com.jk.alienplayer.ui.network.NetworkSearchActivity;
+import com.squareup.picasso.Picasso;
 
 public class TrackInfoActivity extends BaseActivity {
+    public static final String EXTRA_ARTWORK = "artwork";
+    public static final int FETCH_ARTWORK = 0;
+
     private TrackTagInfo mTrackTagInfo;
+    private String mArtworkUrl;
     private String mTrackPath;
     private ImageView mArtwork;
     private EditText mTitle;
@@ -27,6 +35,7 @@ public class TrackInfoActivity extends BaseActivity {
     private EditText mYear;
     private Button mSaveBtn;
     private Button mCancelBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +49,6 @@ public class TrackInfoActivity extends BaseActivity {
         mTrackPath = song.path;
         mTrackTagInfo = Mp3TagsHelper.readMp3Tags(mTrackPath);
 
-        mArtwork = (ImageView) findViewById(R.id.artwork);
-        if (mTrackTagInfo.getArtwork() != null) {
-            mArtwork.setImageBitmap(mTrackTagInfo.getArtwork());
-        }
         mTitle = (EditText) findViewById(R.id.title);
         mTitle.setText(mTrackTagInfo.getTitle());
         mArtist = (EditText) findViewById(R.id.artist);
@@ -56,6 +61,20 @@ public class TrackInfoActivity extends BaseActivity {
         mTrack.setText(mTrackTagInfo.getTrack());
         mYear = (EditText) findViewById(R.id.year);
         mYear.setText(mTrackTagInfo.getYear());
+
+        mArtwork = (ImageView) findViewById(R.id.artwork);
+        if (mTrackTagInfo.getArtwork() != null) {
+            mArtwork.setImageBitmap(mTrackTagInfo.getArtwork());
+        }
+        mArtwork.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TrackInfoActivity.this, NetworkSearchActivity.class);
+                intent.putExtra(NetworkSearchActivity.TYPE, NetworkSearchActivity.TYPE_ARTWORK);
+                intent.putExtra(NetworkSearchActivity.KEY, mTrackTagInfo.getAlbum());
+                startActivityForResult(intent, FETCH_ARTWORK);
+            }
+        });
 
         mSaveBtn = (Button) findViewById(R.id.saveBtn);
         mSaveBtn.setOnClickListener(new OnClickListener() {
@@ -87,6 +106,14 @@ public class TrackInfoActivity extends BaseActivity {
             @Override
             public void onMP3Added() {
             }
-        }, null, title, artists, album, artistAlbum, track, year, mTrackPath);
+        }, mArtworkUrl, title, artists, album, artistAlbum, track, year, mTrackPath);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == FETCH_ARTWORK && data != null) {
+            mArtworkUrl = data.getStringExtra(EXTRA_ARTWORK);
+            Picasso.with(this).load(mArtworkUrl).into(mArtwork);
+        }
     }
 }

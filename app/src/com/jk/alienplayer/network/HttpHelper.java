@@ -3,7 +3,9 @@ package com.jk.alienplayer.network;
 import android.net.http.AndroidHttpClient;
 import android.util.Base64;
 
+import com.jk.alienplayer.metadata.NetworkAlbumInfo;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
+import com.jk.alienplayer.model.AlbumBean;
 import com.jk.alienplayer.model.ArtistBean;
 import com.jk.alienplayer.model.SearchBean;
 import com.jk.alienplayer.ui.network.NetworkSearchActivity;
@@ -28,7 +30,7 @@ public class HttpHelper {
 
     private static final String COOKIE = "appver=1.7.6;os=Android";
     private static final String KEY = "3go8&$8*3*3h0k(2)2";
-    private static final String SEARCH_LIMIT = "50";
+    private static final String SEARCH_LIMIT = "20";
 
 
     private static final String GET_TRACK_URL = "http://music.163.com/api/song/detail/";
@@ -71,7 +73,7 @@ public class HttpHelper {
                     if (response.isSuccessful()) {
                         SearchBean bean = response.body();
                         if (bean.getCode() == 200) {
-                            handler.onSuccess(buildSearchResult(bean.getResult()));
+                            handler.onSuccess(buildSearchResult(type, bean.getResult()));
                         } else {
                             handler.onFail(-1, "");
                         }
@@ -167,12 +169,20 @@ public class HttpHelper {
         return null;
     }
 
-    private static List<NetworkSearchResult> buildSearchResult(SearchBean.SearchResultBean bean) {
-        List<NetworkSearchResult> results = new ArrayList<NetworkSearchResult>();
-        for (ArtistBean artist : bean.getArtists()) {
-            NetworkSearchResult result = new NetworkSearchResult(artist.getId(),
-                    NetworkSearchResult.TYPE_ARTISTS, artist.getName());
-            results.add(result);
+    private static List<NetworkSearchResult> buildSearchResult(int type, SearchBean.SearchResultBean bean) {
+        List<NetworkSearchResult> results = new ArrayList<>();
+        if (type == NetworkSearchResult.TYPE_ARTISTS) {
+            for (ArtistBean artist : bean.getArtists()) {
+                NetworkSearchResult result = new NetworkSearchResult(artist.getId(),
+                        NetworkSearchResult.TYPE_ARTISTS, artist.getName());
+                results.add(result);
+            }
+        } else if (type == NetworkSearchResult.TYPE_ALBUMS) {
+            for (AlbumBean album : bean.getAlbums()) {
+                NetworkAlbumInfo result = new NetworkAlbumInfo(album.getId(), album.getName(),
+                        album.getPicUrl(), album.getShowingArtist(), album.getPublishTime());
+                results.add(result);
+            }
         }
         return results;
     }

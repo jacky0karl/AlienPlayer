@@ -30,7 +30,11 @@ public class SearchBean extends BaseBean {
         @JsonProperty("artistCount")
         private int artistCount = 0;
         @JsonProperty("artists")
-        private List<ArtistBean> artists = new ArrayList<ArtistBean>();
+        private List<ArtistBean> artists = new ArrayList<>();
+        @JsonProperty("albumCount")
+        private int albumCount = 0;
+        @JsonProperty("albums")
+        private List<AlbumBean> albums = new ArrayList<>();
 
         @JsonProperty("artistCount")
         public int getArtistCount() {
@@ -50,6 +54,26 @@ public class SearchBean extends BaseBean {
         @JsonProperty("artists")
         public void setArtists(List<ArtistBean> artists) {
             this.artists = artists;
+        }
+
+        @JsonProperty("albumCount")
+        public int getAlbumCount() {
+            return albumCount;
+        }
+
+        @JsonProperty("albumCount")
+        public void setAlbumCount(int albumCount) {
+            this.albumCount = albumCount;
+        }
+
+        @JsonProperty("albums")
+        public List<AlbumBean> getAlbums() {
+            return albums;
+        }
+
+        @JsonProperty("albums")
+        public void setAlbums(List<AlbumBean> albums) {
+            this.albums = albums;
         }
     }
 }

@@ -83,14 +83,12 @@ public class SongsActivity extends BaseActivity {
             int height = UiUtils.getScreenWidth(this);
             ImageView cover = (ImageView) findViewById(R.id.cover);
             cover.setMinimumHeight(height);
-            cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             Target target = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     cover.setImageBitmap(bitmap);
+                    cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     setToolbarColor(bitmap);
-                    AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBarLayout);
-                    UiUtils.setAppBarLayoutOffset(appbar, (int) (height * 0.45));
                 }
 
                 @Override
@@ -104,6 +102,8 @@ public class SongsActivity extends BaseActivity {
 
             String file = DatabaseHelper.getAlbumArtwork(this, mKey);
             Picasso.with(MainApplication.app).load(file).into(target);
+            AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBarLayout);
+            UiUtils.setAppBarLayoutOffset(appbar, (int) (height * 0.45));
         } catch (Exception e) {
             e.printStackTrace();
         }
