@@ -1,5 +1,6 @@
 package com.jk.alienplayer.ui.playing;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,15 +29,19 @@ import com.jk.alienplayer.impl.PlayingHelper.PlayStatus;
 import com.jk.alienplayer.impl.PlayingHelper.PlayingInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.BaseActivity;
-import com.jk.alienplayer.widget.VolumeBarWindow;
 import com.jk.alienplayer.utils.PlayingTimeUtils;
 import com.jk.alienplayer.widget.PlayPauseButton;
+import com.jk.alienplayer.widget.VolumeBarWindow;
+
+import java.util.List;
 
 public class PlayingActivity extends BaseActivity {
     private static final int FRAGMENT_ARTWORK = 0;
     private static final int FRAGMENT_LYRIC = 1;
     private static final int FRAGMENT_CURR_LIST = 2;
     private static final int FRAGMENT_COUNT = 3;
+
+    private static final int REQUEST_UPDATE_ARTWORK = 0;
 
     private SeekBar mSeekBar;
     private PlayPauseButton mPlayBtn;
@@ -131,7 +136,7 @@ public class PlayingActivity extends BaseActivity {
             return true;
         } else if (item.getItemId() == R.id.action_info) {
             Intent intent = new Intent(this, TrackInfoActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_UPDATE_ARTWORK);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mContent, Gravity.CENTER);
         } else if (item.getItemId() == R.id.audioEffect) {
@@ -212,6 +217,23 @@ public class PlayingActivity extends BaseActivity {
         mVolumeBar.dismiss();
         unregisterReceiver(mReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_UPDATE_ARTWORK) {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            if (fragments == null) {
+                return;
+            }
+
+            for (Fragment f : fragments) {
+                if (f instanceof ArtworkFragment) {
+                    ((ArtworkFragment) f).syncView();
+                    break;
+                }
+            }
+        }
     }
 
     public void syncView() {

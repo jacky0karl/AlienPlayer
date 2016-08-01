@@ -146,6 +146,10 @@ public class PlayingInfoHolder {
         }
     }
 
+    public void refresh(Context context) {
+        updateCurrentSongInfo(context, getCurrentSong());
+    }
+
     private void updateCurrentSongInfo(Context context, SongInfo currentSong) {
         if (currentSong != null) {
             PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG_ID,

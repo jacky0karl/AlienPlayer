@@ -1,7 +1,5 @@
 package com.jk.alienplayer.impl;
 
-import java.lang.ref.WeakReference;
-
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -13,6 +11,8 @@ import android.util.Log;
 
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.metadata.SongInfo;
+
+import java.lang.ref.WeakReference;
 
 public class PlayingHelper {
     public static final int PROGRESS_UPDATE_INTERVAL = 500;
@@ -202,6 +202,10 @@ public class PlayingHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void refresh() {
+        notifyTrackChange();
     }
 
     private boolean isPlaying() {

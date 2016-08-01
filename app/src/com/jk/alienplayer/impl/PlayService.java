@@ -29,6 +29,7 @@ public class PlayService extends Service {
     public static final int COMMAND_PREV = 3;
     public static final int COMMAND_NEXT = 4;
     public static final int COMMAND_EXIT = 5;
+    public static final int COMMAND_REFRESH = 6;
 
     public static final String ACTION_START = "com.jk.alienplayer.action.START";
     public static final String ACTION_PAUSE = "com.jk.alienplayer.action.PAUSE";
@@ -109,6 +110,10 @@ public class PlayService extends Service {
             break;
         case COMMAND_EXIT:
             stopSelf();
+            break;
+        case COMMAND_REFRESH:
+            PlayingInfoHolder.getInstance().refresh(this);
+            mPlayingHelper.refresh();
             break;
         default:
             break;

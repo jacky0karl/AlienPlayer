@@ -14,6 +14,7 @@ import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.Mp3TagsHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.MediaScanService;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 import com.jk.alienplayer.ui.BaseActivity;
@@ -112,6 +113,10 @@ public class TrackInfoActivity extends BaseActivity {
             public void onArtworkUpdated(String artworkPath) {
                 SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
                 DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, song.albumId, artworkPath);
+                Intent intentNext = PlayService.getPlayingCommandIntent(TrackInfoActivity.this,
+                        PlayService.COMMAND_REFRESH);
+                startService(intentNext);
+                setResult(Activity.RESULT_OK);
             }
         }, mArtworkUrl, title, artists, album, artistAlbum, track, year, mTrackPath);
     }

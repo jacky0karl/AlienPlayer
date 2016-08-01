@@ -74,7 +74,7 @@ public class ArtworkFragment extends Fragment {
         syncView();
     }
 
-    private void syncView() {
+    public void syncView() {
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         Bitmap bmp = DatabaseHelper.getArtworkFormFile(getActivity(), songInfo.id, songInfo.albumId, mArtworkSize);
         if (bmp == null) {
