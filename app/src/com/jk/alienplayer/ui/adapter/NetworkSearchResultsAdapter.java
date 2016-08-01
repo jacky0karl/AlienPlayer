@@ -8,12 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.NetworkAlbumInfo;
 import com.jk.alienplayer.metadata.NetworkSearchResult;
 import com.jk.alienplayer.metadata.NetworkTrackInfo;
 import com.jk.alienplayer.metadata.SearchResult;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkAlbumInfo result = (NetworkAlbumInfo) mResults.get(position);
-        Glide.with(mContext).load(result.avatar).placeholder(R.drawable.disk).into(viewHolder.artwork);
+        Picasso.with(mContext).load(result.avatar).placeholder(R.drawable.disk).into(viewHolder.artwork);
         viewHolder.content.setText(result.name);
         viewHolder.artist.setText(result.artist);
         showTitle(viewHolder.title, position, result.type);

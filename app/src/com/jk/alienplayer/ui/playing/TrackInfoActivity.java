@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.Mp3TagsHelper;
@@ -20,6 +19,7 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.network.NetworkSearchActivity;
+import com.squareup.picasso.Picasso;
 
 public class TrackInfoActivity extends BaseActivity {
     public static final String EXTRA_ARTWORK = "artwork";
@@ -125,7 +125,7 @@ public class TrackInfoActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == FETCH_ARTWORK && data != null) {
             mArtworkUrl = data.getStringExtra(EXTRA_ARTWORK);
-            Glide.with(this).load(mArtworkUrl).into(mArtwork);
+            Picasso.with(this).load(mArtworkUrl).into(mArtwork);
         }
     }
 }

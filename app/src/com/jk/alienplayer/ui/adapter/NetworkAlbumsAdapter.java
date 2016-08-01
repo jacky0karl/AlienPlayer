@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.model.AlbumBean;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
             AlbumBean info = mAlbums.get(position);
             viewHolder.name.setText(info.getName());
             viewHolder.artist.setText(info.getShowingArtist());
-            Glide.with(mContext).load(info.getPicUrl()).placeholder(R.drawable.disk).into(viewHolder.artwork);
+            Picasso.with(mContext).load(info.getPicUrl()).placeholder(R.drawable.disk).into(viewHolder.artwork);
             return view;
         } catch (Exception e) {
             return new View(mContext);

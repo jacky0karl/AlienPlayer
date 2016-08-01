@@ -1,7 +1,6 @@
 package com.jk.alienplayer.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.AlbumInfo;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,14 +49,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
         holder.artist.setText(info.artist);
         String trackCount = holder.tracks.getResources().getString(R.string.track_count);
         holder.tracks.setText(String.valueOf(info.tracks) + trackCount);
-
-        SimpleTarget target = new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-                holder.artwork.setImageBitmap(bitmap);
-            }
-        };
-        Glide.with(mContext).load(info.artwork).asBitmap().placeholder(R.drawable.disk).into(target);
+        Picasso.with(mContext).load(info.artwork).
+                placeholder(R.drawable.disk).into(holder.artwork);
 
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
