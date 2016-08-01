@@ -5,12 +5,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.jk.alienplayer.MainApplication;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.utils.FileSavingUtils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
@@ -96,9 +97,9 @@ public class Mp3TagsHelper {
     }
 
     private static void fetchCover(final OnMP3AddListener l, final MP3File mp3, String url) {
-        Target target = new Target() {
+        SimpleTarget target = new SimpleTarget<Bitmap>() {
             @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
                 try {
                     String tmp = FileSavingUtils.sRootPath + System.currentTimeMillis();
                     FileOutputStream fos = new FileOutputStream(tmp);
@@ -113,16 +114,12 @@ public class Mp3TagsHelper {
             }
 
             @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
                 l.onMP3Added();
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
             }
         };
 
-        Picasso.with(MainApplication.app).load(url).into(target);
+        Glide.with(MainApplication.app).load(url).asBitmap().into(target);
     }
 
     private static void addCoverField(OnMP3AddListener l, MP3File mp3, String filePath) {

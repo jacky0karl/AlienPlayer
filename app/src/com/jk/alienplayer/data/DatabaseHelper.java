@@ -17,7 +17,6 @@ import com.jk.alienplayer.metadata.ArtistInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -122,7 +121,7 @@ public class DatabaseHelper {
         }
 
         String cachePath = getAlbumArtwork(context, albumId);
-        Picasso.with(context).invalidate(cachePath);
+        //TODO Glide.with(context).invalidate(cachePath);
         int preCount = "file://".length();
         if (!TextUtils.isEmpty(cachePath) && cachePath.length() > preCount) {
             File cache = new File(cachePath.substring(preCount));

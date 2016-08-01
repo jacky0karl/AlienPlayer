@@ -1,7 +1,6 @@
 package com.jk.alienplayer.ui.artistdetail;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -12,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.jk.alienplayer.MainApplication;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
@@ -19,8 +21,6 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.utils.UiUtils;
 import com.jk.alienplayer.widget.Playbar;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 public class SongsActivity extends BaseActivity {
     public static final String KEY_TYPE = "key_type";
@@ -83,25 +83,17 @@ public class SongsActivity extends BaseActivity {
             int height = UiUtils.getScreenWidth(this);
             ImageView cover = (ImageView) findViewById(R.id.cover);
             cover.setMinimumHeight(height);
-            Target target = new Target() {
+            SimpleTarget target = new SimpleTarget<Bitmap>() {
                 @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
                     cover.setImageBitmap(bitmap);
                     cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     setToolbarColor(bitmap);
                 }
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                }
             };
 
             String file = DatabaseHelper.getAlbumArtwork(this, mKey);
-            Picasso.with(MainApplication.app).load(file).into(target);
+            Glide.with(MainApplication.app).load(file).asBitmap().into(target);
             AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBarLayout);
             UiUtils.setAppBarLayoutOffset(appbar, (int) (height * 0.45));
         } catch (Exception e) {
