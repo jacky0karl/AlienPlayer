@@ -105,7 +105,6 @@ public class Mp3TagsHelper {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                     fos.flush();
                     fos.close();
-                    bitmap.recycle();
                     addCoverField(l, mp3, tmp);
                 } catch (Exception e) {
                     l.onMP3Added();
