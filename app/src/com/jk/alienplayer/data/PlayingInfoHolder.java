@@ -1,14 +1,14 @@
 package com.jk.alienplayer.data;
 
-import java.util.List;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import java.util.List;
 
 public class PlayingInfoHolder {
     public static final int REPEAT_ONE = 1;
@@ -49,7 +49,7 @@ public class PlayingInfoHolder {
             SongInfo info = DatabaseHelper.getTrack(context, songId);
             if (info != null) {
                 currentSong = info;
-                mPlaybarArtwork = DatabaseHelper.getArtwork(context, currentSong.id,
+                mPlaybarArtwork = DatabaseHelper.getArtworkFormFile(context, currentSong.id,
                         currentSong.albumId, mPlaybarArtworkSize);
             }
         }
@@ -151,7 +151,7 @@ public class PlayingInfoHolder {
             PreferencesHelper.putLongValue(context, PreferencesHelper.CURRENT_SONG_ID,
                     currentSong.id);
 
-            mPlaybarArtwork = DatabaseHelper.getArtwork(context, currentSong.id,
+            mPlaybarArtwork = DatabaseHelper.getArtworkFormFile(context, currentSong.id,
                     currentSong.albumId, mPlaybarArtworkSize);
         }
     }

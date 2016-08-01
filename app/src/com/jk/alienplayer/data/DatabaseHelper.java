@@ -17,7 +17,9 @@ import com.jk.alienplayer.metadata.ArtistInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SearchResult;
 import com.jk.alienplayer.metadata.SongInfo;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +114,49 @@ public class DatabaseHelper {
             cursor.close();
         }
         return artwork;
+    }
+
+    public static void deleteArtworkCache(Context context, long albumId, String artworkPath) {
+        if (TextUtils.isEmpty(artworkPath)) {
+            return;
+        }
+
+        String cachePath = getAlbumArtwork(context, albumId);
+        Picasso.with(context).invalidate(cachePath);
+        int preCount = "file://".length();
+        if (!TextUtils.isEmpty(cachePath) && cachePath.length() > preCount) {
+            File cache = new File(cachePath.substring(preCount));
+            if (cache.exists()) {
+                cache.delete();
+            }
+        }
+    }
+
+    public static Bitmap getArtworkFormFile(Context context, long songId, long albumId, int targetSize) {
+        if (albumId < 0 && songId < 0) {
+            return null;
+        }
+
+        Bitmap bmp = null;
+        try {
+            ParcelFileDescriptor pfd = null;
+            if (albumId < 0) {
+                Uri uri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
+                pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+            } else {
+                Uri uri = ContentUris.withAppendedId(AlbumArtUri, albumId);
+                pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+            }
+            if (pfd == null) {
+                return null;
+            }
+
+            bmp = decodeImage(pfd.getFileDescriptor(), targetSize);
+            pfd.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bmp;
     }
 
     private static AlbumInfo bulidAlbums(Cursor cursor) {
@@ -216,35 +261,6 @@ public class DatabaseHelper {
                 selectionArgs);
         return ret > 0 ? true : false;
     }
-
-    public static Bitmap getArtwork(Context context, long songId, long albumId, int targetSize) {
-        if (albumId < 0 && songId < 0) {
-            return null;
-        }
-
-        Bitmap bmp = null;
-        try {
-            ParcelFileDescriptor pfd = null;
-            if (albumId < 0) {
-                Uri uri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
-                pfd = context.getContentResolver().openFileDescriptor(uri, "r");
-            } else {
-                Uri uri = ContentUris.withAppendedId(AlbumArtUri, albumId);
-                pfd = context.getContentResolver().openFileDescriptor(uri, "r");
-            }
-            if (pfd == null) {
-                return null;
-            }
-
-            bmp = decodeImage(pfd.getFileDescriptor(), targetSize);
-            pfd.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return bmp;
-    }
-
-
 
     public static List<SearchResult> search(Context context, String key) {
         List<SearchResult> results = new ArrayList<SearchResult>();

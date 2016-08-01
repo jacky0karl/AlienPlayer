@@ -1,12 +1,5 @@
 package com.jk.alienplayer.ui.playing;
 
-import com.jk.alienplayer.R;
-
-import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.impl.PlayService;
-import com.jk.alienplayer.metadata.SongInfo;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +12,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.utils.UiUtils;
 
 public class ArtworkFragment extends Fragment {
 
@@ -51,8 +51,7 @@ public class ArtworkFragment extends Fragment {
     }
 
     private void init(View root) {
-        mArtworkSize = getActivity().getResources().getDimensionPixelSize(
-                R.dimen.detail_artwork_size);
+        mArtworkSize = UiUtils.getScreenWidth(getActivity());
         mArtwork = (ImageView) root.findViewById(R.id.artwork);
         mRepeatBtn = (ImageView) root.findViewById(R.id.repeat_btn);
         mRepeatBtn.setOnClickListener(new OnClickListener() {
@@ -77,8 +76,7 @@ public class ArtworkFragment extends Fragment {
 
     private void syncView() {
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
-        Bitmap bmp = DatabaseHelper.getArtwork(getActivity(), songInfo.id, songInfo.albumId,
-                mArtworkSize);
+        Bitmap bmp = DatabaseHelper.getArtworkFormFile(getActivity(), songInfo.id, songInfo.albumId, mArtworkSize);
         if (bmp == null) {
             mArtwork.setImageResource(R.drawable.disk);
         } else {

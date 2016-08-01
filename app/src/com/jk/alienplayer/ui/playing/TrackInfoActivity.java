@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.Mp3TagsHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.MediaScanService;
@@ -81,8 +82,6 @@ public class TrackInfoActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 writeTrackTags();
-                MediaScanService.startScan(TrackInfoActivity.this, mTrackPath);
-                TrackInfoActivity.this.finish();
             }
         });
         mCancelBtn = (Button) findViewById(R.id.cancelBtn);
@@ -105,6 +104,14 @@ public class TrackInfoActivity extends BaseActivity {
         Mp3TagsHelper.writeMp3Tags(new Mp3TagsHelper.OnMP3AddListener() {
             @Override
             public void onMP3Added() {
+                MediaScanService.startScan(TrackInfoActivity.this, mTrackPath);
+                TrackInfoActivity.this.finish();
+            }
+
+            @Override
+            public void onArtworkUpdated(String artworkPath) {
+                SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
+                DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, song.albumId, artworkPath);
             }
         }, mArtworkUrl, title, artists, album, artistAlbum, track, year, mTrackPath);
     }

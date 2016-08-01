@@ -135,6 +135,7 @@ public class Mp3TagsHelper {
                 tags.setField(cover);
                 mp3.setID3v2Tag(tags);
                 mp3.save();
+                l.onArtworkUpdated(filePath);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,5 +146,7 @@ public class Mp3TagsHelper {
 
     public interface OnMP3AddListener {
         void onMP3Added();
+
+        void onArtworkUpdated(String artworkPath);
     }
 }

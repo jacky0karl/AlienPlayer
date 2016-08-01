@@ -130,7 +130,7 @@ public class FileDownloadingHelper {
             downloadTrack(info);
             downloadLyric(info);
         }
-    };
+    }
 
     private void downloadLyric(final FileDownloadingInfo info) {
         if (info.status == Status.CANCELED) {
@@ -247,6 +247,10 @@ public class FileDownloadingHelper {
                 @Override
                 public void onMP3Added() {
                     MediaScanService.startScan(mContext, filePath);
+                }
+
+                @Override
+                public void onArtworkUpdated(String artworkPath) {
                 }
             }, info, filePath);
         }
