@@ -9,7 +9,7 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceHelper {
     private static final String COOKIE = "appver=1.7.6;os=Android";
@@ -29,7 +29,7 @@ public class ServiceHelper {
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client).baseUrl(baseUrl)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(JacksonConverterFactory.create()).build();
+                .addConverterFactory(GsonConverterFactory.create()).build();
         return retrofit.create(clazz);
     }
 

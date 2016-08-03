@@ -94,6 +94,7 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
         } else if (item.getItemId() == R.id.discover) {
             Intent intent = new Intent(this, NetworkSearchActivity.class);
+            intent.putExtra(NetworkSearchActivity.TYPE, NetworkSearchActivity.TYPE_SONG);
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mTabLayout, Gravity.CENTER);

@@ -122,7 +122,6 @@ public class DatabaseHelper {
         }
 
         String cachePath = getAlbumArtwork(context, albumId);
-        Picasso.with(context).invalidate(cachePath);
         int preCount = "file://".length();
         if (!TextUtils.isEmpty(cachePath) && cachePath.length() > preCount) {
             File cache = new File(cachePath.substring(preCount));
@@ -130,6 +129,7 @@ public class DatabaseHelper {
                 cache.delete();
             }
         }
+        Picasso.with(context).invalidate(cachePath);
     }
 
     public static Bitmap getArtworkFormFile(Context context, long songId, long albumId, int targetSize) {
