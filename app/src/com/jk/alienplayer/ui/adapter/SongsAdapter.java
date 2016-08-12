@@ -47,7 +47,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
         holder.name.setText(info.title);
         holder.artist.setText(info.artist);
 
-        holder.action.setOnClickListener(new OnClickListener() {
+        holder.menu.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mItemClickListener.onItemClick(v, position, info);
@@ -71,14 +71,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
         View root;
         TextView name;
         TextView artist;
-        ImageView action;
+        ImageView menu;
 
         public ViewHolder(View itemView) {
             super(itemView);
             root = itemView;
             name = (TextView) itemView.findViewById(R.id.content);
             artist = (TextView) itemView.findViewById(R.id.artist);
-            action = (ImageView) itemView.findViewById(R.id.action);
+            menu = (ImageView) itemView.findViewById(R.id.menu);
         }
     }
 }

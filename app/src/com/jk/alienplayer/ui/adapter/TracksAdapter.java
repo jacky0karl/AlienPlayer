@@ -1,20 +1,20 @@
 package com.jk.alienplayer.ui.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.SongInfo;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TracksAdapter extends BaseAdapter {
 
@@ -33,7 +33,7 @@ public class TracksAdapter extends BaseAdapter {
         super();
         mInflater = LayoutInflater.from(context);
         mItemClickListener = listener;
-        mTracks = new ArrayList<SongInfo>();
+        mTracks = new ArrayList<>();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TracksAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.list_item_double, null);
             viewHolder.name = (TextView) view.findViewById(R.id.content);
             viewHolder.artist = (TextView) view.findViewById(R.id.artist);
-            viewHolder.action = (ImageView) view.findViewById(R.id.action);
+            viewHolder.menu = (ImageView) view.findViewById(R.id.menu);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -68,7 +68,7 @@ public class TracksAdapter extends BaseAdapter {
         SongInfo info = mTracks.get(position);
         viewHolder.name.setText(info.title);
         viewHolder.artist.setText(info.artist);
-        viewHolder.action.setOnClickListener(new OnClickListener() {
+        viewHolder.menu.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mItemClickListener.onItemClick(null, v, position, getItemId(position));
@@ -80,6 +80,6 @@ public class TracksAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView name;
         TextView artist;
-        ImageView action;
+        ImageView menu;
     }
 }

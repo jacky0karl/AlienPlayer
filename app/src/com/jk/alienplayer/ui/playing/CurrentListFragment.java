@@ -1,14 +1,5 @@
 package com.jk.alienplayer.ui.playing;
 
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.impl.PlayService;
-import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.adapter.TracksAdapter;
-import com.jk.alienplayer.widget.ListMenu;
-import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
-import com.jk.alienplayer.widget.TrackOperationHelper;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,19 +7,25 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.PopupWindow;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 
-public class CurrentListFragment extends Fragment implements OnMenuItemClickListener {
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.ui.adapter.TracksAdapter;
+import com.jk.alienplayer.widget.TrackOperationHelper;
+
+public class CurrentListFragment extends Fragment {
     private ListView mListView;
     private TracksAdapter mAdapter;
-    private ListMenu mListMenu;
-    private PopupWindow mPopupWindow;
     private SongInfo mCurrTrack;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -50,7 +47,7 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mCurrTrack = mAdapter.getItem(position);
             if (view.getId() == R.id.action) {
-                mPopupWindow.showAsDropDown(view);
+                showPopupMenu(view);
             } else {
                 onSongClick(mCurrTrack);
             }
@@ -68,7 +65,6 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
 
     @Override
     public void onDestroyView() {
-        mPopupWindow.dismiss();
         getActivity().unregisterReceiver(mReceiver);
         super.onDestroyView();
     }
@@ -79,18 +75,6 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
         mListView.setAdapter(mAdapter);
         mAdapter.setTracks(PlayingInfoHolder.getInstance().getCurrentlist());
         mListView.setOnItemClickListener(mOnItemClickListener);
-        setupPopupWindow();
-    }
-
-    private void setupPopupWindow() {
-        mListMenu = new ListMenu(getActivity());
-        mListMenu.setMenuItemClickListener(this);
-        mListMenu.addMenu(ListMenu.MEMU_ADD_TO_PLAYLIST, R.string.add_to_playlist);
-        mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT, false);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
     }
 
     private void onSongClick(SongInfo song) {
@@ -100,12 +84,18 @@ public class CurrentListFragment extends Fragment implements OnMenuItemClickList
         getActivity().startService(intent);
     }
 
-    @Override
-    public void onClick(int menuId) {
-        mPopupWindow.dismiss();
-        if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            TrackOperationHelper.addToPlaylist(getActivity(), mCurrTrack.id);
-        }
+    private void showPopupMenu(View v) {
+        PopupMenu menu = new PopupMenu(getActivity(), v);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                TrackOperationHelper.addToPlaylist(getActivity(), mCurrTrack.id);
+                return false;
+            }
+        });
+
+        menu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.add_to_playlist);
+        menu.show();
     }
 
 }

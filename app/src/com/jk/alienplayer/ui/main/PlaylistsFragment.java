@@ -1,20 +1,11 @@
 package com.jk.alienplayer.ui.main;
 
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.PlaylistHelper;
-import com.jk.alienplayer.metadata.CurrentlistInfo;
-import com.jk.alienplayer.metadata.PlaylistInfo;
-import com.jk.alienplayer.ui.artistdetail.SongsActivity;
-import com.jk.alienplayer.ui.adapter.PlaylistsAdapter;
-import com.jk.alienplayer.widget.ListMenu;
-import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.provider.MediaStore.Audio.Playlists;
@@ -26,19 +17,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.PopupWindow;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 
-public class PlaylistsFragment extends Fragment implements OnMenuItemClickListener {
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.PlaylistHelper;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.metadata.PlaylistInfo;
+import com.jk.alienplayer.ui.adapter.PlaylistsAdapter;
+import com.jk.alienplayer.ui.artistdetail.SongsActivity;
+
+public class PlaylistsFragment extends Fragment {
 
     private LayoutInflater mInflater;
     private ListView mListView;
     private PlaylistsAdapter mAdapter;
-    private ListMenu mListMenu;
-    private PopupWindow mPopupWindow;
     private PlaylistInfo mCurrPlaylist;
 
     private ContentObserver mContentObserver = new ContentObserver(null) {
@@ -64,7 +59,6 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
 
     @Override
     public void onDestroyView() {
-        mPopupWindow.dismiss();
         getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
         super.onDestroyView();
     }
@@ -82,14 +76,6 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(int menuId) {
-        mPopupWindow.dismiss();
-        if (ListMenu.MEMU_DELETE == menuId) {
-            PlaylistHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
-        }
-    }
-
     private void init(View root) {
         setHasOptionsMenu(true);
         mInflater = (LayoutInflater) getActivity()
@@ -100,18 +86,6 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
         mListView.setAdapter(mAdapter);
         mAdapter.setPlaylists(PlaylistHelper.getPlaylists(getActivity()));
         mListView.setOnItemClickListener(mOnItemClickListener);
-        setupPopupWindow();
-    }
-
-    private void setupPopupWindow() {
-        mListMenu = new ListMenu(getActivity());
-        mListMenu.setMenuItemClickListener(this);
-        mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
-        mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT, false);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
     }
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
@@ -119,12 +93,26 @@ public class PlaylistsFragment extends Fragment implements OnMenuItemClickListen
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mCurrPlaylist = mAdapter.getItem(position);
             if (view.getId() == R.id.action) {
-                mPopupWindow.showAsDropDown(view);
+                showPopupMenu(view);
             } else {
                 startSongsPage(mCurrPlaylist.id, mCurrPlaylist.name);
             }
         }
     };
+
+    private void showPopupMenu(View v) {
+        PopupMenu menu = new PopupMenu(getActivity(), v);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                PlaylistHelper.deletePlaylist(getActivity(), mCurrPlaylist.id);
+                return false;
+            }
+        });
+
+        menu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.delete);
+        menu.show();
+    }
 
     private void startSongsPage(long key, String label) {
         Intent intent = new Intent(getActivity(), SongsActivity.class);

@@ -113,9 +113,9 @@ public class TrackInfoActivity extends BaseActivity {
             public void onArtworkUpdated(String artworkPath) {
                 SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
                 DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, song.albumId, artworkPath);
-                Intent intentNext = PlayService.getPlayingCommandIntent(TrackInfoActivity.this,
+                Intent intent = PlayService.getPlayingCommandIntent(TrackInfoActivity.this,
                         PlayService.COMMAND_REFRESH);
-                startService(intentNext);
+                startService(intent);
                 setResult(Activity.RESULT_OK);
             }
         }, mArtworkUrl, title, artists, album, artistAlbum, track, year, mTrackPath);

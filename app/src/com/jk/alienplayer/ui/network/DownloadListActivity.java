@@ -8,32 +8,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.PopupWindow;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.FileDownloadingInfo;
 import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.BaseActivity;
-import com.jk.alienplayer.ui.main.SearchActivity;
 import com.jk.alienplayer.ui.adapter.FileDownloadListAdapter;
-import com.jk.alienplayer.widget.ListMenu;
-import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
+import com.jk.alienplayer.ui.main.SearchActivity;
 
 import java.util.List;
 
 public class DownloadListActivity extends BaseActivity {
     private static final int UPDATE_INTERVAL = 500;
+    public static final int MEMU_REMOVE = 2;
+    public static final int MEMU_VIEW = 3;
+    public static final int MEMU_RETRY = 4;
+    public static final int MEMU_ABORT = 5;
 
     private TextView mNoItem;
     private ListView mListView;
     private FileDownloadListAdapter mAdapter;
     private FileDownloadingInfo mCurrInfo = null;
     private Handler mHandler;
-    private ListMenu mListMenu;
-    private PopupWindow mPopupWindow;
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -41,8 +40,7 @@ public class DownloadListActivity extends BaseActivity {
             mCurrInfo = mAdapter.getItem(position);
             if (mCurrInfo != null) {
                 if (view.getId() == R.id.action) {
-                    updateListMenu();
-                    mPopupWindow.showAsDropDown(view);
+                    showPopupMenu(view);
                 } else {
                     onFileClick();
                 }
@@ -79,18 +77,8 @@ public class DownloadListActivity extends BaseActivity {
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mOnItemClickListener);
         mHandler = new Handler();
-        setupPopupWindow();
     }
 
-    private void setupPopupWindow() {
-        mListMenu = new ListMenu(this);
-        mListMenu.setMenuItemClickListener(mOnMenuItemClickListener);
-        mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT, false);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
-    }
 
     @Override
     protected void onResume() {
@@ -102,12 +90,6 @@ public class DownloadListActivity extends BaseActivity {
     protected void onPause() {
         mHandler.removeCallbacks(mUpdateTask);
         super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mPopupWindow.dismiss();
-        super.onDestroy();
     }
 
     Runnable mUpdateTask = new Runnable() {
@@ -143,20 +125,42 @@ public class DownloadListActivity extends BaseActivity {
         }
     }
 
-    private void updateListMenu() {
-        mListMenu.clearMenu();
+    private void showPopupMenu(View v) {
+        PopupMenu menu = new PopupMenu(this, v);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case MEMU_VIEW:
+                        viewTrack();
+                        return true;
+                    case MEMU_RETRY:
+                        FileDownloadingHelper.getInstance().retryDownloadTrack(mCurrInfo);
+                        break;
+                    case MEMU_ABORT:
+                        FileDownloadingHelper.getInstance().abortDownloadTrack(mCurrInfo);
+                        break;
+                    case MEMU_REMOVE:
+                        FileDownloadingHelper.getInstance().removeRecord(mCurrInfo);
+                        break;
+                }
+                startListUpdate();
+                return true;
+            }
+        });
+
         if (mCurrInfo.status == FileDownloadingInfo.Status.PENDING
                 || mCurrInfo.status == FileDownloadingInfo.Status.DOWALOADING) {
-            mListMenu.addMenu(ListMenu.MEMU_ABORT, R.string.abort);
+            menu.getMenu().add(Menu.NONE, MEMU_ABORT, Menu.NONE, R.string.abort);
         } else if (mCurrInfo.status == FileDownloadingInfo.Status.COMPLETED) {
-            mListMenu.addMenu(ListMenu.MEMU_VIEW, R.string.view);
-            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
+            menu.getMenu().add(Menu.NONE, MEMU_VIEW, Menu.NONE, R.string.view);
+            menu.getMenu().add(Menu.NONE, MEMU_REMOVE, Menu.NONE, R.string.remove);
         } else if (mCurrInfo.status == FileDownloadingInfo.Status.FAILED
                 || mCurrInfo.status == FileDownloadingInfo.Status.CANCELED) {
-            mListMenu.addMenu(ListMenu.MEMU_RETRY, R.string.retry);
-            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
+            menu.getMenu().add(Menu.NONE, MEMU_RETRY, Menu.NONE, R.string.retry);
+            menu.getMenu().add(Menu.NONE, MEMU_REMOVE, Menu.NONE, R.string.remove);
         }
-        mPopupWindow.setContentView(mListMenu);
+        menu.show();
     }
 
     private void viewTrack() {
@@ -164,22 +168,4 @@ public class DownloadListActivity extends BaseActivity {
         intent.putExtra(SearchActivity.QUERY, mCurrInfo.trackInfo.getName());
         startActivity(intent);
     }
-
-    private OnMenuItemClickListener mOnMenuItemClickListener = new OnMenuItemClickListener() {
-        @Override
-        public void onClick(int menuId) {
-            mPopupWindow.dismiss();
-            if (ListMenu.MEMU_VIEW == menuId) {
-                viewTrack();
-                return;
-            } else if (ListMenu.MEMU_RETRY == menuId) {
-                FileDownloadingHelper.getInstance().retryDownloadTrack(mCurrInfo);
-            } else if (ListMenu.MEMU_REMOVE == menuId) {
-                FileDownloadingHelper.getInstance().removeRecord(mCurrInfo);
-            } else if (ListMenu.MEMU_ABORT == menuId) {
-                FileDownloadingHelper.getInstance().abortDownloadTrack(mCurrInfo);
-            }
-            startListUpdate();
-        }
-    };
 }

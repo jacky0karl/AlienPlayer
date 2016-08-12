@@ -6,10 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.PopupWindow;
+import android.widget.PopupMenu;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
@@ -20,25 +21,26 @@ import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.adapter.OnItemClickListener;
 import com.jk.alienplayer.ui.adapter.SongsAdapter;
-import com.jk.alienplayer.widget.ListMenu;
-import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
+import com.jk.alienplayer.widget.DividerItemDecoration;
 import com.jk.alienplayer.widget.TrackOperationHelper;
 import com.jk.alienplayer.widget.TrackOperationHelper.OnDeleteTrackListener;
 
 import java.util.List;
 
-public class SongsFragment extends Fragment implements OnMenuItemClickListener {
+public class SongsFragment extends Fragment {
     public static final String KEY_TYPE = "key_type";
     public static final String KEY = "key";
     public static final String LABEL = "label";
+
+    public static final int MEMU_ADD_TO_PLAYLIST = 0;
+    public static final int MEMU_DELETE = 1;
+    public static final int MEMU_REMOVE = 2;
 
     private int mKeyType;
     private long mKey;
     private String mLabel;
     private RecyclerView mRecyclerView;
     private SongsAdapter mAdapter;
-    private ListMenu mListMenu;
-    private PopupWindow mPopupWindow;
     private SongInfo mCurrTrack = null;
     private List<SongInfo> mSongList = null;
 
@@ -50,8 +52,8 @@ public class SongsFragment extends Fragment implements OnMenuItemClickListener {
             }
 
             mCurrTrack = obj;
-            if (view.getId() == R.id.action) {
-                mPopupWindow.showAsDropDown(view);
+            if (view.getId() == R.id.menu) {
+                showPopupMenu(view);
             } else {
                 onSongClick(mCurrTrack);
             }
@@ -65,12 +67,6 @@ public class SongsFragment extends Fragment implements OnMenuItemClickListener {
         return root;
     }
 
-    @Override
-    public void onDestroyView() {
-        mPopupWindow.dismiss();
-        super.onDestroy();
-    }
-
     private void init(View root) {
         if (getArguments() != null) {
             mKeyType = getArguments().getInt(KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
@@ -78,30 +74,14 @@ public class SongsFragment extends Fragment implements OnMenuItemClickListener {
             mLabel = getArguments().getString(LABEL);
         }
 
-        setupPopupWindow();
         mRecyclerView = (RecyclerView) root.findViewById(R.id.list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
+        mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new SongsAdapter(getActivity(), mOnItemClickListener);
         mRecyclerView.setAdapter(mAdapter);
         updateList();
-    }
-
-    private void setupPopupWindow() {
-        mListMenu = new ListMenu(getActivity());
-        mListMenu.setMenuItemClickListener(this);
-        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
-            mListMenu.addMenu(ListMenu.MEMU_REMOVE, R.string.remove);
-        } else {
-            mListMenu.addMenu(ListMenu.MEMU_ADD_TO_PLAYLIST, R.string.add_to_playlist);
-            mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
-        }
-
-        mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT, false);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
     }
 
     private void onSongClick(SongInfo song) {
@@ -112,16 +92,33 @@ public class SongsFragment extends Fragment implements OnMenuItemClickListener {
         getActivity().startService(intent);
     }
 
-    @Override
-    public void onClick(int menuId) {
-        mPopupWindow.dismiss();
-        if (ListMenu.MEMU_REMOVE == menuId) {
-            reomveTrack();
-        } else if (ListMenu.MEMU_DELETE == menuId) {
-            deleteTrack();
-        } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-            TrackOperationHelper.addToPlaylist(getActivity(), mCurrTrack.id);
+    private void showPopupMenu(View v) {
+        PopupMenu menu = new PopupMenu(getActivity(), v);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case MEMU_ADD_TO_PLAYLIST:
+                        TrackOperationHelper.addToPlaylist(getActivity(), mCurrTrack.id);
+                        break;
+                    case MEMU_DELETE:
+                        deleteTrack();
+                        break;
+                    case MEMU_REMOVE:
+                        reomveTrack();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+            menu.getMenu().add(Menu.NONE, MEMU_REMOVE, Menu.NONE, R.string.remove);
+        } else {
+            menu.getMenu().add(Menu.NONE, MEMU_ADD_TO_PLAYLIST, Menu.NONE, R.string.add_to_playlist);
+            menu.getMenu().add(Menu.NONE, MEMU_DELETE, Menu.NONE, R.string.delete);
         }
+        menu.show();
     }
 
     private void reomveTrack() {

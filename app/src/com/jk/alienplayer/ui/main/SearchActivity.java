@@ -1,22 +1,5 @@
 package com.jk.alienplayer.ui.main;
 
-import java.util.List;
-
-import com.jk.alienplayer.R;
-import com.jk.alienplayer.data.DatabaseHelper;
-import com.jk.alienplayer.data.PlayingInfoHolder;
-import com.jk.alienplayer.impl.PlayService;
-import com.jk.alienplayer.metadata.CurrentlistInfo;
-import com.jk.alienplayer.metadata.SearchResult;
-import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.BaseActivity;
-import com.jk.alienplayer.ui.artistdetail.SongsActivity;
-import com.jk.alienplayer.ui.adapter.SearchResultsAdapter;
-import com.jk.alienplayer.widget.ListMenu;
-import com.jk.alienplayer.widget.TrackOperationHelper;
-import com.jk.alienplayer.widget.ListMenu.OnMenuItemClickListener;
-import com.jk.alienplayer.widget.TrackOperationHelper.OnDeleteTrackListener;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -26,20 +9,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+
+import com.jk.alienplayer.R;
+import com.jk.alienplayer.data.DatabaseHelper;
+import com.jk.alienplayer.data.PlayingInfoHolder;
+import com.jk.alienplayer.impl.PlayService;
+import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.metadata.SearchResult;
+import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.ui.BaseActivity;
+import com.jk.alienplayer.ui.adapter.SearchResultsAdapter;
+import com.jk.alienplayer.ui.artistdetail.SongsActivity;
+import com.jk.alienplayer.widget.TrackOperationHelper;
+import com.jk.alienplayer.widget.TrackOperationHelper.OnDeleteTrackListener;
+
+import java.util.List;
 
 public class SearchActivity extends BaseActivity implements OnItemClickListener {
     public static final String QUERY = "query";
+    public static final int MEMU_ADD_TO_PLAYLIST = 0;
+    public static final int MEMU_DELETE = 1;
 
     private ListView mListView;
     private SearchResultsAdapter mAdapter;
     private List<SearchResult> mResults;
     private SearchResult mCurrResult = null;
-    private ListMenu mListMenu;
-    private PopupWindow mPopupWindow;
 
     private OnQueryTextListener mQueryTextListener = new OnQueryTextListener() {
         @Override
@@ -67,25 +64,6 @@ public class SearchActivity extends BaseActivity implements OnItemClickListener 
         mAdapter = new SearchResultsAdapter(this, this);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
-        setupPopupWindow();
-    }
-
-    private void setupPopupWindow() {
-        mListMenu = new ListMenu(this);
-        mListMenu.setMenuItemClickListener(mOnMenuItemClickListener);
-        mListMenu.addMenu(ListMenu.MEMU_ADD_TO_PLAYLIST, R.string.add_to_playlist);
-        mListMenu.addMenu(ListMenu.MEMU_DELETE, R.string.delete);
-        mPopupWindow = new PopupWindow(mListMenu, LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT, false);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
-    }
-
-    @Override
-    public void onDestroy() {
-        mPopupWindow.dismiss();
-        super.onDestroy();
     }
 
     @Override
@@ -110,11 +88,33 @@ public class SearchActivity extends BaseActivity implements OnItemClickListener 
         mCurrResult = mAdapter.getItem(position);
         if (mCurrResult != null) {
             if (view.getId() == R.id.action) {
-                mPopupWindow.showAsDropDown(view);
+                showPopupMenu(view);
             } else {
                 handleItemClick();
             }
         }
+    }
+
+    private void showPopupMenu(View v) {
+        PopupMenu menu = new PopupMenu(this, v);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case MEMU_ADD_TO_PLAYLIST:
+                        TrackOperationHelper.addToPlaylist(SearchActivity.this, mCurrResult.data.getId());
+                        break;
+                    case MEMU_DELETE:
+                        deleteTrack();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        menu.getMenu().add(Menu.NONE, MEMU_ADD_TO_PLAYLIST, Menu.NONE, R.string.add_to_playlist);
+        menu.getMenu().add(Menu.NONE, MEMU_DELETE, Menu.NONE, R.string.delete);
+        menu.show();
     }
 
     private void handleItemClick() {
@@ -141,18 +141,6 @@ public class SearchActivity extends BaseActivity implements OnItemClickListener 
         intent.putExtra(SongsActivity.LABEL, mCurrResult.data.getDisplayName());
         startActivity(intent);
     }
-
-    private OnMenuItemClickListener mOnMenuItemClickListener = new OnMenuItemClickListener() {
-        @Override
-        public void onClick(int menuId) {
-            mPopupWindow.dismiss();
-            if (ListMenu.MEMU_DELETE == menuId) {
-                deleteTrack();
-            } else if (ListMenu.MEMU_ADD_TO_PLAYLIST == menuId) {
-                TrackOperationHelper.addToPlaylist(SearchActivity.this, mCurrResult.data.getId());
-            }
-        }
-    };
 
     private void deleteTrack() {
         final SearchResult deleteResult = mCurrResult;
