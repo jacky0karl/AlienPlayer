@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,14 +75,14 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup parent) {
         int type = getItemViewType(position);
         switch (type) {
-        case NetworkSearchResult.TYPE_ARTISTS:
-            return getArtistView(position, view);
-        case NetworkSearchResult.TYPE_ALBUMS:
-            return getAlbumView(position, view);
-        case NetworkSearchResult.TYPE_TRACKS:
-            return getTrackView(position, view);
-        default:
-            return view;
+            case NetworkSearchResult.TYPE_ARTISTS:
+                return getArtistView(position, view);
+            case NetworkSearchResult.TYPE_ALBUMS:
+                return getAlbumView(position, view);
+            case NetworkSearchResult.TYPE_TRACKS:
+                return getTrackView(position, view);
+            default:
+                return view;
         }
     }
 
@@ -98,7 +99,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
             viewHolder = (ArtistViewHolder) view.getTag();
         }
 
-        NetworkSearchResult result =  mResults.get(position);
+        NetworkSearchResult result = mResults.get(position);
         viewHolder.content.setText(result.name);
         showTitle(viewHolder.title, position, result.type);
         return view;
@@ -119,7 +120,8 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkAlbumInfo result = (NetworkAlbumInfo) mResults.get(position);
-        Picasso.with(mContext).load(result.avatar).placeholder(R.drawable.disk).into(viewHolder.artwork);
+        Picasso.with(mContext).load(result.avatar).placeholder(R.drawable.disk)
+                .config(Bitmap.Config.RGB_565).into(viewHolder.artwork);
         viewHolder.content.setText(result.name);
         viewHolder.artist.setText(result.artist);
         showTitle(viewHolder.title, position, result.type);
@@ -179,17 +181,17 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
     private void doShowTitle(TextView view, int type) {
         String title = null;
         switch (type) {
-        case SearchResult.TYPE_ARTISTS:
-            title = mContext.getString(R.string.artist);
-            break;
-        case SearchResult.TYPE_ALBUMS:
-            title = mContext.getString(R.string.album);
-            break;
-        case SearchResult.TYPE_TRACKS:
-            title = mContext.getString(R.string.track);
-            break;
-        default:
-            break;
+            case SearchResult.TYPE_ARTISTS:
+                title = mContext.getString(R.string.artist);
+                break;
+            case SearchResult.TYPE_ALBUMS:
+                title = mContext.getString(R.string.album);
+                break;
+            case SearchResult.TYPE_TRACKS:
+                title = mContext.getString(R.string.track);
+                break;
+            default:
+                break;
         }
 
         view.setVisibility(View.VISIBLE);

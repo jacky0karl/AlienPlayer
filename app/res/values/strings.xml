@@ -13,7 +13,7 @@
     <string name="audio_effect">Audio Effect</string>
     <string name="search">Search</string>
     <string name="discover">Discover</string>
-    <string name="track_details">Track Details</string>
+    <string name="track_info">Track Info</string>
     <string name="search_hint">Artists, albums, and tracks</string>
     <string name="recents">Recents</string>
     <string name="playlists">Playlists</string>

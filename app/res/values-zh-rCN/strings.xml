@@ -9,7 +9,7 @@
     <string name="audio_effect">音效</string>
     <string name="search">搜索</string>
     <string name="discover">发现</string>
-    <string name="track_details">歌曲详情</string>
+    <string name="track_info">歌曲信息</string>
     <string name="search_hint">歌手, 专辑或歌曲</string>
     <string name="recents">最近</string>
     <string name="playlists">播放列表</string>

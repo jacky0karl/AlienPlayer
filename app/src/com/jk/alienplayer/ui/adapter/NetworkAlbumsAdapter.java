@@ -1,6 +1,7 @@
 package com.jk.alienplayer.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,8 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
             AlbumBean info = mAlbums.get(position);
             viewHolder.name.setText(info.getName());
             viewHolder.artist.setText(info.getShowingArtist());
-            Picasso.with(mContext).load(info.getPicUrl()).placeholder(R.drawable.disk).into(viewHolder.artwork);
+            Picasso.with(mContext).load(info.getPicUrl()).config(Bitmap.Config.RGB_565)
+                    .placeholder(R.drawable.disk).into(viewHolder.artwork);
             return view;
         } catch (Exception e) {
             return new View(mContext);

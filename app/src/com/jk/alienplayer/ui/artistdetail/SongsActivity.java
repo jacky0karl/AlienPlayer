@@ -101,7 +101,7 @@ public class SongsActivity extends BaseActivity {
             };
 
             String file = DatabaseHelper.getAlbumArtwork(this, mKey);
-            Picasso.with(MainApplication.app).load(file).into(target);
+            Picasso.with(MainApplication.app).load(file).config(Bitmap.Config.RGB_565).into(target);
             AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBarLayout);
             UiUtils.setAppBarLayoutOffset(appbar, (int) (height * 0.45));
         } catch (Exception e) {

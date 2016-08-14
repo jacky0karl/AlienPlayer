@@ -2,10 +2,12 @@ package com.jk.alienplayer.ui.playing;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -35,15 +37,28 @@ public class TrackInfoActivity extends BaseActivity {
     private EditText mAlbumArtist;
     private EditText mTrack;
     private EditText mYear;
-    private Button mSaveBtn;
-    private Button mCancelBtn;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_info);
         init();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.track_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        } else if (item.getItemId() == R.id.action_save) {
+            writeTrackTags();
+        }
+        return true;
     }
 
     private void init() {
@@ -77,30 +92,15 @@ public class TrackInfoActivity extends BaseActivity {
                 startActivityForResult(intent, FETCH_ARTWORK);
             }
         });
-
-        mSaveBtn = (Button) findViewById(R.id.saveBtn);
-        mSaveBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                writeTrackTags();
-            }
-        });
-        mCancelBtn = (Button) findViewById(R.id.cancelBtn);
-        mCancelBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TrackInfoActivity.this.finish();
-            }
-        });
     }
 
     private void writeTrackTags() {
         String title = mTitle.getText().toString().trim();
-        String artists = mArtist.getText().toString().trim();
         String album = mAlbum.getText().toString().trim();
         String artistAlbum = mAlbumArtist.getText().toString().trim();
         String track = mTrack.getText().toString().trim();
         String year = mYear.getText().toString().trim();
+        String artists = mArtist.getText().toString().trim();
 
         Mp3TagsHelper.writeMp3Tags(new Mp3TagsHelper.OnMP3AddListener() {
             @Override
@@ -113,8 +113,7 @@ public class TrackInfoActivity extends BaseActivity {
             public void onArtworkUpdated(String artworkPath) {
                 SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
                 DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, song.albumId, artworkPath);
-                Intent intent = PlayService.getPlayingCommandIntent(TrackInfoActivity.this,
-                        PlayService.COMMAND_REFRESH);
+                Intent intent = PlayService.getPlayingCommandIntent(TrackInfoActivity.this, PlayService.COMMAND_REFRESH);
                 startService(intent);
                 setResult(Activity.RESULT_OK);
             }
@@ -125,7 +124,7 @@ public class TrackInfoActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == FETCH_ARTWORK && data != null) {
             mArtworkUrl = data.getStringExtra(EXTRA_ARTWORK);
-            Picasso.with(this).load(mArtworkUrl).into(mArtwork);
+            Picasso.with(this).load(mArtworkUrl).config(Bitmap.Config.RGB_565).into(mArtwork);
         }
     }
 }
