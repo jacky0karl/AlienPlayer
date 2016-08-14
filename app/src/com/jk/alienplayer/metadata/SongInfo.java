@@ -1,16 +1,19 @@
 package com.jk.alienplayer.metadata;
 
-import com.jk.alienplayer.metadata.SearchResult.SearchResultData;
-
 import android.text.TextUtils;
+
+import com.jk.alienplayer.metadata.SearchResult.SearchResultData;
 
 public class SongInfo implements SearchResultData {
     public long id;
     public String title;
     public long duration;
     public String path;
-    public long albumId;
+
     public String artist;
+    public long artistId;
+    public String album;
+    public long albumId;
 
     public SongInfo(long id, String title, long duration, String path) {
         if (TextUtils.isEmpty(title)) {

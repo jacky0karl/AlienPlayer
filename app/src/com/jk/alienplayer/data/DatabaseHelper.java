@@ -180,7 +180,7 @@ public class DatabaseHelper {
     public static List<SongInfo> getTracks(Context context, String artist) {
         List<SongInfo> songs = new ArrayList<SongInfo>();
         String[] projection = new String[]{Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
-                Media.ALBUM_ID, Media.ARTIST};
+                Media.ALBUM_ID, Media.ARTIST, Media.ALBUM, Media.ARTIST_ID};
         String selection = MEDIA_SELECTION + " and " + Media.ARTIST + " LIKE ?";
         String[] selectionArgs = new String[]{"%" + artist + "%"};
         String order = Media.DEFAULT_SORT_ORDER;
@@ -201,7 +201,7 @@ public class DatabaseHelper {
     public static List<SongInfo> getTracks(Context context, int keyType, long key) {
         List<SongInfo> songs = new ArrayList<SongInfo>();
         String[] projection = new String[]{Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
-                Media.ALBUM_ID, Media.ARTIST};
+                Media.ALBUM_ID, Media.ARTIST, Media.ALBUM, Media.ARTIST_ID};
         String selection = MEDIA_SELECTION;
         String order = Media.DEFAULT_SORT_ORDER;
 
@@ -238,7 +238,7 @@ public class DatabaseHelper {
     public static SongInfo getTrack(Context context, long id) {
         SongInfo info = null;
         String[] projection = new String[]{Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
-                Media.ALBUM_ID, Media.ARTIST};
+                Media.ALBUM_ID, Media.ARTIST, Media.ALBUM, Media.ARTIST_ID};
         String selection = MEDIA_SELECTION;
         selection += " and " + Media._ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
@@ -324,7 +324,7 @@ public class DatabaseHelper {
     private static List<SearchResult> searchTracks(Context context, String key) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         String[] projection = new String[]{Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
-                Media.ALBUM_ID, Media.ARTIST};
+                Media.ALBUM_ID, Media.ARTIST, Media.ALBUM, Media.ARTIST_ID};
         String selection = MEDIA_SELECTION;
         selection += " and " + Media.TITLE + " like ?";
         String[] selectionArgs = new String[]{"%" + key + "%"};
@@ -367,12 +367,16 @@ public class DatabaseHelper {
         String title = cursor.getString(cursor.getColumnIndexOrThrow(Media.TITLE));
         long duration = cursor.getLong(cursor.getColumnIndexOrThrow(Media.DURATION));
         String path = cursor.getString(cursor.getColumnIndexOrThrow(Media.DATA));
-        long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ALBUM_ID));
         String artist = cursor.getString(cursor.getColumnIndexOrThrow(Media.ARTIST));
+        long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ARTIST_ID));
+        String album = cursor.getString(cursor.getColumnIndexOrThrow(Media.ALBUM));
+        long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(Media.ALBUM_ID));
 
         SongInfo info = new SongInfo(id, title, duration, path);
-        info.albumId = albumId;
         info.artist = artist;
+        info.artistId = artistId;
+        info.album = album;
+        info.albumId = albumId;
         return info;
     }
 

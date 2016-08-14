@@ -12,9 +12,19 @@
         app:showAsAction="never"
         android:title="@string/volume"/>
     <item
-        android:id="@+id/audioEffect"
+        android:id="@+id/audio_effect"
         android:orderInCategory="100"
         app:showAsAction="never"
-        android:title="@string/audioEffect"/>
+        android:title="@string/audio_effect"/>
+    <item
+        android:id="@+id/goto_artist"
+        android:orderInCategory="101"
+        app:showAsAction="never"
+        android:title="@string/goto_artist"/>
+    <item
+        android:id="@+id/goto_album"
+        android:orderInCategory="102"
+        app:showAsAction="never"
+        android:title="@string/goto_album"/>
 
 </menu>
