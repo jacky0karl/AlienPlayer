@@ -77,7 +77,6 @@
         <activity
             android:name=".ui.playing.TrackInfoActivity"
             android:label="@string/track_info"
-            android:parentActivityName=".ui.playing.PlayingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>

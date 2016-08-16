@@ -243,7 +243,7 @@ public class FileDownloadingHelper {
 
     private void processDownloadFile(TrackBean info, final String filePath) {
         if (info.getExtension().equalsIgnoreCase("mp3")) {
-            Mp3TagsHelper.writeMp3Tags(new Mp3TagsHelper.OnMP3AddListener() {
+            Mp3TagsHelper.writeMp3Info(new Mp3TagsHelper.OnMP3AddListener() {
                 @Override
                 public void onMP3Added() {
                     MediaScanService.startScan(mContext, filePath);

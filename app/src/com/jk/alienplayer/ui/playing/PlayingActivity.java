@@ -138,7 +138,10 @@ public class PlayingActivity extends BaseActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.action_info) {
+            SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
             Intent intent = new Intent(this, TrackInfoActivity.class);
+            intent.putExtra(TrackInfoActivity.EXTRA_MODE, TrackInfoActivity.MODE_SINGLE);
+            intent.putExtra(TrackInfoActivity.EXTRA_ID, song.id);
             startActivityForResult(intent, REQUEST_UPDATE_ARTWORK);
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mContent, Gravity.CENTER);

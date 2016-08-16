@@ -1,5 +1,6 @@
 package com.jk.alienplayer.ui.artistdetail;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -9,6 +10,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -17,6 +20,7 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.BaseActivity;
+import com.jk.alienplayer.ui.playing.TrackInfoActivity;
 import com.jk.alienplayer.utils.UiUtils;
 import com.jk.alienplayer.widget.Playbar;
 import com.squareup.picasso.Picasso;
@@ -42,6 +46,31 @@ public class SongsActivity extends BaseActivity {
     protected void onDestroy() {
         mPlaybar.finish();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_songlist, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        } else if (item.getItemId() == R.id.action_info) {
+            Intent intent = new Intent(this, TrackInfoActivity.class);
+            if (mKeyType == CurrentlistInfo.TYPE_ARTIST) {
+                intent.putExtra(TrackInfoActivity.EXTRA_MODE, TrackInfoActivity.MODE_ARTIST);
+            } else if (mKeyType == CurrentlistInfo.TYPE_ALBUM) {
+                intent.putExtra(TrackInfoActivity.EXTRA_MODE, TrackInfoActivity.MODE_ALBUM);
+            } else {
+                intent.putExtra(TrackInfoActivity.EXTRA_MODE, TrackInfoActivity.MODE_PLAYLIST);
+            }
+            intent.putExtra(TrackInfoActivity.EXTRA_ID, mKey);
+            startActivity(intent);
+        }
+        return true;
     }
 
     private void init() {
@@ -108,7 +137,6 @@ public class SongsActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-
 
     private void setToolbarColor(Bitmap bitmap) {
         CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);

@@ -3,6 +3,8 @@ package com.jk.alienplayer;
 import android.app.Application;
 import android.os.StrictMode;
 
+import org.jaudiotagger.tag.TagOptionSingleton;
+
 public class MainApplication extends Application {
 
     public static Application app = null;
@@ -12,6 +14,7 @@ public class MainApplication extends Application {
         setDetection();
         super.onCreate();
         app = this;
+        TagOptionSingleton.getInstance().setAndroid(true);
     }
 
     private void setDetection() {

@@ -1,6 +1,7 @@
 <resources>
 
     <dimen name="normal_padding">8dp</dimen>
+    <dimen name="large_padding">20dp</dimen>
     <dimen name="playbar_height">120dp</dimen>
     <dimen name="volumebar_width">260dp</dimen>
     <dimen name="list_item_height">60dp</dimen>

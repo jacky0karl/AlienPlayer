@@ -48,10 +48,12 @@
     <string name="add">新建</string>
     <string name="abort">中止</string>
     <string name="save">保存</string>
+    <string name="saving">正在保存...</string>
     <string name="cancel">取消</string>
     <string name="start_rolling">开始滚屏</string>
     <string name="stop_rolling">停止滚屏</string>
-    <string name="name_hint">输入名字</string>
+    <string name="name_hint">输入名称</string>
+    <string name="create_playlist">创建播放列表</string>
     <string name="add_to_playlist">添加到播放列表</string>
     <string name="download_all">下载全部</string>
     <string name="clear">清除已完成</string>

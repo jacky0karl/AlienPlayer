@@ -1,7 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,78 +13,83 @@
             android:layout_height="wrap_content"
             android:text="@string/artwork"
             android:textColor="#999"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <ImageView
             android:id="@+id/artwork"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginBottom="@dimen/normal_padding"
             android:layout_marginTop="@dimen/normal_padding"
-            android:src="@drawable/app_icon" />
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/app_icon"/>
 
         <TextView
+            android:id="@+id/titleLab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title"
             android:textColor="#999"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone"/>
 
         <EditText
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:ems="12" />
+            android:ems="12"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/artist"
             android:textColor="#999"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:ems="12" />
+            android:ems="12"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/album"
             android:textColor="#999"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:ems="12" />
+            android:ems="12"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/album_artist"
             android:textColor="#999"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/album_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:ems="12" />
+            android:ems="12"/>
 
         <TextView
+            android:id="@+id/trackLab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/track"
             android:textColor="#999"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone"/>
 
         <EditText
             android:id="@+id/track"
@@ -92,20 +97,21 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:ems="3"
-            android:inputType="number" />
+            android:inputType="number"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/year"
             android:textColor="#999"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="4"
-            android:inputType="number" />
+            android:inputType="number"/>
     </LinearLayout>
 </ScrollView>
