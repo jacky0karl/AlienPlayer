@@ -13,12 +13,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.jk.alienplayer.MainApplication;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.utils.UiUtils;
+import com.squareup.picasso.Picasso;
 
 public class ArtworkFragment extends Fragment {
 
@@ -74,14 +76,11 @@ public class ArtworkFragment extends Fragment {
         syncView();
     }
 
-    public void syncView() {
+    private void syncView() {
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
-        Bitmap bmp = DatabaseHelper.getArtworkFormFile(getActivity(), songInfo.id, songInfo.albumId, mArtworkSize);
-        if (bmp == null) {
-            mArtwork.setImageResource(R.drawable.disk);
-        } else {
-            mArtwork.setImageBitmap(bmp);
-        }
+        String file = DatabaseHelper.getAlbumArtwork(getActivity(), songInfo.albumId);
+        Picasso.with(MainApplication.app).load(file).config(Bitmap.Config.RGB_565)
+                .error(R.drawable.disk).into(mArtwork);
 
         int repeatMode = PlayingInfoHolder.getInstance().getRepeatMode();
         if (repeatMode == PlayingInfoHolder.REPEAT_ALL) {

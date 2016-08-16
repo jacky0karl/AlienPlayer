@@ -1,6 +1,5 @@
 package com.jk.alienplayer.ui.playing;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,15 +35,11 @@ import com.jk.alienplayer.utils.PlayingTimeUtils;
 import com.jk.alienplayer.widget.PlayPauseButton;
 import com.jk.alienplayer.widget.VolumeBarWindow;
 
-import java.util.List;
-
 public class PlayingActivity extends BaseActivity {
     private static final int FRAGMENT_ARTWORK = 0;
     private static final int FRAGMENT_LYRIC = 1;
     private static final int FRAGMENT_CURR_LIST = 2;
     private static final int FRAGMENT_COUNT = 3;
-
-    private static final int REQUEST_UPDATE_ARTWORK = 0;
 
     private SeekBar mSeekBar;
     private PlayPauseButton mPlayBtn;
@@ -136,13 +131,8 @@ public class PlayingActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-            return true;
         } else if (item.getItemId() == R.id.action_info) {
-            SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
-            Intent intent = new Intent(this, TrackInfoActivity.class);
-            intent.putExtra(TrackInfoActivity.EXTRA_MODE, TrackInfoActivity.MODE_SINGLE);
-            intent.putExtra(TrackInfoActivity.EXTRA_ID, song.id);
-            startActivityForResult(intent, REQUEST_UPDATE_ARTWORK);
+            gotoSongsInfo();
         } else if (item.getItemId() == R.id.action_volume) {
             mVolumeBar.show(mContent, Gravity.CENTER);
         } else if (item.getItemId() == R.id.audio_effect) {
@@ -152,24 +142,7 @@ public class PlayingActivity extends BaseActivity {
         } else if (item.getItemId() == R.id.goto_album) {
             gotoAlbum();
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void gotoArtist() {
-        SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
-        Intent intent = new Intent(this, ArtistDetailActivity.class);
-        intent.putExtra(ArtistDetailActivity.ARTIST_ID, song.artistId);
-        intent.putExtra(ArtistDetailActivity.ARTIST_NAME, song.artist);
-        startActivity(intent);
-    }
-
-    private void gotoAlbum() {
-        SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
-        Intent intent = new Intent(this, SongsActivity.class);
-        intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ALBUM);
-        intent.putExtra(SongsActivity.KEY, song.albumId);
-        intent.putExtra(SongsActivity.LABEL, song.album);
-        startActivity(intent);
+        return true;
     }
 
     private void init() {
@@ -246,23 +219,6 @@ public class PlayingActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_UPDATE_ARTWORK) {
-            List<Fragment> fragments = getSupportFragmentManager().getFragments();
-            if (fragments == null) {
-                return;
-            }
-
-            for (Fragment f : fragments) {
-                if (f instanceof ArtworkFragment) {
-                    ((ArtworkFragment) f).syncView();
-                    break;
-                }
-            }
-        }
-    }
-
     public void syncView() {
         PlayingInfo info = PlayingHelper.getPlayingInfo();
         if (info.status == PlayStatus.Playing) {
@@ -281,6 +237,31 @@ public class PlayingActivity extends BaseActivity {
         if (getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
             startActivityForResult(intent, 0);
         }
+    }
+
+    private void gotoSongsInfo() {
+        SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
+        Intent intent = new Intent(this, TrackInfoActivity.class);
+        intent.putExtra(TrackInfoActivity.EXTRA_MODE, TrackInfoActivity.MODE_SINGLE);
+        intent.putExtra(TrackInfoActivity.EXTRA_ID, song.id);
+        startActivity(intent);
+    }
+
+    private void gotoArtist() {
+        SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
+        Intent intent = new Intent(this, ArtistDetailActivity.class);
+        intent.putExtra(ArtistDetailActivity.ARTIST_ID, song.artistId);
+        intent.putExtra(ArtistDetailActivity.ARTIST_NAME, song.artist);
+        startActivity(intent);
+    }
+
+    private void gotoAlbum() {
+        SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
+        Intent intent = new Intent(this, SongsActivity.class);
+        intent.putExtra(SongsActivity.KEY_TYPE, CurrentlistInfo.TYPE_ALBUM);
+        intent.putExtra(SongsActivity.KEY, song.albumId);
+        intent.putExtra(SongsActivity.LABEL, song.album);
+        startActivity(intent);
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

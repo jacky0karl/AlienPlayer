@@ -171,7 +171,6 @@ public class TrackInfoActivity extends BaseActivity {
                     DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, song.albumId, artworkPath);
                     Intent intent = PlayService.getPlayingCommandIntent(TrackInfoActivity.this, PlayService.COMMAND_REFRESH);
                     startService(intent);
-                    setResult(Activity.RESULT_OK);
                 }
             }, mArtworkUrl, title, artists, album, artistAlbum, track, year, mSongInfo.path);
         } else {
