@@ -116,7 +116,7 @@ public class SongsActivity extends BaseActivity {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     cover.setImageBitmap(bitmap);
-                    cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    //cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     setToolbarColor(bitmap);
                 }
 
