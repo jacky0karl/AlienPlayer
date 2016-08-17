@@ -163,32 +163,33 @@ public class TrackInfoActivity extends BaseActivity {
             Mp3TagsHelper.writeMp3Info(new Mp3TagsHelper.OnMP3AddListener() {
                 @Override
                 public void onMP3Added() {
-                    mLoaing.dismiss();
                     MediaScanService.startScan(TrackInfoActivity.this, mSongInfo.path);
+                    mLoaing.dismiss();
                     finish();
                 }
 
                 @Override
                 public void onArtworkUpdated() {
-                    DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, mSongInfo.albumId);
+                    DatabaseHelper.refreshArtworkCache(TrackInfoActivity.this, mSongInfo.albumId);
                 }
             }, mSongInfo.path, mArtworkUrl, title, artists, album, artistAlbum, track, year);
         } else {
             Mp3TagsHelper.writeMp3ListInfo(new Mp3TagsHelper.OnMP3AddListener() {
                 @Override
                 public void onMP3Added() {
-                    mLoaing.dismiss();
                     ArrayList<String> filePathList = new ArrayList<String>();
                     for (SongInfo song : mSongList) {
                         filePathList.add(song.path);
                     }
                     MediaScanService.startScan(TrackInfoActivity.this, filePathList);
+                    mLoaing.dismiss();
                     finish();
                 }
 
                 @Override
                 public void onArtworkUpdated() {
-                    DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, mSongInfo.albumId);
+                    DatabaseHelper.refreshArtworkCache(TrackInfoActivity.this, mSongInfo.albumId);
+                    setResult(Activity.RESULT_OK);
                 }
             }, mSongList, mArtworkUrl, artists, album, artistAlbum, year);
         }

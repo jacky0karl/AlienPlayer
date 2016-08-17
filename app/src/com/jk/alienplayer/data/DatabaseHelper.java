@@ -118,7 +118,8 @@ public class DatabaseHelper {
         return artwork;
     }
 
-    public static void deleteArtworkCache(Context context, long albumId) {
+    public static void refreshArtworkCache(Context context, long albumId) {
+        // delete artwork thumbnail
         String cachePath = getAlbumArtwork(context, albumId);
         int preCount = "file://".length();
         if (!TextUtils.isEmpty(cachePath) && cachePath.length() > preCount) {
@@ -127,7 +128,10 @@ public class DatabaseHelper {
                 cache.delete();
             }
         }
+        // invalidate artwork cache
         Picasso.with(context).invalidate(cachePath);
+        // make os to generate artwork thumbnail
+        DatabaseHelper.getArtworkFormFile(context, -1, albumId, 1);
 
         Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_REFRESH);
         context.startService(intent);
