@@ -2,7 +2,6 @@ package com.jk.alienplayer.data;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,7 +11,6 @@ import com.jk.alienplayer.metadata.TrackTagInfo;
 import com.jk.alienplayer.model.TrackBean;
 import com.jk.alienplayer.utils.FileSavingUtils;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
@@ -26,13 +24,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class Mp3TagsHelper {
     private static final String TAG = "Mp3TagsHelper";
 
     public interface OnMP3AddListener {
         void onMP3Added();
 
-        void onArtworkUpdated(String artworkPath);
+        void onArtworkUpdated();
     }
 
     public static TrackTagInfo readMp3Tags(String filePath) {
@@ -41,8 +44,8 @@ public class Mp3TagsHelper {
             return info;
         }
 
-        File file = new File(filePath);
         try {
+            File file = new File(filePath);
             MP3File mp3 = (MP3File) AudioFileIO.read(file);
             AbstractID3v2Tag tag = mp3.getID3v2Tag();
 
@@ -66,43 +69,60 @@ public class Mp3TagsHelper {
     }
 
     public static void writeMp3Info(OnMP3AddListener l, TrackBean info, String filePath) {
-        writeMp3Info(l, info.getAlbum().getPicUrl(), info.getName(), info.getShowingArtists(),
+        writeMp3Info(l, filePath, info.getAlbum().getPicUrl(), info.getName(), info.getShowingArtists(),
                 info.getAlbum().getName(), info.getAlbum().getShowingArtist(), String.valueOf(info.getPosition()),
-                String.valueOf(info.getAlbum().getPublishTime()), filePath);
+                String.valueOf(info.getAlbum().getPublishTime()));
     }
 
-    public static void writeMp3Info(OnMP3AddListener l, String coverUrl, String title, String artists,
-                                    String album, String artistAlbum, String track, String year, String filePath) {
-        if (l == null) {
-            return;
-        }
+    public static void writeMp3Info(OnMP3AddListener l, String filePath, String coverUrl, String title, String artists,
+                                    String album, String artistAlbum, String track, String year) {
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    File file = new File(filePath);
+                    MP3File mp3 = (MP3File) AudioFileIO.read(file);
+                    writeMp3Tags(mp3, artists, album, artistAlbum, title, track, year);
 
-        try {
-            File file = new File(filePath);
-            MP3File mp3 = (MP3File) AudioFileIO.read(file);
-            writeMp3Tags(mp3, artists, album, artistAlbum, title, track, year);
+                    if (!TextUtils.isEmpty(coverUrl)) {
+                        writeMp3Cover(l, mp3, coverUrl);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
 
-            if (TextUtils.isEmpty(coverUrl)) {
-                l.onMP3Added();
-            } else {
-                fetchCover(l, mp3, coverUrl);
+                subscriber.onCompleted();
             }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-            l.onMP3Added();
-        }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+                        l.onMP3Added();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage(), e);
+                        l.onMP3Added();
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                    }
+                });
     }
 
-    public static void writeMp3ListInfo(OnMP3AddListener l, List<SongInfo> list, Bitmap cover,
+    public static void writeMp3ListInfo(OnMP3AddListener l, List<SongInfo> list, String coverUrl,
                                         String artists, String album, String artistAlbum, String year) {
         try {
             for (SongInfo song : list) {
                 File file = new File(song.path);
                 MP3File mp3 = (MP3File) AudioFileIO.read(file);
                 writeMp3Tags(mp3, artists, album, artistAlbum, null, null, year);
-                writeMp3Cover(mp3, cover);
+                writeMp3Cover(l, mp3, coverUrl);
             }
-            l.onMP3Added();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             l.onMP3Added();
@@ -110,107 +130,51 @@ public class Mp3TagsHelper {
     }
 
     private static void writeMp3Tags(MP3File mp3, String artists, String album, String artistAlbum,
-                                     String title, String track, String year) {
-        try {
-            ID3v23Tag tag = new ID3v23Tag();
-            if (!TextUtils.isEmpty(artists)) {
-                tag.setField(FieldKey.ARTIST, artists);
-            }
-            if (!TextUtils.isEmpty(artistAlbum)) {
-                tag.setField(FieldKey.ALBUM_ARTIST, artistAlbum);
-            }
-            if (!TextUtils.isEmpty(album)) {
-                tag.setField(FieldKey.ALBUM, album);
-            }
+                                     String title, String track, String year) throws Exception {
+        ID3v23Tag tag = new ID3v23Tag();
+        if (!TextUtils.isEmpty(artists)) {
+            tag.setField(FieldKey.ARTIST, artists);
+        }
+        if (!TextUtils.isEmpty(artistAlbum)) {
+            tag.setField(FieldKey.ALBUM_ARTIST, artistAlbum);
+        }
+        if (!TextUtils.isEmpty(album)) {
+            tag.setField(FieldKey.ALBUM, album);
+        }
 
-            if (!TextUtils.isEmpty(title)) {
-                tag.setField(FieldKey.TITLE, title);
-            }
-            if (!TextUtils.isEmpty(track) && TextUtils.isDigitsOnly(track)) {
-                tag.setField(FieldKey.TRACK, track);
-            }
-            if (!TextUtils.isEmpty(year) && TextUtils.isDigitsOnly(year)) {
-                tag.setField(FieldKey.YEAR, year);
-            }
+        if (!TextUtils.isEmpty(title)) {
+            tag.setField(FieldKey.TITLE, title);
+        }
+        if (!TextUtils.isEmpty(track) && TextUtils.isDigitsOnly(track)) {
+            tag.setField(FieldKey.TRACK, track);
+        }
+        if (!TextUtils.isEmpty(year) && TextUtils.isDigitsOnly(year)) {
+            tag.setField(FieldKey.YEAR, year);
+        }
 
-            mp3.setID3v2Tag(tag);
+        mp3.setID3v2Tag(tag);
+        mp3.save();
+    }
+
+    private static void writeMp3Cover(OnMP3AddListener l, MP3File mp3, String url) throws Exception {
+        Bitmap bitmap = Picasso.with(MainApplication.app).load(url).get();
+        String filePath = FileSavingUtils.sRootPath + System.currentTimeMillis();
+        FileOutputStream fos = new FileOutputStream(filePath);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        fos.flush();
+        fos.close();
+
+        File file = new File(filePath);
+        Artwork cover = AndroidArtwork.createArtworkFromFile(file);
+        if (cover != null) {
+            AbstractID3v2Tag tags = mp3.getID3v2Tag();
+            tags.deleteArtworkField();
+            tags.setField(cover);
+            mp3.setID3v2Tag(tags);
             mp3.save();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            l.onArtworkUpdated();
         }
-    }
-
-    private static void writeMp3Cover(MP3File mp3, Bitmap cover) {
-        try {
-            String filePath = FileSavingUtils.sRootPath + System.currentTimeMillis();
-            FileOutputStream fos = new FileOutputStream(filePath);
-            cover.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-
-            File file = new File(filePath);
-            Artwork artwork = AndroidArtwork.createArtworkFromFile(file);
-            if (artwork != null) {
-                AbstractID3v2Tag tags = mp3.getID3v2Tag();
-                tags.deleteArtworkField();
-                tags.setField(artwork);
-                mp3.setID3v2Tag(tags);
-                mp3.save();
-            }
-            file.delete();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
-
-    private static void fetchCover(final OnMP3AddListener l, final MP3File mp3, String url) {
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                try {
-                    String tmp = FileSavingUtils.sRootPath + System.currentTimeMillis();
-                    FileOutputStream fos = new FileOutputStream(tmp);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.flush();
-                    fos.close();
-                    writeMp3Cover(l, mp3, tmp);
-                } catch (Exception e) {
-                    l.onMP3Added();
-                    Log.e(TAG, e.getMessage(), e);
-                }
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                l.onMP3Added();
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-            }
-        };
-
-        Picasso.with(MainApplication.app).load(url).into(target);
-    }
-
-    private static void writeMp3Cover(OnMP3AddListener l, MP3File mp3, String filePath) {
-        try {
-            File file = new File(filePath);
-            Artwork cover = AndroidArtwork.createArtworkFromFile(file);
-            if (cover != null) {
-                AbstractID3v2Tag tags = mp3.getID3v2Tag();
-                tags.deleteArtworkField();
-                tags.setField(cover);
-                mp3.setID3v2Tag(tags);
-                mp3.save();
-                l.onArtworkUpdated(filePath);
-            }
-            file.delete();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        } finally {
-            l.onMP3Added();
-        }
+        file.delete();
     }
 
 }

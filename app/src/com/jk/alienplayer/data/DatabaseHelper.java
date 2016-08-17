@@ -2,6 +2,7 @@ package com.jk.alienplayer.data;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.provider.MediaStore.Audio.Artists;
 import android.provider.MediaStore.Audio.Media;
 import android.text.TextUtils;
 
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.AlbumInfo;
 import com.jk.alienplayer.metadata.ArtistInfo;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
@@ -116,11 +118,7 @@ public class DatabaseHelper {
         return artwork;
     }
 
-    public static void deleteArtworkCache(Context context, long albumId, String artworkPath) {
-        if (TextUtils.isEmpty(artworkPath)) {
-            return;
-        }
-
+    public static void deleteArtworkCache(Context context, long albumId) {
         String cachePath = getAlbumArtwork(context, albumId);
         int preCount = "file://".length();
         if (!TextUtils.isEmpty(cachePath) && cachePath.length() > preCount) {
@@ -130,6 +128,9 @@ public class DatabaseHelper {
             }
         }
         Picasso.with(context).invalidate(cachePath);
+
+        Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_REFRESH);
+        context.startService(intent);
     }
 
     public static Bitmap getArtworkFormFile(Context context, long songId, long albumId, int targetSize) {
