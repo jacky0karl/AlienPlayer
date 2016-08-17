@@ -15,10 +15,8 @@ import android.widget.TextView;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.Mp3TagsHelper;
-import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.PlaylistHelper;
 import com.jk.alienplayer.impl.MediaScanService;
-import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
@@ -166,13 +164,10 @@ public class TrackInfoActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onArtworkUpdated(String artworkPath) {
-                    SongInfo song = PlayingInfoHolder.getInstance().getCurrentSong();
-                    DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, song.albumId, artworkPath);
-                    Intent intent = PlayService.getPlayingCommandIntent(TrackInfoActivity.this, PlayService.COMMAND_REFRESH);
-                    startService(intent);
+                public void onArtworkUpdated() {
+                    DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, mSongInfo.albumId);
                 }
-            }, mArtworkUrl, title, artists, album, artistAlbum, track, year, mSongInfo.path);
+            }, mSongInfo.path, mArtworkUrl, title, artists, album, artistAlbum, track, year);
         } else {
 
         }

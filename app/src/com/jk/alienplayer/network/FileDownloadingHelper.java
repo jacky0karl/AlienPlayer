@@ -250,7 +250,7 @@ public class FileDownloadingHelper {
                 }
 
                 @Override
-                public void onArtworkUpdated(String artworkPath) {
+                public void onArtworkUpdated() {
                 }
             }, info, filePath);
         }
