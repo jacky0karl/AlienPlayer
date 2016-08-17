@@ -10,17 +10,23 @@ import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 public class MediaScanService extends Service {
     public static final String SCAN_COMMAND = "scan_command";
     public static final int SCAN_ALL = 0;
     public static final int SCAN_FILE = 1;
+    public static final int SCAN_FILES = 2;
 
     public static final String ACTION_MEDIA_SCAN_COMPLETED = "com.jk.alienplayer.MEDIA_SCAN_COMPLETED";
     public static final String FILE_PATH = "file_path";
 
+    private int mAction = -1;
     private String mFilePath = null;
+    private ArrayList<String> mFilePathList = null;
     private MediaScannerConnection mConnection = null;
 
     @Override
@@ -34,18 +40,27 @@ public class MediaScanService extends Service {
             return START_NOT_STICKY;
         }
 
-        int action = intent.getIntExtra(SCAN_COMMAND, -1);
-        Log.e("#### MediaScanService", "action = " + action);
-        switch (action) {
-        case SCAN_ALL:
-            break;
-        case SCAN_FILE:
-            mFilePath = intent.getStringExtra(FILE_PATH);
-            mConnection = new MediaScannerConnection(this, mMediaScannerConnectionClient);
-            mConnection.connect();
-            break;
-        default:
-            break;
+        mAction = intent.getIntExtra(SCAN_COMMAND, -1);
+        Log.d("#### MediaScanService", "action = " + mAction);
+        switch (mAction) {
+            case SCAN_ALL:
+                break;
+            case SCAN_FILE:
+                mFilePath = intent.getStringExtra(FILE_PATH);
+                if (!TextUtils.isEmpty(mFilePath)) {
+                    mConnection = new MediaScannerConnection(this, mMediaScannerConnectionClient);
+                    mConnection.connect();
+                }
+                break;
+            case SCAN_FILES:
+                mFilePathList = intent.getStringArrayListExtra(FILE_PATH);
+                if (mFilePathList != null) {
+                    mConnection = new MediaScannerConnection(this, mMediaScannerConnectionClient);
+                    mConnection.connect();
+                }
+                break;
+            default:
+                break;
         }
         return START_NOT_STICKY;
     }
@@ -53,16 +68,29 @@ public class MediaScanService extends Service {
     private MediaScannerConnectionClient mMediaScannerConnectionClient = new MediaScannerConnectionClient() {
         @Override
         public void onMediaScannerConnected() {
-            mConnection.scanFile(mFilePath, "audio/mpeg");
+            if (mAction == SCAN_FILE) {
+                mConnection.scanFile(mFilePath, "audio/mpeg");
+            } else {
+                if (mFilePathList.size() > 0) {
+                    // record the last file
+                    mFilePath = mFilePathList.get(mFilePathList.size() - 1);
+                    for (String path : mFilePathList) {
+                        mConnection.scanFile(path, "audio/mpeg");
+                    }
+                }
+            }
         }
 
         @Override
         public void onScanCompleted(String path, Uri uri) {
-            mConnection.disconnect();
-            Intent intent = new Intent(ACTION_MEDIA_SCAN_COMPLETED);
-            intent.putExtra(FILE_PATH, path);
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-            stopSelf();
+            // wait for the last file
+            if (mFilePath.equals(path)) {
+                mConnection.disconnect();
+                Intent intent = new Intent(ACTION_MEDIA_SCAN_COMPLETED);
+                intent.putExtra(FILE_PATH, path);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                stopSelf();
+            }
         }
     };
 
@@ -70,6 +98,13 @@ public class MediaScanService extends Service {
         Intent intent = new Intent(context, MediaScanService.class);
         intent.putExtra(MediaScanService.SCAN_COMMAND, MediaScanService.SCAN_FILE);
         intent.putExtra(MediaScanService.FILE_PATH, filePath);
+        context.startService(intent);
+    }
+
+    public static void startScan(Context context, ArrayList<String> filePathList) {
+        Intent intent = new Intent(context, MediaScanService.class);
+        intent.putExtra(MediaScanService.SCAN_COMMAND, MediaScanService.SCAN_FILES);
+        intent.putStringArrayListExtra(MediaScanService.FILE_PATH, filePathList);
         context.startService(intent);
     }
 

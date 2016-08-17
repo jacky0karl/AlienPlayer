@@ -82,10 +82,7 @@ public class Mp3TagsHelper {
                     File file = new File(filePath);
                     MP3File mp3 = (MP3File) AudioFileIO.read(file);
                     writeMp3Tags(mp3, artists, album, artistAlbum, title, track, year);
-
-                    if (!TextUtils.isEmpty(coverUrl)) {
-                        writeMp3Cover(l, mp3, coverUrl);
-                    }
+                    writeMp3Cover(l, mp3, coverUrl);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                 }
@@ -114,17 +111,40 @@ public class Mp3TagsHelper {
 
     public static void writeMp3ListInfo(OnMP3AddListener l, List<SongInfo> list, String coverUrl,
                                         String artists, String album, String artistAlbum, String year) {
-        try {
-            for (SongInfo song : list) {
-                File file = new File(song.path);
-                MP3File mp3 = (MP3File) AudioFileIO.read(file);
-                writeMp3Tags(mp3, artists, album, artistAlbum, null, null, year);
-                writeMp3Cover(l, mp3, coverUrl);
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    for (SongInfo song : list) {
+                        File file = new File(song.path);
+                        MP3File mp3 = (MP3File) AudioFileIO.read(file);
+                        writeMp3Tags(mp3, artists, album, artistAlbum, null, null, year);
+                        writeMp3Cover(l, mp3, coverUrl);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+
+                subscriber.onCompleted();
             }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-            l.onMP3Added();
-        }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+                        l.onMP3Added();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG + "Subscriber", e.getMessage(), e);
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                    }
+                });
     }
 
     private static void writeMp3Tags(MP3File mp3, String artists, String album, String artistAlbum,
@@ -154,8 +174,12 @@ public class Mp3TagsHelper {
         mp3.save();
     }
 
-    private static void writeMp3Cover(OnMP3AddListener l, MP3File mp3, String url) throws Exception {
-        Bitmap bitmap = Picasso.with(MainApplication.app).load(url).get();
+    private static void writeMp3Cover(OnMP3AddListener l, MP3File mp3, String coverUrl) throws Exception {
+        if (TextUtils.isEmpty(coverUrl)) {
+            return;
+        }
+
+        Bitmap bitmap = Picasso.with(MainApplication.app).load(coverUrl).get();
         String filePath = FileSavingUtils.sRootPath + System.currentTimeMillis();
         FileOutputStream fos = new FileOutputStream(filePath);
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);

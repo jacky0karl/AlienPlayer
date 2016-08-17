@@ -24,6 +24,7 @@ import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.network.NetworkSearchActivity;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrackInfoActivity extends BaseActivity {
@@ -38,7 +39,6 @@ public class TrackInfoActivity extends BaseActivity {
     public static final int FETCH_ARTWORK = 0;
 
     private int mMode = MODE_SINGLE;
-    private long mId = -1;
     private SongInfo mSongInfo = null;
     private List<SongInfo> mSongList = null;
 
@@ -91,7 +91,7 @@ public class TrackInfoActivity extends BaseActivity {
         mTrackLab = (TextView) findViewById(R.id.trackLab);
 
         mMode = getIntent().getIntExtra(EXTRA_MODE, MODE_SINGLE);
-        mId = getIntent().getLongExtra(EXTRA_ID, -1);
+        long mId = getIntent().getLongExtra(EXTRA_ID, -1);
         switch (mMode) {
             case MODE_SINGLE:
                 mSongInfo = DatabaseHelper.getTrack(this, mId);
@@ -107,6 +107,7 @@ public class TrackInfoActivity extends BaseActivity {
                 break;
         }
 
+        // use the first song info as example
         if (mSongList != null && mSongList.size() > 0) {
             mSongInfo = mSongList.get(0);
         }
@@ -146,6 +147,10 @@ public class TrackInfoActivity extends BaseActivity {
     }
 
     private void writeTrackTags() {
+        if (mSongInfo == null) {
+            return;
+        }
+
         String title = mTitle.getText().toString().trim();
         String album = mAlbum.getText().toString().trim();
         String artistAlbum = mAlbumArtist.getText().toString().trim();
@@ -169,7 +174,23 @@ public class TrackInfoActivity extends BaseActivity {
                 }
             }, mSongInfo.path, mArtworkUrl, title, artists, album, artistAlbum, track, year);
         } else {
+            Mp3TagsHelper.writeMp3ListInfo(new Mp3TagsHelper.OnMP3AddListener() {
+                @Override
+                public void onMP3Added() {
+                    mLoaing.dismiss();
+                    ArrayList<String> filePathList = new ArrayList<String>();
+                    for (SongInfo song : mSongList) {
+                        filePathList.add(song.path);
+                    }
+                    MediaScanService.startScan(TrackInfoActivity.this, filePathList);
+                    finish();
+                }
 
+                @Override
+                public void onArtworkUpdated() {
+                    DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, mSongInfo.albumId);
+                }
+            }, mSongList, mArtworkUrl, artists, album, artistAlbum, year);
         }
     }
 
