@@ -189,6 +189,7 @@ public class TrackInfoActivity extends BaseActivity {
                 @Override
                 public void onArtworkUpdated() {
                     DatabaseHelper.deleteArtworkCache(TrackInfoActivity.this, mSongInfo.albumId);
+                    setResult(Activity.RESULT_OK);
                 }
             }, mSongList, mArtworkUrl, artists, album, artistAlbum, year);
         }
