@@ -54,6 +54,10 @@ public class SongsActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_songlist, menu);
+        if (mKeyType != CurrentlistInfo.TYPE_PLAYLIST) {
+            MenuItem item = menu.findItem(R.id.action_add);
+            item.setVisible(false);
+        }
         return true;
     }
 
@@ -61,6 +65,13 @@ public class SongsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+        } else if (item.getItemId() == R.id.action_add) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);//ACTION_OPEN_DOCUMENT
+            intent.setType("audio/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(intent, 0);
         } else if (item.getItemId() == R.id.action_info) {
             Intent intent = new Intent(this, TrackInfoActivity.class);
             if (mKeyType == CurrentlistInfo.TYPE_ARTIST) {
