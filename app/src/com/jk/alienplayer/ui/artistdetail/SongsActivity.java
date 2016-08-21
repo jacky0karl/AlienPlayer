@@ -1,9 +1,11 @@
 package com.jk.alienplayer.ui.artistdetail;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -11,6 +13,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +23,7 @@ import com.jk.alienplayer.MainApplication;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
+import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.playing.TrackInfoActivity;
 import com.jk.alienplayer.utils.UiUtils;
@@ -33,6 +37,7 @@ public class SongsActivity extends BaseActivity {
     public static final String LABEL = "label";
 
     private static final int REQUEST_UPDATE_ARTWORK = 0;
+    private static final int REQUEST_ADD_SONG = 1;
 
     private int mKeyType;
     private long mKey;
@@ -70,8 +75,8 @@ public class SongsActivity extends BaseActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);//ACTION_OPEN_DOCUMENT
             intent.setType("audio/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            startActivityForResult(intent, 0);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(intent, REQUEST_ADD_SONG);
         } else if (item.getItemId() == R.id.action_info) {
             Intent intent = new Intent(this, TrackInfoActivity.class);
             if (mKeyType == CurrentlistInfo.TYPE_ARTIST) {
@@ -89,9 +94,24 @@ public class SongsActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_UPDATE_ARTWORK) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_UPDATE_ARTWORK) {
             if (mKeyType == CurrentlistInfo.TYPE_ALBUM) {
                 setupCover();
+            }
+        } else if (requestCode == REQUEST_ADD_SONG) {
+            SongInfo song = null;
+            if (data.getData() != null) {
+                Uri uri = data.getData();
+                Log.e("#######", DatabaseHelper.getPath(this, uri));
+            } else {
+                ClipData clipdata = data.getClipData();
+                for (int i = 0; i < clipdata.getItemCount(); i++) {
+                    Uri uri = clipdata.getItemAt(i).getUri();
+                }
             }
         }
     }
