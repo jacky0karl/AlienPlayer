@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore.Audio.Playlists;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.jk.alienplayer.metadata.PlaylistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
@@ -24,7 +23,6 @@ public class PlaylistHelper {
         Cursor cursor = context.getContentResolver().query(Playlists.EXTERNAL_CONTENT_URI,
                 projection, selection, selectionArgs, Playlists.DATE_MODIFIED + " DESC");
         if (cursor != null) {
-            Log.e("####", "Playlists count = " + cursor.getCount());
             if (cursor.moveToFirst()) {
                 do {
                     playlists.add(bulidPlaylist(cursor));
@@ -54,12 +52,30 @@ public class PlaylistHelper {
         return ret > 0;
     }
 
+    public static void addMembersToPlaylist(Context context, long playlistId, List<SongInfo> songs) {
+        for (SongInfo song : songs) {
+            addMemberToPlaylist(context, playlistId, song.id);
+        }
+    }
+
     public static void addMemberToPlaylist(Context context, long playlistId, long trackId) {
         ContentValues values = new ContentValues();
         values.put(Playlists.Members.AUDIO_ID, trackId);
         values.put(Playlists.Members.PLAY_ORDER, System.currentTimeMillis());
+
         Uri uri = Playlists.Members.getContentUri("external", playlistId);
-        context.getContentResolver().insert(uri, values);
+        String[] projection = new String[]{Playlists.Members.AUDIO_ID};
+        String selection = Playlists.Members.AUDIO_ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(trackId)};
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+        if (cursor != null) {
+            if (!cursor.moveToFirst()) {
+                context.getContentResolver().insert(uri, values);
+            }
+            cursor.close();
+        } else {
+            context.getContentResolver().insert(uri, values);
+        }
     }
 
     public static boolean removeMemberFromPlaylist(Context context, long playlistId, long trackId) {
@@ -77,7 +93,7 @@ public class PlaylistHelper {
                 Playlists.Members.ALBUM_ID, Playlists.Members.DURATION, Playlists.Members.DATA};
         Uri uri = Playlists.Members.getContentUri("external", playlistId);
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null,
-                Playlists.Members.PLAY_ORDER + " DESC");
+                Playlists.Members.PLAY_ORDER);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {

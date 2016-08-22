@@ -1,11 +1,9 @@
 package com.jk.alienplayer.ui.artistdetail;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -13,7 +11,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +20,7 @@ import com.jk.alienplayer.MainApplication;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
-import com.jk.alienplayer.metadata.SongInfo;
+import com.jk.alienplayer.presenter.artistdetail.SongsActivityPresenter;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.playing.TrackInfoActivity;
 import com.jk.alienplayer.utils.UiUtils;
@@ -43,6 +40,8 @@ public class SongsActivity extends BaseActivity {
     private long mKey;
     private String mLabel;
     private Playbar mPlaybar;
+    private SongsFragment mFragment;
+    private SongsActivityPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,7 @@ public class SongsActivity extends BaseActivity {
             finish();
         } else if (item.getItemId() == R.id.action_add) {
             Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_GET_CONTENT);//ACTION_OPEN_DOCUMENT
+            intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.setType("audio/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -103,17 +102,12 @@ public class SongsActivity extends BaseActivity {
                 setupCover();
             }
         } else if (requestCode == REQUEST_ADD_SONG) {
-            SongInfo song = null;
-            if (data.getData() != null) {
-                Uri uri = data.getData();
-                Log.e("#######", DatabaseHelper.getPath(this, uri));
-            } else {
-                ClipData clipdata = data.getClipData();
-                for (int i = 0; i < clipdata.getItemCount(); i++) {
-                    Uri uri = clipdata.getItemAt(i).getUri();
-                }
-            }
+            mPresenter.updateSongList(mKey, data);
         }
+    }
+
+    public void updateSongListSucc() {
+        mFragment.updateList();
     }
 
     private void init() {
@@ -133,15 +127,16 @@ public class SongsActivity extends BaseActivity {
         getSupportActionBar().setTitle(mLabel);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        SongsFragment f = new SongsFragment();
+        mPresenter = new SongsActivityPresenter(this);
+        mFragment = new SongsFragment();
         Bundle arg = new Bundle();
         arg.putInt(SongsFragment.KEY_TYPE, mKeyType);
         arg.putLong(SongsFragment.KEY, mKey);
         arg.putString(SongsFragment.LABEL, mLabel);
-        f.setArguments(arg);
+        mFragment.setArguments(arg);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment, f).commit();
+        ft.replace(R.id.fragment, mFragment).commit();
     }
 
     private void setupAppbar() {

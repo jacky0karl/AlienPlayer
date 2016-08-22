@@ -1,7 +1,9 @@
 package com.jk.alienplayer.ui.artistdetail;
 
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.provider.MediaStore.Audio.Playlists;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,6 +46,13 @@ public class SongsFragment extends Fragment {
     private SongInfo mCurrTrack = null;
     private List<SongInfo> mSongList = null;
 
+    private ContentObserver mContentObserver = new ContentObserver(null) {
+        @Override
+        public void onChange(boolean selfChange) {
+            getActivity().runOnUiThread(() -> updateList());
+        }
+    };
+
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener<SongInfo>() {
         @Override
         public void onItemClick(View view, int position, SongInfo obj) {
@@ -67,11 +76,39 @@ public class SongsFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onDestroyView() {
+        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+            getActivity().getContentResolver().unregisterContentObserver(mContentObserver);
+        }
+        super.onDestroyView();
+    }
+
+    public void updateList() {
+        if (!isAdded()) {
+            return;
+        }
+
+        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+            mSongList = PlaylistHelper.getPlaylistMembers(getActivity(), mKey);
+        } else if (mKeyType == CurrentlistInfo.TYPE_ARTIST) {
+            mSongList = DatabaseHelper.getTracks(getActivity(), mLabel);
+        } else {
+            mSongList = DatabaseHelper.getTracks(getActivity(), mKeyType, mKey);
+        }
+        mAdapter.setTracks(mSongList);
+    }
+
     private void init(View root) {
         if (getArguments() != null) {
             mKeyType = getArguments().getInt(KEY_TYPE, CurrentlistInfo.TYPE_ARTIST);
             mKey = getArguments().getLong(KEY, -1);
             mLabel = getArguments().getString(LABEL);
+        }
+
+        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
+            getActivity().getContentResolver().registerContentObserver(Playlists.EXTERNAL_CONTENT_URI,
+                    true, mContentObserver);
         }
 
         mRecyclerView = (RecyclerView) root.findViewById(R.id.list);
@@ -127,23 +164,8 @@ public class SongsFragment extends Fragment {
     }
 
     private void deleteTrack() {
-        OnDeleteTrackListener listener = new OnDeleteTrackListener() {
-            @Override
-            public void onComplete() {
-                updateList();
-            }
-        };
+        OnDeleteTrackListener listener = () -> updateList();
         TrackOperationHelper.deleteTrack(getActivity(), mCurrTrack, listener);
     }
 
-    private void updateList() {
-        if (mKeyType == CurrentlistInfo.TYPE_PLAYLIST) {
-            mSongList = PlaylistHelper.getPlaylistMembers(getActivity(), mKey);
-        } else if (mKeyType == CurrentlistInfo.TYPE_ARTIST) {
-            mSongList = DatabaseHelper.getTracks(getActivity(), mLabel);
-        } else {
-            mSongList = DatabaseHelper.getTracks(getActivity(), mKeyType, mKey);
-        }
-        mAdapter.setTracks(mSongList);
-    }
 }
