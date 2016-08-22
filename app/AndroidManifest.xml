@@ -32,7 +32,6 @@
         </activity>
         <activity
             android:name=".ui.artistdetail.ArtistDetailActivity"
-            android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/Theme.Toolbar"
             android:screenOrientation="portrait">
         </activity>

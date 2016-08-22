@@ -1,5 +1,6 @@
 package com.jk.alienplayer.ui.artistdetail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -7,11 +8,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.main.AlbumsFragment;
+import com.jk.alienplayer.ui.playing.TrackInfoActivity;
 import com.jk.alienplayer.widget.Playbar;
 
 public class ArtistDetailActivity extends BaseActivity {
@@ -25,7 +29,6 @@ public class ArtistDetailActivity extends BaseActivity {
     private Playbar mPlaybar;
     private long mArtistId;
     private String mArtistName;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,24 @@ public class ArtistDetailActivity extends BaseActivity {
         tabs.setupWithViewPager(pager);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_artist_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        } if (item.getItemId() == R.id.action_info) {
+            Intent intent = new Intent(this, TrackInfoActivity.class);
+            intent.putExtra(TrackInfoActivity.EXTRA_MODE, TrackInfoActivity.MODE_ARTIST);
+            intent.putExtra(TrackInfoActivity.EXTRA_ID, mArtistId);
+            startActivity(intent);
+        }
+        return true;
+    }
 
     class PagerAdapter extends FragmentPagerAdapter {
         public PagerAdapter(FragmentManager fm) {
