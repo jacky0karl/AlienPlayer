@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.annimon.stream.Stream;
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.DatabaseHelper;
 import com.jk.alienplayer.data.Mp3TagsHelper;
@@ -177,10 +178,8 @@ public class TrackInfoActivity extends BaseActivity {
             Mp3TagsHelper.writeMp3ListInfo(new Mp3TagsHelper.OnMP3AddListener() {
                 @Override
                 public void onMP3Added() {
-                    ArrayList<String> filePathList = new ArrayList<String>();
-                    for (SongInfo song : mSongList) {
-                        filePathList.add(song.path);
-                    }
+                    ArrayList<String> filePathList = new ArrayList<>();
+                    Stream.of(mSongList).forEach(song -> filePathList.add(song.path));
                     MediaScanService.startScan(TrackInfoActivity.this, filePathList);
                     mLoaing.dismiss();
                     finish();

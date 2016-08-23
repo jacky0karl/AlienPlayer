@@ -181,6 +181,7 @@ public class Mp3TagsHelper {
 
         Bitmap bitmap = Picasso.with(MainApplication.app).load(coverUrl).get();
         String filePath = FileSavingUtils.sRootPath + System.currentTimeMillis();
+        FileSavingUtils.ensurePath(new File(filePath));
         FileOutputStream fos = new FileOutputStream(filePath);
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         fos.flush();
