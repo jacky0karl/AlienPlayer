@@ -58,4 +58,5 @@ dependencies {
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
 
     compile 'com.annimon:stream:1.1.1'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }
