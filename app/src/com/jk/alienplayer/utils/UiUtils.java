@@ -5,7 +5,11 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.util.DisplayMetrics;
+import android.view.View;
+
+import com.jk.alienplayer.R;
 
 public class UiUtils {
 
@@ -38,5 +42,12 @@ public class UiUtils {
                 behavior.onNestedPreScroll(cl, appbar, null, 0, offset, new int[]{0, 0});
             }
         });
+    }
+
+    public static void showCommonSnackbar(View anchor, int message) {
+        Snackbar snackbar = Snackbar.make(anchor, message, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.ok, v -> {});
+        snackbar.getView().setBackgroundColor(anchor.getResources().getColor(R.color.primary));
+        snackbar.show();
     }
 }

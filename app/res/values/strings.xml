@@ -56,13 +56,14 @@
     <string name="cancel">Cancel</string>
     <string name="start_rolling">Start Rolling</string>
     <string name="stop_rolling">Stop Rolling</string>
+    <string name="clear">Clear done</string>
+
+    <!-- dialog -->
+    <string name="modify_tag_hint">Keep field empty which you do not want to modify.</string>
     <string name="name_hint">Enter name</string>
     <string name="create_playlist">Create Playlist</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="download_all">Download All</string>
-    <string name="clear">Clear done</string>
-
-    <!-- dialog -->
     <string name="download_track_confirm">Are you sure to download this track?</string>
     <string name="delete_track_confirm">Are you sure to delete this track?</string>
     <string name="delete_file_aswell">Delete file as well</string>

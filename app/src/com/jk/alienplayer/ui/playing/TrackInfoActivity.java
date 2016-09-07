@@ -23,6 +23,7 @@ import com.jk.alienplayer.metadata.SongInfo;
 import com.jk.alienplayer.metadata.TrackTagInfo;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.network.NetworkSearchActivity;
+import com.jk.alienplayer.utils.UiUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -112,7 +113,9 @@ public class TrackInfoActivity extends BaseActivity {
         if (mSongList != null && mSongList.size() > 0) {
             mSongInfo = mSongList.get(0);
         }
+
         fillData();
+        UiUtils.showCommonSnackbar(mYear, R.string.modify_tag_hint);
     }
 
     private void fillData() {
