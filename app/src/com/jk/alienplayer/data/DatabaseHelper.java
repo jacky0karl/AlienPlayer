@@ -54,8 +54,10 @@ public class DatabaseHelper {
                 do {
                     long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(Artists._ID));
                     String artist = cursor.getString(cursor.getColumnIndexOrThrow(Artists.ARTIST));
-                    ArtistInfo info = new ArtistInfo(artistId, artist);
-                    artists.add(info);
+                    if (!"<unknown>".equals(artist)) {
+                        ArtistInfo info = new ArtistInfo(artistId, artist);
+                        artists.add(info);
+                    }
                 } while (cursor.moveToNext());
             }
             cursor.close();

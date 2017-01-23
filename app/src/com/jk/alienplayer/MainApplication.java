@@ -11,7 +11,7 @@ public class MainApplication extends Application {
 
     @Override
     public void onCreate() {
-        setDetection();
+        //setDetection();
         super.onCreate();
         app = this;
         TagOptionSingleton.getInstance().setAndroid(true);
