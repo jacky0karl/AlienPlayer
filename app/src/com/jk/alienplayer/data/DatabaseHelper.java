@@ -67,8 +67,8 @@ public class DatabaseHelper {
 
     public static List<AlbumInfo> getAlbums(Context context, String artist) {
         List<AlbumInfo> albums = new ArrayList<>();
-        String[] projection = new String[]{DISTINCT + Albums._ID, Albums.ALBUM, Albums.ARTIST,
-                Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS, Albums.ALBUM_ART};
+        String[] projection = new String[]{DISTINCT + Albums._ID, Albums.ALBUM,
+                Albums.ARTIST, Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS};
         String selection = Albums.ARTIST + "=?";
         String[] selectionArgs = new String[]{artist};
         Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
@@ -90,7 +90,7 @@ public class DatabaseHelper {
     public static List<AlbumInfo> getAllAlbums(Context context) {
         List<AlbumInfo> albums = new ArrayList<>();
         String[] projection = new String[]{DISTINCT + Albums._ID, Albums.ALBUM, Albums.ARTIST,
-                Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS, Albums.ALBUM_ART};
+                Albums.FIRST_YEAR, Albums.NUMBER_OF_SONGS};
 
         Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
                 null, null, Albums.ARTIST);
@@ -108,26 +108,14 @@ public class DatabaseHelper {
         return albums;
     }
 
-    public static String getAlbumArtwork(Context context, long albumId) {
-        String[] projection = new String[]{Albums.ALBUM_ART};
-        String selection = Albums._ID + "=?";
-        String[] selectionArgs = new String[]{String.valueOf(albumId)};
-
-        Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
-                selection, selectionArgs, null);
-        String artwork = "file://";
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                artwork += cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
-            }
-            cursor.close();
-        }
-        return artwork;
+    public static String getAlbumArtwork(long albumId) {
+        Uri uri = ContentUris.withAppendedId(AlbumArtUri, albumId);
+        return uri.toString();
     }
 
     public static void refreshArtworkCache(Context context, long albumId) {
         // delete artwork thumbnail
-        String cachePath = getAlbumArtwork(context, albumId);
+        String cachePath = getAlbumArtwork(albumId);
         int preCount = "file://".length();
         if (!TextUtils.isEmpty(cachePath) && cachePath.length() > preCount) {
             File cache = new File(cachePath.substring(preCount));
@@ -177,13 +165,15 @@ public class DatabaseHelper {
         String artist = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ARTIST));
         int year = cursor.getInt(cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR));
         int tracks = cursor.getInt(cursor.getColumnIndexOrThrow(Albums.NUMBER_OF_SONGS));
-        String artwork = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
+        //String artwork = cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
 
         if (!AlbumInfo.UNKNOWN.equals(artist)) {
             AlbumInfo info = new AlbumInfo(albumId, album, artist);
             info.year = year;
             info.tracks = tracks;
-            info.artwork = "file://" + artwork;
+            //info.artwork = "file://" + artwork;
+            Uri uri = ContentUris.withAppendedId(AlbumArtUri, albumId);
+            info.artwork = uri.toString();
             return info;
         }
         return null;

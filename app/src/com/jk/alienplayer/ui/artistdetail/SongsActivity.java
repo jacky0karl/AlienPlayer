@@ -177,7 +177,7 @@ public class SongsActivity extends BaseActivity {
             }
         };
 
-        String file = DatabaseHelper.getAlbumArtwork(this, mKey);
+        String file = DatabaseHelper.getAlbumArtwork(mKey);
         Picasso.with(MainApplication.app).load(file).config(Bitmap.Config.RGB_565).into(target);
     }
 

@@ -80,7 +80,7 @@ public class CircleArtworkFragment extends Fragment {
 
     private void syncView() {
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
-        String file = DatabaseHelper.getAlbumArtwork(getActivity(), songInfo.albumId);
+        String file = DatabaseHelper.getAlbumArtwork(songInfo.albumId);
         Picasso.with(MainApplication.app).load(file).config(Bitmap.Config.RGB_565)
                 .error(R.drawable.disk).into(mArtwork);
 
