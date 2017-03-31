@@ -273,7 +273,7 @@ public class PlayingActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case FRAGMENT_ARTWORK:
-                    return new CircleArtworkFragment();
+                    return new ArtworkFragment();
                 case FRAGMENT_CURR_LIST:
                     return new CurrentListFragment();
                 case FRAGMENT_LYRIC:
