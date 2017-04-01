@@ -1,16 +1,20 @@
 package com.jk.alienplayer.data;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import com.jk.alienplayer.R;
+import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.CurrentlistInfo;
 import com.jk.alienplayer.metadata.SongInfo;
 
 import java.util.List;
 
-public class PlayingInfoHolder {
+public class PlayingInfoHolder extends BroadcastReceiver {
     public static final int REPEAT_ONE = 1;
     public static final int REPEAT_ALL = 2;
     public static final int REPEAT_SHUFFLE = 3;
@@ -22,6 +26,7 @@ public class PlayingInfoHolder {
     private Bitmap mPlaybarArtwork = null;
     private int mPlaybarArtworkSize;
     private int mRepeatMode = REPEAT_ALL;
+    private boolean mIsPlaying = false;
 
     public static synchronized PlayingInfoHolder getInstance() {
         if (sSelf == null) {
@@ -31,7 +36,6 @@ public class PlayingInfoHolder {
     }
 
     private PlayingInfoHolder() {
-
     }
 
     public void init(Context context) {
@@ -76,6 +80,28 @@ public class PlayingInfoHolder {
         if (!mCurrentlistInfo.setCurrentSong(currentSong)) {
             updateCurrentSongInfo(context, getCurrentSong());
         }
+
+        IntentFilter intentFilter = new IntentFilter(PlayService.ACTION_START);
+        intentFilter.addAction(PlayService.ACTION_PAUSE);
+        intentFilter.addAction(PlayService.ACTION_STOP);
+        intentFilter.addAction(PlayService.ACTION_EXIT);
+        context.registerReceiver(this, intentFilter);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(PlayService.ACTION_START)) {
+            mIsPlaying = true;
+        } else if (intent.getAction().equals(PlayService.ACTION_PAUSE)
+                || intent.getAction().equals(PlayService.ACTION_STOP)) {
+            mIsPlaying = false;
+        } else if (intent.getAction().equals(PlayService.ACTION_EXIT)) {
+            context.unregisterReceiver(this);
+        }
+    }
+
+    public boolean isPlaying() {
+        return mIsPlaying;
     }
 
     public int getRepeatMode() {

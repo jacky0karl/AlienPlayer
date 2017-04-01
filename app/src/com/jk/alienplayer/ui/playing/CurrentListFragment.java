@@ -20,24 +20,21 @@ import com.jk.alienplayer.R;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.metadata.SongInfo;
-import com.jk.alienplayer.ui.adapter.TracksAdapter;
+import com.jk.alienplayer.ui.adapter.PlayingQueueAdapter;
 import com.jk.alienplayer.widget.TrackOperationHelper;
 
 public class CurrentListFragment extends Fragment {
     private ListView mListView;
-    private TracksAdapter mAdapter;
+    private PlayingQueueAdapter mAdapter;
     private SongInfo mCurrTrack;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(PlayService.ACTION_TRACK_CHANGE)) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAdapter.setTracks(PlayingInfoHolder.getInstance().getCurrentlist());
-                    }
-                });
+                mAdapter.setTracks(PlayingInfoHolder.getInstance().getCurrentlist());
+            } else {
+                mAdapter.notifyDataSetChanged();
             }
         }
     };
@@ -58,7 +55,11 @@ public class CurrentListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         init(root);
+
         IntentFilter intentFilter = new IntentFilter(PlayService.ACTION_TRACK_CHANGE);
+        intentFilter.addAction(PlayService.ACTION_PAUSE);
+        intentFilter.addAction(PlayService.ACTION_STOP);
+        intentFilter.addAction(PlayService.ACTION_START);
         getActivity().registerReceiver(mReceiver, intentFilter);
         return root;
     }
@@ -71,7 +72,7 @@ public class CurrentListFragment extends Fragment {
 
     private void init(View root) {
         mListView = (ListView) root.findViewById(R.id.list);
-        mAdapter = new TracksAdapter(getActivity(), mOnItemClickListener);
+        mAdapter = new PlayingQueueAdapter(getActivity(), mOnItemClickListener);
         mListView.setAdapter(mAdapter);
         mAdapter.setTracks(PlayingInfoHolder.getInstance().getCurrentlist());
         mListView.setOnItemClickListener(mOnItemClickListener);
