@@ -115,17 +115,19 @@ public class DatabaseHelper {
 
     public static void refreshArtworkCache(Context context, long albumId) {
         // delete artwork thumbnail
-        String cachePath = getAlbumArtwork(albumId);
+        String thumbnail = getArtworkCacheFile(context, albumId);
         int preCount = "file://".length();
-        if (!TextUtils.isEmpty(cachePath) && cachePath.length() > preCount) {
-            File cache = new File(cachePath.substring(preCount));
-            if (cache.exists()) {
-                cache.delete();
+        if (!TextUtils.isEmpty(thumbnail) && thumbnail.length() > preCount) {
+            File cacheFile = new File(thumbnail.substring(preCount));
+            if (cacheFile.exists()) {
+                cacheFile.delete();
             }
         }
+
         // invalidate artwork cache
-        Picasso.with(context).invalidate(cachePath);
-        // make os to generate artwork thumbnail
+        String cache = getAlbumArtwork(albumId);
+        Picasso.with(context).invalidate(cache);
+        // make OS to generate artwork thumbnail
         DatabaseHelper.getArtworkFormFile(context, -1, albumId, 1);
 
         Intent intent = PlayService.getPlayingCommandIntent(context, PlayService.COMMAND_REFRESH);
@@ -364,6 +366,23 @@ public class DatabaseHelper {
             cursor.close();
         }
         return results;
+    }
+
+    private static String getArtworkCacheFile(Context context, long albumId) {
+        String[] projection = new String[]{Albums.ALBUM_ART};
+        String selection = Albums._ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(albumId)};
+
+        Cursor cursor = context.getContentResolver().query(Albums.EXTERNAL_CONTENT_URI, projection,
+                selection, selectionArgs, null);
+        String artwork = "file://";
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                artwork += cursor.getString(cursor.getColumnIndexOrThrow(Albums.ALBUM_ART));
+            }
+            cursor.close();
+        }
+        return artwork;
     }
 
     private static ArtistInfo bulidArtistInfo(Cursor cursor) {
