@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.jk.alienplayer"
-          android:versionCode="1"
-          android:versionName="1.0">
+    package="com.jk.alienplayer"
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="22"/>
+        android:targetSdkVersion="22" />
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:name="MainApplication"
@@ -25,33 +25,47 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="file" />
+                <data android:mimeType="audio/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="content" />
+                <data android:mimeType="audio/*" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.artistdetail.ArtistDetailActivity"
-            android:theme="@style/Theme.Toolbar"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Toolbar"></activity>
         <activity
             android:name=".ui.AboutActivity"
-            android:parentActivityName=".ui.AboutActivity">
-        </activity>
+            android:parentActivityName=".ui.AboutActivity"></activity>
         <activity
             android:name=".ui.artistdetail.SongsActivity"
             android:parentActivityName=".ui.main.MainActivity"
-            android:theme="@style/Theme.Toolbar"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Toolbar"></activity>
         <activity
             android:name=".ui.main.SearchActivity"
             android:label="@string/search"
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Search">
-        </activity>
+            android:theme="@style/Theme.Search"></activity>
         <activity
             android:name=".ui.network.NetworkSearchActivity"
             android:label="@string/discover"
@@ -60,83 +74,76 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Toolbar">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".ui.playing.PlayingActivity"
             android:parentActivityName=".ui.main.MainActivity"
-            android:theme="@style/Theme.Playing"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Playing"></activity>
         <activity
             android:name=".ui.playing.TrackInfoActivity"
             android:label="@string/track_info"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".ui.network.NetworkAlbumsActivity"
             android:parentActivityName=".ui.network.NetworkSearchActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.network.NetworkTracksActivity"
             android:parentActivityName=".ui.network.NetworkSearchActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.network.DownloadListActivity"
             android:label="@string/download_list"
             android:parentActivityName=".ui.network.NetworkSearchActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
-        <service android:name=".impl.PlayService">
-        </service>
-        <service android:name=".impl.MediaScanService">
-        </service>
+        <service android:name=".impl.PlayService"></service>
+        <service android:name=".impl.MediaScanService"></service>
 
         <provider
             android:name=".data.DiscoverSuggestionsProvider"
             android:authorities="com.jk.alienplayer.data.DiscoverSuggestionsProvider"
-            android:exported="false"/>
+            android:exported="false" />
 
         <receiver android:name="MediaButtonReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="NotificationHelper"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.jk.alienplayer.action.START"/>
-                <action android:name="com.jk.alienplayer.action.TRACK_CHANGE"/>
-                <action android:name="com.jk.alienplayer.action.PAUSE"/>
-                <action android:name="com.jk.alienplayer.action.STOP"/>
-                <action android:name="com.jk.alienplayer.action.EXIT"/>
+                <action android:name="com.jk.alienplayer.action.START" />
+                <action android:name="com.jk.alienplayer.action.TRACK_CHANGE" />
+                <action android:name="com.jk.alienplayer.action.PAUSE" />
+                <action android:name="com.jk.alienplayer.action.STOP" />
+                <action android:name="com.jk.alienplayer.action.EXIT" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="APWidgetProvider"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.jk.alienplayer.action.START"/>
-                <action android:name="com.jk.alienplayer.action.TRACK_CHANGE"/>
-                <action android:name="com.jk.alienplayer.action.PAUSE"/>
-                <action android:name="com.jk.alienplayer.action.STOP"/>
-                <action android:name="com.jk.alienplayer.action.PROGRESS_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.jk.alienplayer.action.START" />
+                <action android:name="com.jk.alienplayer.action.TRACK_CHANGE" />
+                <action android:name="com.jk.alienplayer.action.PAUSE" />
+                <action android:name="com.jk.alienplayer.action.STOP" />
+                <action android:name="com.jk.alienplayer.action.PROGRESS_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/appwidget_info"/>
+                android:resource="@xml/appwidget_info" />
         </receiver>
     </application>
 

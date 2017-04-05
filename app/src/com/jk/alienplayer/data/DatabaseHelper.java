@@ -436,47 +436,73 @@ public class DatabaseHelper {
         return BitmapFactory.decodeFileDescriptor(fd, null, options);
     }
 
-//    public static List<ArtistInfo> getAlbumArtists(Context context) {
-//        List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
-//        String[] projection = new String[]{DISTINCT + ALBUM_ARTIST};
-//
-//        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-//                MEDIA_SELECTION, null, ALBUM_ARTIST);
-//        if (cursor != null) {
-//            if (cursor.moveToFirst()) {
-//                do {
-//                    String artist = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ARTIST));
-//                    if (!TextUtils.isEmpty(artist)) {
-//                        ArtistInfo info = new ArtistInfo(ArtistInfo.ALBUM_ARTIST_ID, artist);
-//                        artists.add(info);
-//                    }
-//                } while (cursor.moveToNext());
-//            }
-//            cursor.close();
-//        }
-//        return artists;
-//    }
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static SongInfo getSongInfoFromUri(Context context, final String path) {
+        if (TextUtils.isEmpty(path)) {
+            return null;
+        }
 
-//    public static List<AlbumInfo> getAlbums(Context context, String albumArtist) {
-//        List<AlbumInfo> albums = new ArrayList<AlbumInfo>();
-//        String[] projection = new String[]{DISTINCT + Media.ALBUM_ID, Media.ALBUM, Media.YEAR,
-//                ALBUM_ARTIST};
-//        String selection = MEDIA_SELECTION;
-//        selection += " and " + ALBUM_ARTIST + "=?";
-//        String[] selectionArgs = new String[]{albumArtist};
-//
-//        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection,
-//                selection, selectionArgs, Media.YEAR);
-//        if (cursor != null) {
-//            if (cursor.moveToFirst()) {
-//                do {
-//                    albums.add(bulidAlbumInfo(cursor));
-//                } while (cursor.moveToNext());
-//            }
-//            cursor.close();
-//        }
-//        return albums;
-//    }
+        SongInfo info = null;
+        Uri uri = Uri.parse(path);
+        try {
+            boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+            if (isKitKat && path.contains("document")) {
+                if (path.contains("primary")) {
+                    String[] segments = path.split(":");
+                    if (segments.length > 0) {
+                        String ids = Environment.getExternalStorageDirectory() + "/" + segments[segments.length - 1];
+                        String selection = MediaStore.Audio.Media.DATA + "=?";
+                        String[] selectionArgs = new String[]{ids};
+                        info = getTrack(context, selection, selectionArgs);
+                    }
+                } else if (path.contains("audio")) {
+                    String[] segments = path.split("/");
+                    if (segments.length > 0) {
+                        String wholeID = segments[segments.length - 1];
+                        String ids = wholeID.split(":")[1];
+                        String selection = Media._ID + "=?";
+                        String[] selectionArgs = new String[]{ids};
+                        info = getTrack(context, selection, selectionArgs);
+                    }
+                }
+            } else if (path.contains("external")) {
+                if (path.contains("audio")) {
+                    long id = ContentUris.parseId(uri);
+                    String selection = Media._ID + "=?";
+                    String[] selectionArgs = new String[]{String.valueOf(id)};
+                    info = getTrack(context, selection, selectionArgs);
+                } else if (path.contains("file")) {
+                    long id = ContentUris.parseId(uri);
+                    String selection = Media._ID + "=?";
+                    String[] selectionArgs = new String[]{String.valueOf(id)};
+                    info = getTrack(context, selection, selectionArgs);
+                }
+            } else {
+                String selection = MediaStore.Audio.Media.DATA + "=?";
+                String[] selectionArgs = new String[]{path};
+                info = getTrack(context, selection, selectionArgs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return info;
+    }
+
+    private static SongInfo getTrack(Context context, String selection, String[] selectionArgs) {
+        Uri uri = Media.EXTERNAL_CONTENT_URI;
+        String[] projection = new String[]{Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
+                Media.ALBUM_ID, Media.ARTIST, Media.ALBUM, Media.ARTIST_ID};
+
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                return bulidSongInfo(cursor);
+            }
+            cursor.close();
+        }
+        return null;
+    }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private static String getPath(final Context context, final Uri uri) {

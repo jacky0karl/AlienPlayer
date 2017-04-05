@@ -58,7 +58,7 @@ public class PlayingInfoHolder extends BroadcastReceiver {
             }
         }
 
-        // init RecentsList
+        // init recents list
         RecentsDBHelper.initRecents(context);
         mRecentsList = RecentsDBHelper.getRecentTracks(context);
 
@@ -147,8 +147,16 @@ public class PlayingInfoHolder extends BroadcastReceiver {
         return mPlaybarArtwork;
     }
 
-    public void setCurrentInfo(Context context, SongInfo currentSong,
-            CurrentlistInfo currentlistInfo) {
+    public boolean addFileToRecents(Context context, String path) {
+        SongInfo info = DatabaseHelper.getSongInfoFromUri(context, path);
+        if (info != null) {
+            PlayingInfoHolder.getInstance().setCurrentInfo(context, info, null);
+            return true;
+        }
+        return false;
+    }
+
+    public void setCurrentInfo(Context context, SongInfo currentSong, CurrentlistInfo currentlistInfo) {
         // update Recents
         boolean update = isInRecents(currentSong.id);
         if (!update) {

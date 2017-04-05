@@ -19,9 +19,9 @@ import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.AboutActivity;
 import com.jk.alienplayer.ui.BaseActivity;
 import com.jk.alienplayer.ui.network.NetworkSearchActivity;
+import com.jk.alienplayer.utils.UncaughtExceptionLoger;
 import com.jk.alienplayer.widget.Playbar;
 import com.jk.alienplayer.widget.VolumeBarWindow;
-import com.jk.alienplayer.utils.UncaughtExceptionLoger;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 public class MainActivity extends BaseActivity {
@@ -67,6 +67,14 @@ public class MainActivity extends BaseActivity {
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(pager);
         pager.setCurrentItem(FRAGMENT_ARTISTS);
+
+
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+            if (PlayingInfoHolder.getInstance().addFileToRecents(this, getIntent().getData().getPath())) {
+                Intent playIntent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
+                startService(playIntent);
+            }
+        }
     }
 
     @Override
