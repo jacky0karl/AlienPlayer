@@ -43,7 +43,7 @@ public class DatabaseHelper {
     private static final Uri AlbumArtUri = Uri.parse("content://media/external/audio/albumart");
 
     public static List<ArtistInfo> getAllArtists(Context context) {
-        List<ArtistInfo> artists = new ArrayList<ArtistInfo>();
+        List<ArtistInfo> artists = new ArrayList<>();
         String[] projection = new String[]{DISTINCT + Artists._ID, Artists.ARTIST,
                 Artists.NUMBER_OF_ALBUMS, Artists.NUMBER_OF_TRACKS};
 
@@ -54,7 +54,7 @@ public class DatabaseHelper {
                 do {
                     long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(Artists._ID));
                     String artist = cursor.getString(cursor.getColumnIndexOrThrow(Artists.ARTIST));
-                    if (!"<unknown>".equals(artist)) {
+                    if (!"<unknown>".equals(artist) && !artist.contains("&")) {
                         ArtistInfo info = new ArtistInfo(artistId, artist);
                         artists.add(info);
                     }
