@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity {
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(granted -> {
                     if (granted) {
-                        playFromIntent(getIntent());
+                        playFromIntent(intent);
                     } else {
                         finish();
                     }
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity {
 
     private void playFromIntent(Intent intent) {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-            if (PlayingInfoHolder.getInstance().addFileToRecents(this, intent.getData().getPath())) {
+            if (PlayingInfoHolder.getInstance().addFileToRecents(this, intent.getData())) {
                 Intent playIntent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
                 startService(playIntent);
             }

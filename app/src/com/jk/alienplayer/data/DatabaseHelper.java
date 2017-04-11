@@ -437,50 +437,42 @@ public class DatabaseHelper {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static SongInfo getSongInfoFromUri(Context context, final String path) {
-        if (TextUtils.isEmpty(path)) {
+    public static SongInfo getSongInfoFromUri(Context context, Uri uri) {
+        if (uri == null) {
             return null;
         }
 
         SongInfo info = null;
-        Uri uri = Uri.parse(path);
         try {
             boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-            if (isKitKat && path.contains("document")) {
-                if (path.contains("primary")) {
-                    String[] segments = path.split(":");
-                    if (segments.length > 0) {
-                        String ids = Environment.getExternalStorageDirectory() + "/" + segments[segments.length - 1];
+            if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+                if (isExternalStorageDocument(uri)) {
+                    String docId = DocumentsContract.getDocumentId(uri);
+                    String[] split = docId.split(":");
+                    String type = split[0];
+                    if (split.length > 0 && "primary".equalsIgnoreCase(type)) {
+                        String data = Environment.getExternalStorageDirectory() + "/" + split[1];
                         String selection = MediaStore.Audio.Media.DATA + "=?";
-                        String[] selectionArgs = new String[]{ids};
-                        info = getTrack(context, selection, selectionArgs);
+                        String[] selectionArgs = new String[]{data};
+                        info = getTrack(context, null, selection, selectionArgs);
                     }
-                } else if (path.contains("audio")) {
-                    String[] segments = path.split("/");
-                    if (segments.length > 0) {
-                        String wholeID = segments[segments.length - 1];
-                        String ids = wholeID.split(":")[1];
+                } else if (isMediaDocument(uri)) {
+                    String docId = DocumentsContract.getDocumentId(uri);
+                    String[] split = docId.split(":");
+                    String type = split[0];
+                    if (split.length > 0 && "audio".equals(type)) {
+                        String id = split[1];
                         String selection = Media._ID + "=?";
-                        String[] selectionArgs = new String[]{ids};
-                        info = getTrack(context, selection, selectionArgs);
+                        String[] selectionArgs = new String[]{id};
+                        info = getTrack(context, null, selection, selectionArgs);
                     }
                 }
-            } else if (path.contains("external")) {
-                if (path.contains("audio")) {
-                    long id = ContentUris.parseId(uri);
-                    String selection = Media._ID + "=?";
-                    String[] selectionArgs = new String[]{String.valueOf(id)};
-                    info = getTrack(context, selection, selectionArgs);
-                } else if (path.contains("file")) {
-                    long id = ContentUris.parseId(uri);
-                    String selection = Media._ID + "=?";
-                    String[] selectionArgs = new String[]{String.valueOf(id)};
-                    info = getTrack(context, selection, selectionArgs);
-                }
-            } else {
+            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                info = getTrack(context, uri, null, null);
+            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
                 String selection = MediaStore.Audio.Media.DATA + "=?";
-                String[] selectionArgs = new String[]{path};
-                info = getTrack(context, selection, selectionArgs);
+                String[] selectionArgs = new String[]{uri.getPath()};
+                info = getTrack(context, null, selection, selectionArgs);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -489,8 +481,10 @@ public class DatabaseHelper {
         return info;
     }
 
-    private static SongInfo getTrack(Context context, String selection, String[] selectionArgs) {
-        Uri uri = Media.EXTERNAL_CONTENT_URI;
+    private static SongInfo getTrack(Context context, Uri uri, String selection, String[] selectionArgs) {
+        if (uri == null) {
+            uri = Media.EXTERNAL_CONTENT_URI;
+        }
         String[] projection = new String[]{Media._ID, Media.TITLE, Media.DURATION, Media.DATA,
                 Media.ALBUM_ID, Media.ARTIST, Media.ALBUM, Media.ARTIST_ID};
 

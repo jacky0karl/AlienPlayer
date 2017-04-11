@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.jk.alienplayer.R;
 import com.jk.alienplayer.impl.PlayService;
@@ -147,8 +148,8 @@ public class PlayingInfoHolder extends BroadcastReceiver {
         return mPlaybarArtwork;
     }
 
-    public boolean addFileToRecents(Context context, String path) {
-        SongInfo info = DatabaseHelper.getSongInfoFromUri(context, path);
+    public boolean addFileToRecents(Context context, Uri uri) {
+        SongInfo info = DatabaseHelper.getSongInfoFromUri(context, uri);
         if (info != null) {
             PlayingInfoHolder.getInstance().setCurrentInfo(context, info, null);
             return true;
