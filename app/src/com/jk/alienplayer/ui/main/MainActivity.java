@@ -68,13 +68,21 @@ public class MainActivity extends BaseActivity {
         mTabLayout.setupWithViewPager(pager);
         pager.setCurrentItem(FRAGMENT_ARTISTS);
 
+        playFromIntent(getIntent());
+    }
 
-        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
-            if (PlayingInfoHolder.getInstance().addFileToRecents(this, getIntent().getData().getPath())) {
-                Intent playIntent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
-                startService(playIntent);
-            }
-        }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        RxPermissions.getInstance(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                    if (granted) {
+                        playFromIntent(getIntent());
+                    } else {
+                        finish();
+                    }
+                });
     }
 
     @Override
@@ -119,6 +127,15 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(this, PlayService.class);
         stopService(intent);
         finish();
+    }
+
+    private void playFromIntent(Intent intent) {
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            if (PlayingInfoHolder.getInstance().addFileToRecents(this, intent.getData().getPath())) {
+                Intent playIntent = PlayService.getPlayingCommandIntent(this, PlayService.COMMAND_PLAY);
+                startService(playIntent);
+            }
+        }
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
