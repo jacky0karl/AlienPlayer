@@ -91,7 +91,7 @@ public class ArtistDetailActivity extends BaseActivity {
                 case FRAGMENT_ALBUMS:
                     AlbumsFragment af = new AlbumsFragment();
                     Bundle argA = new Bundle();
-                    argA.putString(AlbumsFragment.ARTIST_NAME, mArtistName);
+                    argA.putString(AlbumsFragment.Companion.getARTIST_NAME(), mArtistName);
                     af.setArguments(argA);
                     return af;
                 case FRAGMENT_SONGS:
