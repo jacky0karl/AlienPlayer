@@ -44,11 +44,11 @@ public class DatabaseHelper {
 
     public static List<ArtistInfo> getAllArtists(Context context) {
         List<ArtistInfo> artists = new ArrayList<>();
-        String[] projection = new String[]{DISTINCT + Artists._ID, Artists.ARTIST,
+        String[] projection = new String[] {Artists._ID, Artists.ARTIST,
                 Artists.NUMBER_OF_ALBUMS, Artists.NUMBER_OF_TRACKS};
-
+        String selection = Albums.ARTIST + " IS NOT NULL) GROUP BY (" + Albums.ARTIST;
         Cursor cursor = context.getContentResolver().query(Artists.EXTERNAL_CONTENT_URI, projection,
-                null, null, Artists.ARTIST);
+                selection, null, Artists.ARTIST);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
