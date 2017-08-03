@@ -86,7 +86,7 @@ public class NotificationHelper extends BroadcastReceiver {
         views.setTextViewText(R.id.artist, artist);
         Bitmap artwork = PlayingInfoHolder.getInstance().getPlaybarArtwork();
         if (artwork == null) {
-            views.setImageViewResource(R.id.artwork, R.drawable.disk);
+            views.setImageViewResource(R.id.artwork, R.drawable.ic_disc);
         } else {
             views.setImageViewBitmap(R.id.artwork, artwork);
         }

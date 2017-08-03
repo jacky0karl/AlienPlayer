@@ -51,7 +51,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
         String trackCount = holder.tracks.getResources().getString(R.string.track_count);
         holder.tracks.setText(String.valueOf(info.tracks) + trackCount);
         Picasso.with(mContext).load(info.artwork).config(Bitmap.Config.RGB_565)
-                .placeholder(R.drawable.disk).into(holder.artwork);
+                .placeholder(R.drawable.ic_disc).into(holder.artwork);
 
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/app_icon"
+                    android:src="@drawable/ic_disc"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.7"/>
 

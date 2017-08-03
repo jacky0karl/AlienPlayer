@@ -68,7 +68,7 @@ public class NetworkAlbumsAdapter extends BaseAdapter {
             viewHolder.name.setText(info.getName());
             viewHolder.artist.setText(info.getShowingArtist());
             Picasso.with(mContext).load(info.getPicUrl()).config(Bitmap.Config.RGB_565)
-                    .placeholder(R.drawable.disk).into(viewHolder.artwork);
+                    .placeholder(R.drawable.ic_disc).into(viewHolder.artwork);
             return view;
         } catch (Exception e) {
             return new View(mContext);

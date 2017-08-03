@@ -120,7 +120,7 @@ public class NetworkSearchResultsAdapter extends BaseAdapter {
         }
 
         NetworkAlbumInfo result = (NetworkAlbumInfo) mResults.get(position);
-        Picasso.with(mContext).load(result.avatar).placeholder(R.drawable.disk)
+        Picasso.with(mContext).load(result.avatar).placeholder(R.drawable.ic_disc)
                 .config(Bitmap.Config.RGB_565).into(viewHolder.artwork);
         viewHolder.content.setText(result.name);
         viewHolder.artist.setText(result.artist);

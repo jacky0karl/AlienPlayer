@@ -80,7 +80,7 @@ public class ArtworkFragment extends Fragment {
         SongInfo songInfo = PlayingInfoHolder.getInstance().getCurrentSong();
         String file = DatabaseHelper.getAlbumArtwork(songInfo.albumId);
         Picasso.with(MainApplication.app).load(file).config(Bitmap.Config.RGB_565)
-                .error(R.drawable.disk).into(mArtwork);
+                .error(R.drawable.ic_disc).into(mArtwork);
 
         int repeatMode = PlayingInfoHolder.getInstance().getRepeatMode();
         if (repeatMode == PlayingInfoHolder.REPEAT_ALL) {

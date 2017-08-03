@@ -162,7 +162,7 @@ public class Playbar extends RelativeLayout {
         if (artwork != null) {
             mArtwork.setImageBitmap(artwork);
         } else {
-            mArtwork.setImageResource(R.drawable.disk);
+            mArtwork.setImageResource(R.drawable.ic_disc);
         }
     }
 }

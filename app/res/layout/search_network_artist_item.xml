@@ -22,7 +22,7 @@
             android:id="@+id/avatar"
             android:layout_width="@dimen/list_avatar_size"
             android:layout_height="@dimen/list_avatar_size"
-            android:src="@drawable/disk" />
+            android:src="@drawable/ic_disc" />
 
         <TextView
             android:id="@+id/content"
