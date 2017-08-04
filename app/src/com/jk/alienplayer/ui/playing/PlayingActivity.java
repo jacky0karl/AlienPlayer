@@ -82,6 +82,7 @@ public class PlayingActivity extends BaseActivity {
             startService(intent);
         }
     };
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

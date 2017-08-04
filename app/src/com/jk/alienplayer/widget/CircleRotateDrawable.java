@@ -16,8 +16,10 @@ public class CircleRotateDrawable extends RotateDrawable {
     public void draw(Canvas canvas) {
         canvas.save();
         Path path = new Path();
-        int radius = getBounds().width() / 2;
-        path.addCircle(radius, radius, radius, Path.Direction.CW);
+        int x = getBounds().width() / 2;
+        int y = getBounds().height() / 2;
+        int radius = Math.min(x, y);
+        path.addCircle(x, y, radius, Path.Direction.CW);
         canvas.clipPath(path);
         super.draw(canvas);
         canvas.restore();

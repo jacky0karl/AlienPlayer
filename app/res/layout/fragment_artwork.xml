@@ -10,11 +10,22 @@
 
     <ImageView
         android:id="@+id/repeat_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
-        android:src="@drawable/repeat_all" />
+        android:src="@drawable/repeat_all"
+        android:tint="@color/accent" />
+
+    <ImageView
+        android:id="@+id/lyricBtn"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/lyric" />
 
 </RelativeLayout>

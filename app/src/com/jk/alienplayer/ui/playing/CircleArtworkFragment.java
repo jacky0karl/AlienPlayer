@@ -122,9 +122,9 @@ public class CircleArtworkFragment extends Fragment {
                 .error(R.drawable.ic_disc).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                Drawable d = new BitmapDrawable(getResources(), bitmap);
+                BitmapDrawable bd = new BitmapDrawable(getResources(), bitmap);
                 CircleRotateDrawable crd = new CircleRotateDrawable();
-                crd.setDrawable(d);
+                crd.setDrawable(bd);
                 mArtwork.setImageDrawable(crd);
             }
 
