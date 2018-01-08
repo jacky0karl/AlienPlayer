@@ -63,8 +63,8 @@ class AlbumsFragment : Fragment() {
             mArtistName = arguments.getString(ARTIST_NAME)
         }
 
-        mLoading = root.findViewById(R.id.loading) as ProgressBar
-        mRecyclerView = root.findViewById(R.id.list) as RecyclerView
+        mLoading = root.findViewById(R.id.loading)
+        mRecyclerView = root.findViewById(R.id.list)
         val layoutManager = LinearLayoutManager(activity)
         mRecyclerView!!.layoutManager = layoutManager
         mAdapter = AlbumsAdapter(activity, mOnItemClickListener)
