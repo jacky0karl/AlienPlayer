@@ -59,6 +59,7 @@ public class PlayingQueueAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             view = mInflater.inflate(R.layout.list_item_playing_queue, parent, false);
             viewHolder.visualizer = (MusicVisualizer) view.findViewById(R.id.visualizer);
+            viewHolder.visualizer.setColor(mContext.getResources().getColor(R.color.accent));
             viewHolder.name = (TextView) view.findViewById(R.id.content);
             viewHolder.artist = (TextView) view.findViewById(R.id.artist);
             viewHolder.menu = (ImageView) view.findViewById(R.id.menu);
@@ -79,7 +80,6 @@ public class PlayingQueueAdapter extends BaseAdapter {
         if (currSong != null && currSong.id == info.id) {
             viewHolder.name.setTextColor(mContext.getResources().getColor(R.color.lyric_hl));
             if (PlayingInfoHolder.getInstance().isPlaying()) {
-                viewHolder.visualizer.setColor(mContext.getResources().getColor(R.color.accent));
                 viewHolder.visualizer.setVisibility(View.VISIBLE);
             }
         } else {
