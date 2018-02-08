@@ -43,7 +43,7 @@ public class CurrentListFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mCurrTrack = mAdapter.getItem(position);
-            if (view.getId() == R.id.action) {
+            if (view.getId() == R.id.menu) {
                 showPopupMenu(view);
             } else {
                 onSongClick(mCurrTrack);
