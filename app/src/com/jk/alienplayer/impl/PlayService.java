@@ -48,6 +48,7 @@ public class PlayService extends Service {
     private PlayingHelper mPlayingHelper;
     private AudioManager mAudioManager;
     private AudioFocusChangeListener mAudioFocusChangeListener;
+    private NotificationHelper mNotificationHelper;
     private RemoteControlHelper mRemoteControlHelper;
     private ComponentName mMediaButtonReceiver = new ComponentName(MediaButtonReceiver.class
             .getPackage().getName(), MediaButtonReceiver.class.getName());
@@ -76,6 +77,7 @@ public class PlayService extends Service {
         mAudioFocusChangeListener = new AudioFocusChangeListener(mPlayingHelper);
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mAudioManager.registerMediaButtonEventReceiver(mMediaButtonReceiver);
+        mNotificationHelper = new NotificationHelper(this);
         mRemoteControlHelper = new RemoteControlHelper(this, mMediaButtonReceiver);
 
         IntentFilter intentFilter = new IntentFilter(ACTION_START);
@@ -120,7 +122,8 @@ public class PlayService extends Service {
             break;
         }
 
-        startForeground(99, NotificationHelper.getSeviceNotification(this));
+        startForeground(NotificationHelper.FOR_SERVICE,
+                NotificationHelper.getSeviceNotification(this));
         return START_STICKY;
     }
 
@@ -128,6 +131,7 @@ public class PlayService extends Service {
     public void onDestroy() {
         unregisterReceiver(mReceiver);
         mRemoteControlHelper.finish();
+        mNotificationHelper.finish();
         mAudioManager.abandonAudioFocus(mAudioFocusChangeListener);
         mAudioManager.unregisterMediaButtonEventReceiver(mMediaButtonReceiver);
         mPlayingHelper.release();

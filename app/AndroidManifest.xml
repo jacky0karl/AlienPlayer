@@ -125,17 +125,7 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="NotificationHelper"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.jk.alienplayer.action.START" />
-                <action android:name="com.jk.alienplayer.action.TRACK_CHANGE" />
-                <action android:name="com.jk.alienplayer.action.PAUSE" />
-                <action android:name="com.jk.alienplayer.action.STOP" />
-                <action android:name="com.jk.alienplayer.action.EXIT" />
-            </intent-filter>
-        </receiver>
+
         <receiver
             android:name="APWidgetProvider"
             android:label="@string/app_name">
