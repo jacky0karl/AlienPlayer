@@ -23,6 +23,12 @@ public class NotificationHelper extends BroadcastReceiver {
             sendNotification(context, intent);
         }
     }
+    
+    public static Notification getSeviceNotification(Context context) {
+        return new Notification.Builder(context)
+                .setSmallIcon(R.drawable.app_icon)
+                .build();
+    }
 
     public void sendNotification(Context context, Intent intent) {
         Notification n = new Notification.Builder(context).setSmallIcon(R.drawable.app_icon)

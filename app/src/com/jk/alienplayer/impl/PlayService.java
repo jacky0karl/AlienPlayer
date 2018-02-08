@@ -11,6 +11,7 @@ import android.media.audiofx.AudioEffect;
 import android.os.IBinder;
 
 import com.jk.alienplayer.MediaButtonReceiver;
+import com.jk.alienplayer.NotificationHelper;
 import com.jk.alienplayer.data.PlayingInfoHolder;
 import com.jk.alienplayer.data.VolumeKeyHelper;
 
@@ -118,6 +119,8 @@ public class PlayService extends Service {
         default:
             break;
         }
+
+        startForeground(99, NotificationHelper.getSeviceNotification(this));
         return START_STICKY;
     }
 
