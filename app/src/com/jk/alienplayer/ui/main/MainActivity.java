@@ -18,6 +18,7 @@ import com.jk.alienplayer.impl.PlayService;
 import com.jk.alienplayer.network.FileDownloadingHelper;
 import com.jk.alienplayer.ui.AboutActivity;
 import com.jk.alienplayer.ui.BaseActivity;
+import com.jk.alienplayer.ui.artistdetail.SongsFragment;
 import com.jk.alienplayer.ui.network.NetworkSearchActivity;
 import com.jk.alienplayer.utils.UncaughtExceptionLoger;
 import com.jk.alienplayer.widget.Playbar;
@@ -29,8 +30,8 @@ public class MainActivity extends BaseActivity {
     private static final int FRAGMENT_PLAYLIST = 0;
     private static final int FRAGMENT_ARTISTS = 1;
     private static final int FRAGMENT_ALBUMS = 2;
-    //private static final int FRAGMENT_RECENTS = 4;
-    private static final int FRAGMENT_COUNT = 3;
+    private static final int FRAGMENT_SONGS = 3;
+    private static final int FRAGMENT_COUNT = 4;
 
     private Playbar mPlaybar;
     private VolumeBarWindow mVolumeBar;
@@ -156,6 +157,8 @@ public class MainActivity extends BaseActivity {
                 //    return ArtistsFragment.newInstance(ArtistsFragment.TYPE_ALBUM_ARTISTS);
                 case FRAGMENT_ALBUMS:
                     return new AlbumsFragment();
+                case FRAGMENT_SONGS:
+                    return new SongsFragment();
                 default:
                     return null;
             }
@@ -174,6 +177,8 @@ public class MainActivity extends BaseActivity {
                 //    return getString(R.string.album_artists);
                 case FRAGMENT_ALBUMS:
                     return getString(R.string.albums);
+                case FRAGMENT_SONGS:
+                    return getString(R.string.tracks);
                 default:
                     return "";
             }
